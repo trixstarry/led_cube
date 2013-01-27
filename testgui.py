@@ -9,6 +9,7 @@
 import pygtk
 pygtk.require('2.0')
 import gtk
+import gtk, gobject, glib
 
 
 class PyApp(gtk.Window):
@@ -23,17 +24,35 @@ class PyApp(gtk.Window):
 
         table = gtk.Table(2,5,False)
         table.set_col_spacings(1)
+
+        hBox = gtk.HBox(False,0)
+
+        scroll_wins = gtk.ScrolledWindow()
+        scroll_wins.set_border_width(0)
+        scroll_wins.set_policy(gtk.POLICY_AUTOMATIC,gtk.POLICY_ALWAYS)
+
+        self.model = gtk.ListStore(gobject.TYPE_STRING)
+        self.tree_view = gtk.TreeView(self.model)
+        scroll_wins.add_with_viewport(self.tree_view)
+        self.tree_view.show()
+
+        cell = gtk.CellRendererText()
+        column = gtk.TreeViewColumn("Active Cubes",cell,text=0)
+        self.tree_view.append_column(column)
+
+        table.attach(scroll_wins,0,5,0,1,gtk.FILL|gtk.EXPAND,gtk.FILL|gtk.EXPAND,1,1)
         
         hBox = gtk.HBox(False,0)
         
-        btn1 = gtk.Button("Test1")
+        btn1 = gtk.Button("Scan")
         hBox.pack_start(btn1,False,False,0)
         
-        btn2 = gtk.Button("Test2")
+        btn2 = gtk.Button("Upload")
         hBox.pack_start(btn2,False,False,0)
 
         btn3 = gtk.Button("Test3")
         hBox.pack_start(btn3,False,False,0)
+
 
         helpBtn = gtk.Button("Help")
         helpBtn.set_size_request(70,30)
@@ -45,7 +64,7 @@ class PyApp(gtk.Window):
         quit.connect("released",gtk.main_quit)
         hBox.pack_start(quit,False,False,0) 
 
-        table.attach(hBox,0,1,0,5,gtk.FILL,gtk.FILL,1,1)
+        table.attach(hBox,0,5,1,2,gtk.FILL,gtk.FILL,1,1)
 
         hBox = gtk.HBox(False,0)
         table.attach(hBox,1,2,0,5,gtk.FILL,gtk.FILL,1,1)
