@@ -6,6 +6,7 @@
 # Oct 22, 2012
 #
 # This is a test gui 
+# This GUI current allows for serial communication
 import pygtk
 pygtk.require('2.0')
 import gtk
