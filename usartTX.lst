@@ -1,0 +1,287 @@
+
+usartTX.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         00000104  00000000  00000000  00000074  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .data         00000010  00800060  00000104  00000178  2**0
+                  CONTENTS, ALLOC, LOAD, DATA
+  2 .stab         00000c3c  00000000  00000000  00000188  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  3 .stabstr      0000080e  00000000  00000000  00000dc4  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	2a c0       	rjmp	.+84     	; 0x58 <__bad_interrupt>
+   4:	29 c0       	rjmp	.+82     	; 0x58 <__bad_interrupt>
+   6:	28 c0       	rjmp	.+80     	; 0x58 <__bad_interrupt>
+   8:	27 c0       	rjmp	.+78     	; 0x58 <__bad_interrupt>
+   a:	26 c0       	rjmp	.+76     	; 0x58 <__bad_interrupt>
+   c:	25 c0       	rjmp	.+74     	; 0x58 <__bad_interrupt>
+   e:	24 c0       	rjmp	.+72     	; 0x58 <__bad_interrupt>
+  10:	23 c0       	rjmp	.+70     	; 0x58 <__bad_interrupt>
+  12:	22 c0       	rjmp	.+68     	; 0x58 <__bad_interrupt>
+  14:	21 c0       	rjmp	.+66     	; 0x58 <__bad_interrupt>
+  16:	20 c0       	rjmp	.+64     	; 0x58 <__bad_interrupt>
+  18:	1f c0       	rjmp	.+62     	; 0x58 <__bad_interrupt>
+  1a:	1e c0       	rjmp	.+60     	; 0x58 <__bad_interrupt>
+  1c:	1d c0       	rjmp	.+58     	; 0x58 <__bad_interrupt>
+  1e:	1c c0       	rjmp	.+56     	; 0x58 <__bad_interrupt>
+  20:	1b c0       	rjmp	.+54     	; 0x58 <__bad_interrupt>
+  22:	1a c0       	rjmp	.+52     	; 0x58 <__bad_interrupt>
+  24:	19 c0       	rjmp	.+50     	; 0x58 <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf ed       	ldi	r28, 0xDF	; 223
+  2c:	cd bf       	out	0x3d, r28	; 61
+
+0000002e <__do_copy_data>:
+  2e:	10 e0       	ldi	r17, 0x00	; 0
+  30:	a0 e6       	ldi	r26, 0x60	; 96
+  32:	b0 e0       	ldi	r27, 0x00	; 0
+  34:	e4 e0       	ldi	r30, 0x04	; 4
+  36:	f1 e0       	ldi	r31, 0x01	; 1
+  38:	02 c0       	rjmp	.+4      	; 0x3e <.do_copy_data_start>
+
+0000003a <.do_copy_data_loop>:
+  3a:	05 90       	lpm	r0, Z+
+  3c:	0d 92       	st	X+, r0
+
+0000003e <.do_copy_data_start>:
+  3e:	a0 37       	cpi	r26, 0x70	; 112
+  40:	b1 07       	cpc	r27, r17
+  42:	d9 f7       	brne	.-10     	; 0x3a <.do_copy_data_loop>
+
+00000044 <__do_clear_bss>:
+  44:	10 e0       	ldi	r17, 0x00	; 0
+  46:	a0 e7       	ldi	r26, 0x70	; 112
+  48:	b0 e0       	ldi	r27, 0x00	; 0
+  4a:	01 c0       	rjmp	.+2      	; 0x4e <.do_clear_bss_start>
+
+0000004c <.do_clear_bss_loop>:
+  4c:	1d 92       	st	X+, r1
+
+0000004e <.do_clear_bss_start>:
+  4e:	a0 37       	cpi	r26, 0x70	; 112
+  50:	b1 07       	cpc	r27, r17
+  52:	e1 f7       	brne	.-8      	; 0x4c <.do_clear_bss_loop>
+  54:	1d d0       	rcall	.+58     	; 0x90 <main>
+  56:	54 c0       	rjmp	.+168    	; 0x100 <_exit>
+
+00000058 <__bad_interrupt>:
+  58:	d3 cf       	rjmp	.-90     	; 0x0 <__vectors>
+
+0000005a <USART_Init>:
+#include <util/delay.h>
+
+void USART_Init( unsigned int baud )
+{
+	/* Set baud rate */
+	UBRRH = (unsigned char)(baud>>8);
+  5a:	92 b9       	out	0x02, r25	; 2
+	UBRRL = (unsigned char)baud;
+  5c:	89 b9       	out	0x09, r24	; 9
+	/* Enable receiver and transmitter */
+	UCSRB = (1<<RXEN)|(1<<TXEN);
+  5e:	88 e1       	ldi	r24, 0x18	; 24
+  60:	8a b9       	out	0x0a, r24	; 10
+	/* Set frame format: 8data, 2stop bit */
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+  62:	8e e0       	ldi	r24, 0x0E	; 14
+  64:	83 b9       	out	0x03, r24	; 3
+}
+  66:	08 95       	ret
+
+00000068 <USART_Transmit>:
+
+void USART_Transmit( unsigned char data )
+{
+	/* Wait for empty transmit buffer */
+	while ( !( UCSRA & (1<<UDRE)) );
+  68:	5d 9b       	sbis	0x0b, 5	; 11
+  6a:	fe cf       	rjmp	.-4      	; 0x68 <USART_Transmit>
+	/* Put data into buffer, sends the data */
+	UDR = data;
+  6c:	8c b9       	out	0x0c, r24	; 12
+}
+  6e:	08 95       	ret
+
+00000070 <USART_Receive>:
+
+unsigned char USART_Receive( void )
+{
+	/* Wait for data to be received */
+	while ( !(UCSRA & (1<<RXC)) );
+  70:	5f 9b       	sbis	0x0b, 7	; 11
+  72:	fe cf       	rjmp	.-4      	; 0x70 <USART_Receive>
+	/* Get and return received data from buffer */
+	return UDR;
+  74:	8c b1       	in	r24, 0x0c	; 12
+}
+  76:	08 95       	ret
+
+00000078 <transmit_string>:
+
+transmit_string(char *ptr)
+{
+  78:	fc 01       	movw	r30, r24
+	while(*ptr)
+  7a:	80 81       	ld	r24, Z
+  7c:	88 23       	and	r24, r24
+  7e:	39 f0       	breq	.+14     	; 0x8e <transmit_string+0x16>
+}
+
+void USART_Transmit( unsigned char data )
+{
+	/* Wait for empty transmit buffer */
+	while ( !( UCSRA & (1<<UDRE)) );
+  80:	5d 9b       	sbis	0x0b, 5	; 11
+  82:	fe cf       	rjmp	.-4      	; 0x80 <transmit_string+0x8>
+	/* Put data into buffer, sends the data */
+	UDR = data;
+  84:	8c b9       	out	0x0c, r24	; 12
+transmit_string(char *ptr)
+{
+	while(*ptr)
+	{
+		USART_Transmit(*ptr);
+		ptr++;
+  86:	31 96       	adiw	r30, 0x01	; 1
+	return UDR;
+}
+
+transmit_string(char *ptr)
+{
+	while(*ptr)
+  88:	80 81       	ld	r24, Z
+  8a:	88 23       	and	r24, r24
+  8c:	c9 f7       	brne	.-14     	; 0x80 <transmit_string+0x8>
+	{
+		USART_Transmit(*ptr);
+		ptr++;
+	}
+}
+  8e:	08 95       	ret
+
+00000090 <main>:
+
+int main (void)
+{
+  90:	df 93       	push	r29
+  92:	cf 93       	push	r28
+  94:	cd b7       	in	r28, 0x3d	; 61
+  96:	de b7       	in	r29, 0x3e	; 62
+  98:	60 97       	sbiw	r28, 0x10	; 16
+  9a:	0f b6       	in	r0, 0x3f	; 63
+  9c:	f8 94       	cli
+  9e:	de bf       	out	0x3e, r29	; 62
+  a0:	0f be       	out	0x3f, r0	; 63
+  a2:	cd bf       	out	0x3d, r28	; 61
+#include <util/delay.h>
+
+void USART_Init( unsigned int baud )
+{
+	/* Set baud rate */
+	UBRRH = (unsigned char)(baud>>8);
+  a4:	12 b8       	out	0x02, r1	; 2
+	UBRRL = (unsigned char)baud;
+  a6:	83 e3       	ldi	r24, 0x33	; 51
+  a8:	89 b9       	out	0x09, r24	; 9
+	/* Enable receiver and transmitter */
+	UCSRB = (1<<RXEN)|(1<<TXEN);
+  aa:	88 e1       	ldi	r24, 0x18	; 24
+  ac:	8a b9       	out	0x0a, r24	; 10
+	/* Set frame format: 8data, 2stop bit */
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+  ae:	8e e0       	ldi	r24, 0x0E	; 14
+  b0:	83 b9       	out	0x03, r24	; 3
+}
+
+int main (void)
+{
+	USART_Init(MY_UBBR);
+	DDRB |= (1<<PB1); // Test passed LED
+  b2:	b9 9a       	sbi	0x17, 1	; 23
+	DDRB |= (1<<PB0); // Test failed LED
+  b4:	b8 9a       	sbi	0x17, 0	; 23
+	
+	char buffer [16] = {'h','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
+  b6:	9e 01       	movw	r18, r28
+  b8:	2f 5f       	subi	r18, 0xFF	; 255
+  ba:	3f 4f       	sbci	r19, 0xFF	; 255
+  bc:	d9 01       	movw	r26, r18
+  be:	e0 e6       	ldi	r30, 0x60	; 96
+  c0:	f0 e0       	ldi	r31, 0x00	; 0
+  c2:	80 e1       	ldi	r24, 0x10	; 16
+  c4:	01 90       	ld	r0, Z+
+  c6:	0d 92       	st	X+, r0
+  c8:	81 50       	subi	r24, 0x01	; 1
+  ca:	e1 f7       	brne	.-8      	; 0xc4 <main+0x34>
+	uint8_t buffersize = 16;
+	
+	// Activate interrupts
+	sei();
+  cc:	78 94       	sei
+  ce:	90 e0       	ldi	r25, 0x00	; 0
+	
+	uint8_t i = 0;
+	
+	while(1)
+	{
+		USART_Transmit(buffer[i]);
+  d0:	f9 01       	movw	r30, r18
+  d2:	e9 0f       	add	r30, r25
+  d4:	f1 1d       	adc	r31, r1
+  d6:	e0 81       	ld	r30, Z
+}
+
+void USART_Transmit( unsigned char data )
+{
+	/* Wait for empty transmit buffer */
+	while ( !( UCSRA & (1<<UDRE)) );
+  d8:	5d 9b       	sbis	0x0b, 5	; 11
+  da:	fe cf       	rjmp	.-4      	; 0xd8 <main+0x48>
+	/* Put data into buffer, sends the data */
+	UDR = data;
+  dc:	ec b9       	out	0x0c, r30	; 12
+	
+	while(1)
+	{
+		USART_Transmit(buffer[i]);
+		i++;
+		i = i%15;
+  de:	89 2f       	mov	r24, r25
+  e0:	8f 5f       	subi	r24, 0xFF	; 255
+  e2:	6f e0       	ldi	r22, 0x0F	; 15
+  e4:	01 d0       	rcall	.+2      	; 0xe8 <__udivmodqi4>
+  e6:	f4 cf       	rjmp	.-24     	; 0xd0 <main+0x40>
+
+000000e8 <__udivmodqi4>:
+  e8:	99 1b       	sub	r25, r25
+  ea:	79 e0       	ldi	r23, 0x09	; 9
+  ec:	04 c0       	rjmp	.+8      	; 0xf6 <__udivmodqi4_ep>
+
+000000ee <__udivmodqi4_loop>:
+  ee:	99 1f       	adc	r25, r25
+  f0:	96 17       	cp	r25, r22
+  f2:	08 f0       	brcs	.+2      	; 0xf6 <__udivmodqi4_ep>
+  f4:	96 1b       	sub	r25, r22
+
+000000f6 <__udivmodqi4_ep>:
+  f6:	88 1f       	adc	r24, r24
+  f8:	7a 95       	dec	r23
+  fa:	c9 f7       	brne	.-14     	; 0xee <__udivmodqi4_loop>
+  fc:	80 95       	com	r24
+  fe:	08 95       	ret
+
+00000100 <_exit>:
+ 100:	f8 94       	cli
+
+00000102 <__stop_program>:
+ 102:	ff cf       	rjmp	.-2      	; 0x102 <__stop_program>
