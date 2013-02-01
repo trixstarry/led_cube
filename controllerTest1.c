@@ -88,7 +88,7 @@ int main()
 	
 	while( 1 == 1 )
 	{
-		if( 0 == (counter2 % 2) ){
+/*		if( 0 == (counter2 % 2) ){
 			cData = 'a';
 		}
 		else{
@@ -113,8 +113,8 @@ int main()
 			counter1++;
 		}
 		counter2++;
-
-//		SPI_MasterTransmit('a');
+*/
+		SPI_MasterTransmit('a');
 	}
 
 }
