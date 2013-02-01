@@ -104,10 +104,16 @@ class PyApp(gtk.Window):
 
     def initialize(self):
         data = 1
-        #self.comm = communication.Communication()
+        self.comm = communication.Communication()
 
     def Send(self,widget):
-        comm.transmit(self.get_text()) 
+        data = self.inputEntry.get_text()
+        self.comm.Transmit(data) 
+        print self.inputEntry.get_text()
+        print self.Receive()
+
+    def Receive(self):
+        data = self.comm.Receive()
 
     def helpMe(self,widget):
         about = gtk.AboutDialog()
