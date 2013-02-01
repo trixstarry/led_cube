@@ -1,6 +1,6 @@
 import serial
 
-s = serial.Serial('/dev/ttyUSB1')
+s = serial.Serial('/dev/ttyUSB0')
 while True:
 	s.read()
 
