@@ -39,3 +39,5 @@ Feel free to contact the members below using the corresponding e-mail links
 	Team Name: "The Tesseract Terrors"
 	Motto: TEARIN' IT UP!
 	Another thanks to our sponsor, Oregon State University, as well as our mentor, Donald Heer.
+
+>>>>>>> 5734baf1e57ca8605b6dd6c1f8c2547cd9766490
