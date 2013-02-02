@@ -80,13 +80,13 @@ void transmit(uint32_t data){
 	//temp = 0x0F & display_count;
 	while(bit_is_clear(SPSR,SPIF)){};
 
-	temp = (data>>8);
+	temp = (data);
 	//load third byte
 	SPDR = temp;
 	//temp = 0x0F & display_count;
 	while(bit_is_clear(SPSR,SPIF)){};
 
-	temp = (data);
+	temp = (data>>8);
 	//load fourth byte
 	SPDR = temp;
 	//temp = 0x0F & display_count;
@@ -157,10 +157,10 @@ ISR(TIMER0_OVF_vect){
 	static uint32_t display_count = 0x00000001; //holds count for display 
 	uint8_t temp = 0;
 	count_7ms++;                //increment count every 7.8125 ms 
-	if ((count_7ms % 16)==0){ //?? interrupts equals one half second 
+	if ((count_7ms % 1)==0){ //?? interrupts equals one half second 
 	//	if((temp % 64) == 0){
-			//transmit(display_count);
-			transmit(0xFFFFFFFF);
+			transmit(display_count);
+			//transmit(0xFFFFFFFF);
 			display_count++;
 			//display_count = (display_count << 1); //shift display bit for next time 
 			temp++;

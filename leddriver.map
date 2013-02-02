@@ -117,7 +117,7 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr51/libgcc.a
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x1f6
+.text           0x00000000      0x204
  *(.vectors)
  .vectors       0x00000000       0x8c /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr51/crtm128.o
                 0x00000000                __vectors
@@ -207,26 +207,26 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr51/libgcc.a
                 0x000000ca                __vector_10
                 0x000000ca                __vector_18
                 0x000000ca                __vector_20
- .text          0x000000ce      0x124 leddriver.o
+ .text          0x000000ce      0x132 leddriver.o
                 0x000000ce                spi_init
                 0x000000dc                tcnt0_init
                 0x000000f0                transmit
                 0x0000011a                test_run
                 0x00000140                __vector_16
-                0x000001ca                main
- .text          0x000001f2        0x0 /usr/lib/gcc/avr/4.5.3/avr51/libgcc.a(_exit.o)
- .text          0x000001f2        0x0 /usr/lib/gcc/avr/4.5.3/avr51/libgcc.a(_copy_data.o)
- .text          0x000001f2        0x0 /usr/lib/gcc/avr/4.5.3/avr51/libgcc.a(_clear_bss.o)
-                0x000001f2                . = ALIGN (0x2)
+                0x000001d8                main
+ .text          0x00000200        0x0 /usr/lib/gcc/avr/4.5.3/avr51/libgcc.a(_exit.o)
+ .text          0x00000200        0x0 /usr/lib/gcc/avr/4.5.3/avr51/libgcc.a(_copy_data.o)
+ .text          0x00000200        0x0 /usr/lib/gcc/avr/4.5.3/avr51/libgcc.a(_clear_bss.o)
+                0x00000200                . = ALIGN (0x2)
  *(.text.*)
- .text.libgcc   0x000001f2        0x0 /usr/lib/gcc/avr/4.5.3/avr51/libgcc.a(_exit.o)
- .text.libgcc   0x000001f2        0x0 /usr/lib/gcc/avr/4.5.3/avr51/libgcc.a(_copy_data.o)
- .text.libgcc   0x000001f2        0x0 /usr/lib/gcc/avr/4.5.3/avr51/libgcc.a(_clear_bss.o)
-                0x000001f2                . = ALIGN (0x2)
+ .text.libgcc   0x00000200        0x0 /usr/lib/gcc/avr/4.5.3/avr51/libgcc.a(_exit.o)
+ .text.libgcc   0x00000200        0x0 /usr/lib/gcc/avr/4.5.3/avr51/libgcc.a(_copy_data.o)
+ .text.libgcc   0x00000200        0x0 /usr/lib/gcc/avr/4.5.3/avr51/libgcc.a(_clear_bss.o)
+                0x00000200                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x000001f2        0x0 /usr/lib/gcc/avr/4.5.3/avr51/libgcc.a(_exit.o)
-                0x000001f2                exit
-                0x000001f2                _exit
+ .fini9         0x00000200        0x0 /usr/lib/gcc/avr/4.5.3/avr51/libgcc.a(_exit.o)
+                0x00000200                exit
+                0x00000200                _exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -245,11 +245,11 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr51/libgcc.a
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x000001f2        0x4 /usr/lib/gcc/avr/4.5.3/avr51/libgcc.a(_exit.o)
+ .fini0         0x00000200        0x4 /usr/lib/gcc/avr/4.5.3/avr51/libgcc.a(_exit.o)
  *(.fini0)
-                0x000001f6                _etext = .
+                0x00000204                _etext = .
 
-.data           0x00800100        0x4 load address 0x000001f6
+.data           0x00800100        0x4 load address 0x00000204
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800100        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr51/crtm128.o
@@ -276,8 +276,8 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr51/libgcc.a
  *(.bss*)
  *(COMMON)
                 0x00800105                PROVIDE (__bss_end, .)
-                0x000001f6                __data_load_start = LOADADDR (.data)
-                0x000001fa                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00000204                __data_load_start = LOADADDR (.data)
+                0x00000208                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x00800105        0x0
                 0x00800105                PROVIDE (__noinit_start, .)
@@ -302,15 +302,15 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr51/libgcc.a
 .signature
  *(.signature*)
 
-.stab           0x00000000      0xd68
+.stab           0x00000000      0xd5c
  *(.stab)
  .stab          0x00000000      0x6cc /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr51/crtm128.o
- .stab          0x000006cc      0x69c leddriver.o
-                                0x6a8 (size before relaxing)
+ .stab          0x000006cc      0x690 leddriver.o
+                                0x69c (size before relaxing)
 
-.stabstr        0x00000000      0x820
+.stabstr        0x00000000      0x817
  *(.stabstr)
- .stabstr       0x00000000      0x820 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr51/crtm128.o
+ .stabstr       0x00000000      0x817 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr51/crtm128.o
 
 .stab.excl
  *(.stab.excl)
