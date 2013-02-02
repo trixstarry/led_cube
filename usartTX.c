@@ -14,6 +14,7 @@
 #define F_CPU 8000000UL	// 1Mhz clock
 #define BAUD 9600
 #define MY_UBBR 51 // F_CPU/(16*BAUD)-1
+#define NULL 0
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -68,11 +69,44 @@ int main (void)
 	sei();
 	
 	uint8_t i = 0;
+	uint8_t l = 0;
+	char data [16] = {};
+	char temp = '0';
+	uint8_t k = 0;
 	
 	while(1)
 	{
-		USART_Transmit(buffer[i]);
-		i++;
-		i = i%15;
+		while(1)
+		{
+			temp = USART_Receive();
+			if(temp == '@')
+			{
+				data[l] = '/0';
+				l = 0;
+				break;
+			}
+			else
+			{
+				data[l] = temp;
+				l++;
+			}
+			_delay_ms(500);
+		}
+		for(k = 0; k < 16; k++)
+		{
+			if(data[k] == '/0')
+			{
+				break;
+			}
+			USART_Transmit(data[k]);
+		}
+		USART_Transmit('#');
+		//PORTB |= (1<<PB1);
+		//USART_Transmit(buffer[i]);
+		//i++;
+		//i = i%15;
+		//PORTB |= (0<<PB1);
+		//_delay_ms(500);
+		
 	}
 }

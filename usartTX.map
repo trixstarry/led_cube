@@ -1,7 +1,5 @@
 Archive member included because of file (symbol)
 
-/usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_udivmodqi4.o)
-                              usartTX.o (__udivmodqi4)
 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_exit.o)
                               /usr/lib/gcc/avr/4.3.4/../../../avr/lib/avr25/crttn2313.o (exit)
 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_copy_data.o)
@@ -118,7 +116,7 @@ LOAD /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a
 .rela.plt
  *(.rela.plt)
 
-.text           0x0000000000000000      0x104
+.text           0x0000000000000000      0x130
  *(.vectors)
  .vectors       0x0000000000000000       0x26 /usr/lib/gcc/avr/4.3.4/../../../avr/lib/avr25/crttn2313.o
                 0x0000000000000000                __vectors
@@ -193,28 +191,25 @@ LOAD /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a
                 0x0000000000000058                __vector_10
                 0x0000000000000058                __vector_16
                 0x0000000000000058                __vector_18
- .text          0x000000000000005a       0x8e usartTX.o
+ .text          0x000000000000005a       0xd2 usartTX.o
                 0x000000000000005a                USART_Init
                 0x0000000000000068                USART_Transmit
                 0x0000000000000070                USART_Receive
                 0x0000000000000078                transmit_string
                 0x0000000000000090                main
- .text          0x00000000000000e8        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_udivmodqi4.o)
- .text          0x00000000000000e8        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_exit.o)
- .text          0x00000000000000e8        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_copy_data.o)
- .text          0x00000000000000e8        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_clear_bss.o)
-                0x00000000000000e8                . = ALIGN (0x2)
+ .text          0x000000000000012c        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_exit.o)
+ .text          0x000000000000012c        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_copy_data.o)
+ .text          0x000000000000012c        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_clear_bss.o)
+                0x000000000000012c                . = ALIGN (0x2)
  *(.text.*)
- .text.libgcc   0x00000000000000e8       0x18 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_udivmodqi4.o)
-                0x00000000000000e8                __udivmodqi4
- .text.libgcc   0x0000000000000100        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_exit.o)
- .text.libgcc   0x0000000000000100        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_copy_data.o)
- .text.libgcc   0x0000000000000100        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_clear_bss.o)
-                0x0000000000000100                . = ALIGN (0x2)
+ .text.libgcc   0x000000000000012c        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_exit.o)
+ .text.libgcc   0x000000000000012c        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_copy_data.o)
+ .text.libgcc   0x000000000000012c        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_clear_bss.o)
+                0x000000000000012c                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x0000000000000100        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_exit.o)
-                0x0000000000000100                exit
-                0x0000000000000100                _exit
+ .fini9         0x000000000000012c        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_exit.o)
+                0x000000000000012c                exit
+                0x000000000000012c                _exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -233,48 +228,46 @@ LOAD /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x0000000000000100        0x4 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_exit.o)
+ .fini0         0x000000000000012c        0x4 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_exit.o)
  *(.fini0)
-                0x0000000000000104                _etext = .
+                0x0000000000000130                _etext = .
 
-.data           0x0000000000800060       0x10 load address 0x0000000000000104
+.data           0x0000000000800060        0x0 load address 0x0000000000000130
                 0x0000000000800060                PROVIDE (__data_start, .)
  *(.data)
  .data          0x0000000000800060        0x0 /usr/lib/gcc/avr/4.3.4/../../../avr/lib/avr25/crttn2313.o
- .data          0x0000000000800060       0x10 usartTX.o
- .data          0x0000000000800070        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_udivmodqi4.o)
- .data          0x0000000000800070        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_exit.o)
- .data          0x0000000000800070        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_copy_data.o)
- .data          0x0000000000800070        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_clear_bss.o)
+ .data          0x0000000000800060        0x0 usartTX.o
+ .data          0x0000000000800060        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_exit.o)
+ .data          0x0000000000800060        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_copy_data.o)
+ .data          0x0000000000800060        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_clear_bss.o)
  *(.data*)
  *(.rodata)
  *(.rodata*)
  *(.gnu.linkonce.d*)
-                0x0000000000800070                . = ALIGN (0x2)
-                0x0000000000800070                _edata = .
-                0x0000000000800070                PROVIDE (__data_end, .)
+                0x0000000000800060                . = ALIGN (0x2)
+                0x0000000000800060                _edata = .
+                0x0000000000800060                PROVIDE (__data_end, .)
 
-.bss            0x0000000000800070        0x0
-                0x0000000000800070                PROVIDE (__bss_start, .)
+.bss            0x0000000000800060        0x0
+                0x0000000000800060                PROVIDE (__bss_start, .)
  *(.bss)
- .bss           0x0000000000800070        0x0 /usr/lib/gcc/avr/4.3.4/../../../avr/lib/avr25/crttn2313.o
- .bss           0x0000000000800070        0x0 usartTX.o
- .bss           0x0000000000800070        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_udivmodqi4.o)
- .bss           0x0000000000800070        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_exit.o)
- .bss           0x0000000000800070        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_copy_data.o)
- .bss           0x0000000000800070        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_clear_bss.o)
+ .bss           0x0000000000800060        0x0 /usr/lib/gcc/avr/4.3.4/../../../avr/lib/avr25/crttn2313.o
+ .bss           0x0000000000800060        0x0 usartTX.o
+ .bss           0x0000000000800060        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_exit.o)
+ .bss           0x0000000000800060        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_copy_data.o)
+ .bss           0x0000000000800060        0x0 /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a(_clear_bss.o)
  *(.bss*)
  *(COMMON)
-                0x0000000000800070                PROVIDE (__bss_end, .)
-                0x0000000000000104                __data_load_start = LOADADDR (.data)
-                0x0000000000000114                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x0000000000800060                PROVIDE (__bss_end, .)
+                0x0000000000000130                __data_load_start = LOADADDR (.data)
+                0x0000000000000130                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x0000000000800070        0x0
-                0x0000000000800070                PROVIDE (__noinit_start, .)
+.noinit         0x0000000000800060        0x0
+                0x0000000000800060                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x0000000000800070                PROVIDE (__noinit_end, .)
-                0x0000000000800070                _end = .
-                0x0000000000800070                PROVIDE (__heap_start, .)
+                0x0000000000800060                PROVIDE (__noinit_end, .)
+                0x0000000000800060                _end = .
+                0x0000000000800060                PROVIDE (__heap_start, .)
 
 .eeprom         0x0000000000810000        0x0
  *(.eeprom*)
@@ -292,15 +285,15 @@ LOAD /usr/lib/gcc/avr/4.3.4/avr25/libgcc.a
 .signature
  *(.signature*)
 
-.stab           0x0000000000000000      0xc3c
+.stab           0x0000000000000000      0xdc8
  *(.stab)
  .stab          0x0000000000000000      0x69c /usr/lib/gcc/avr/4.3.4/../../../avr/lib/avr25/crttn2313.o
- .stab          0x000000000000069c      0x5a0 usartTX.o
-                                        0x5ac (size before relaxing)
+ .stab          0x000000000000069c      0x72c usartTX.o
+                                        0x738 (size before relaxing)
 
-.stabstr        0x0000000000000000      0x80e
+.stabstr        0x0000000000000000      0x8ae
  *(.stabstr)
- .stabstr       0x0000000000000000      0x80e /usr/lib/gcc/avr/4.3.4/../../../avr/lib/avr25/crttn2313.o
+ .stabstr       0x0000000000000000      0x8ae /usr/lib/gcc/avr/4.3.4/../../../avr/lib/avr25/crttn2313.o
 
 .stab.excl
  *(.stab.excl)
