@@ -18,14 +18,18 @@
 // TO         - 4 bits
 // FROM       - 4 bits  - 1 bytes
 // SUBJECT    - 3 bits
-// LENGTH     - 4 bits  - 1 bytes        Possible stuffing
-// Frame #    - 9 bits  - 1 byte         Possible Stuffing
+// Frame #    - 10 bits  - 1 byte         Possible Stuffing
 // Packet #   - 3 bits  - 
-// DATA       - 69 bits - 9 bytes       Possible to get up to twice the bytes here with stuffing
+// DATA       - 64 bits - 8 bytes       Possible to get up to twice the bytes here with stuffing
 // CHECKSUM   - 16 bits -  2 bytes       Possible to get up to 4 bytes
 // END BYTE   - 8 bits  - 1 byte
 //
 // This is the uC's communication file
+//
+//packet[i] = (START_BYTE<<START_SHIFT)|(TO<<TO_SHIFT)|(ID_SELF<<FROM_SHIFT)|(subject<<SUBJ_SHIFT)
+//            |(LENGTH<<LEN_SHIFT)|(frame<<FRAME_SHIFT)|(i<<PACKET_SHIFT)|(data[i]<<DATA_SHIFT)|
+//            (checksum<<CHECK_SHIFT)|(END_BYTE);
+
 
 // NOTE: Protocol and ID defines are randomly generated.
 // PROTOCOLS:
@@ -34,7 +38,19 @@
 #define DATA            0x03
 #define ACK             0x04
 #define NACK            0x05
+#define NEXT_FRAME      0x06
 #define STUFF_BYTE      0x02
+
+// SHIFTING DEFINES
+#define START_SHIFT     0x18
+#define TO_SHIFT        0x14
+#define FROM_SHIFT      0x10
+#define SUBJ_SHIFT      0x0D
+#define LEN_SHIFT       0x09
+#define FRAME_SHIFT     0x0
+#define PACKET_SHIFT
+#define DATA_SHIFT
+#define CHECK_SHIFT
 
 //IDs:
 #define ID_SELF         0x03 
@@ -58,8 +74,69 @@ uint8_t parse_packet(uint32_t packet){
     // return everything
 }
 
-int8_t create_packet(uint8_t to, uint8_t subject, uint16_t frame,uint64_t *data, uint32_t *output){
-    //for data in len of data
+// PACKET:
+// START BYTE - 8 bits  - 1 byte
+// TO         - 4 bits
+// FROM       - 4 bits  - 1 bytes
+// SUBJECT    - 3 bits
+// Frame #    - 10 bits  - 1 byte         Possible Stuffing
+// Packet #   - 3 bits  - 
+// DATA       - 80 bits - 10 bytes       Possible to get up to twice the bytes here with stuffing
+// CHECKSUM   - 16 bits -  2 bytes       Possible to get up to 4 bytes
+// END BYTE   - 8 bits  - 1 byte
+int8_t create_packets(uint8_t to, uint8_t subject, uint16_t frame,uint16_t *data, uint8_t data_len, uint64_t **packets){
+    uint8_t i = 0;
+    uint8_t j = 0;
+    uint8_t k = 0;
+    uint8_t data_byte_len = 0;
+    uint8_t data_byte[32] = {}; //MAX data input is 32 bytes
+    uint64_t data_chunk[4] = {};// max is 4 chunks based on above
+
+    //Convert Data into bytes
+    while(i < data_len){
+        data_byte[k] = (data[i]>>(j*8))
+        j++;
+        k++;
+        if((j%2)==0){
+            i++;
+            j = 0;
+        }
+    }
+
+    //Store length of byte data
+    data_byte_len = k+1;
+
+    i = j = k = 0;
+
+    //place data into 10 byte chunks (for our cube this the max should be 2 chunks)
+    while(i < data_byte_len){
+        data_chunk[k] = (data[i]<<(j*8))
+        j++;
+        k++;
+        if((j%5)==0){
+            i++;
+            j = 0;
+        }
+    
+    }
+
+    //Create Packets
+    while(i <= k){
+        packet[j][i] = START_BYTE;
+        packet[j][i] = to;
+        packet[j][i] = ID_SELF;
+        packet[j][i] = subject;
+        packet[j]
+        packet[j][i] = length;
+        packet[j][i] = checksum();
+                (ID_SELF<<FROM_SHIFT)|(subject<<SUBJ_SHIFT)
+
+            |(LENGTH<<LEN_SHIFT)|(frame<<FRAME_SHIFT)|(i<<PACKET_SHIFT)
+            (data_chunk[i]<<DATA_SHIFT)|
+            (checksum<<CHECK_SHIFT)|(END_BYTE);
+    }
+}
+
     //      break data into 9 byte increments
 
     //for data in list of data
@@ -69,26 +146,28 @@ int8_t create_packet(uint8_t to, uint8_t subject, uint16_t frame,uint64_t *data,
 
 }
 
-uint8_t calculate_checksum(uint8_t *data, uint8_t len){
+/*
+uint16_t calculate_checksum(uint8_t *data, uint8_t len){
     uint8_t ileft = len;
     uint8_t *i = data;
-    uint8_t checksum;
+    uint16_t checksum;
     uint16_t sum =0;
 
     while(ileft > 1){
-        sum += *i++;
+        sum ^= *i++;
         ileft -= 2;
     }
 
     return (checksum);
 
 }
+*/
 
-/*
-uint8_t calculate_checksum(uint8_t *data, uint8_t len){
+
+uint16_t calculate_checksum(uint8_t *data, uint8_t len){
     uint8_t ileft = len;
     uint8_t *i = data;
-    uint8_t checksum;
+    uint16_t checksum;
     uint16_t sum =0;
 
     while (ileft > 1)  {
@@ -101,10 +180,9 @@ uint8_t calculate_checksum(uint8_t *data, uint8_t len){
         sum ^= *(uint8_t *)i;
     }
 
-    checksum = ~sum;                    // truncate to 8 bits 
+    checksum = sum;                    // truncate to 8 bits 
     return (checksum);
 }
-*/
 
 uint8_t destuffer(uint8_t data){
     if(data == START_BYTE){
@@ -141,8 +219,11 @@ uint8_t stuffer(uint8_t data){
 
 //Transmit sends data to the specified location and returns 
 // the value of the cubes touching it
-uint8_t transmit(uint8_t id, uint8_t type, uint8_t data){
+uint8_t transmit(uint8_t id, uint8_t type, uint32_t *data)_{
+    uint8_t length = sizeof(data)/sizeof(data[0]);
+    uint32_t packets[5] = {0,0,0,0,0};
     // Break data into packets
+    create_packets(id, type, frame, data, length, packets)
 
     // load data into buffer of bytes
 
