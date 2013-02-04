@@ -12,8 +12,16 @@
 //************************************************************************//
 
 #define F_CPU 8000000UL	// 1Mhz clock
-#define BAUD 9600
-#define MY_UBBR 51 // F_CPU/(16*BAUD)-1
+#define BAUD 250000
+//#define MY_UBBR 1 // F_CPU/(16*BAUD)-1
+#define SET_U2X 0
+#define MY_UBBR 12 // BAUD = 38400
+//#define BAUD 9600
+//#define MY_UBBR 51 // F_CPU/(16*BAUD)-1
+
+//#define SET_U2X 1 // Set U2X in UCSRA (double speed USART)
+//#define MY_UBBR 12 // 76800
+
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -26,6 +34,10 @@ void USART_Init( unsigned int baud )
 	/* Set baud rate */
 	UBRRH = (unsigned char)(baud>>8);
 	UBRRL = (unsigned char)baud;
+	if (SET_U2X)
+	{
+		UCSRA |= (1<<U2X);
+	}
 	/* Enable receiver and transmitter */
 	UCSRB = (1<<RXEN)|(1<<TXEN);
 	/* Set frame format: 8data, 2stop bit */
@@ -63,7 +75,7 @@ int main (void)
 	DDRB |= (1<<PB1); // Test passed LED
 	DDRB |= (1<<PB0); // Test failed LED
 	
-	char buffer [16] = {'h','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
+	char buffer [16] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
 	uint8_t buffersize = 16;
 	// Initialize AVR for use with mirf
 	mirf_init();
@@ -82,21 +94,24 @@ int main (void)
 	//while (1)
 	//{
 		mirf_read_register (STATUS, buffer, 1);
-		if (buffer[0] == 0x0E)
+		/*if (buffer[0] == 0x0E)
 		{	
 			PORTB |= (1<<PB1); // Test passed LED on
 		}
 		else
 		{
 			PORTB |= (1<<PB0); // Test failed LED on
-		}
+		}*/
 		//_delay_ms (100);
 	//}
 	
 	// Configure mirf
 	mirf_config();
-	// Test communication
-	while (1)
+	// Test transmitting
+	buffer[0] = 'h';
+	
+	char testing_sender = 1;
+	while (testing_sender)
 	{
 		buffer[15]++;
 		if (buffer[15] < 'a' || buffer[15] > 'z')
@@ -105,20 +120,36 @@ int main (void)
 		}
 		
 		mirf_send(buffer,buffersize);
-		_delay_ms(200);
+		_delay_ms(5);
 	}
 	
+	char expected [16] = {'h','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
+	// Test receiving
 	while (1)
 	{
 		while (!mirf_data_ready());
 		mirf_get_data(buffer);
+		PORTB |= (1<<PB1);
 		char i;
-		transmit_string("data = ");
-		for(i = 0; i < 16; i++)
+		char matched = 1;
+		//transmit_string("data = ");
+		for(i = 0; i < 15; i++)
 		{
-			USART_Transmit(buffer[i]);
+			if (expected[i] != buffer[i])
+			{
+				matched = 0;
+			}
+			//USART_Transmit(buffer[i]);
 		}
-		transmit_string("\r\n");
+		USART_Transmit(buffer[15]);
+		if (matched)
+		{
+			transmit_string(" OK\r\n");
+		}
+		else
+		{
+			transmit_string(" BAD\r\n");
+		}
 	}
 
 	/*enable_spi(1); // Initialize SPI stuff

@@ -29,6 +29,7 @@
 #include "spi.h"
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <util/delay.h>
 
 // Defines for setting the MiRF registers for transmitting or receiving mode
 #define TX_POWERUP mirf_config_register(CONFIG, mirf_CONFIG | ( (1<<PWR_UP) | (0<<PRIM_RX) ) )
@@ -192,7 +193,6 @@ void mirf_send(uint8_t * value, uint8_t len)
     mirf_CSN_lo;                    // Pull down chip select
     spi_fast_shift( FLUSH_TX );     // Write cmd to flush tx fifo
     mirf_CSN_hi;                    // Pull up chip select
-    
     mirf_CSN_lo;                    // Pull down chip select
     spi_fast_shift( W_TX_PAYLOAD ); // Write cmd to write payload
     spi_transmit_sync(value,len);   // Write payload
