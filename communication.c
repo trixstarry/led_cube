@@ -74,114 +74,128 @@ uint8_t parse_packet(uint32_t packet){
     // return everything
 }
 
-// PACKET:
-// START BYTE - 8 bits  - 1 byte
-// TO         - 4 bits
-// FROM       - 4 bits  - 1 bytes
-// SUBJECT    - 3 bits
-// Frame #    - 10 bits  - 1 byte         Possible Stuffing
-// Packet #   - 3 bits  - 
-// DATA       - 80 bits - 10 bytes       Possible to get up to twice the bytes here with stuffing
-// CHECKSUM   - 16 bits -  2 bytes       Possible to get up to 4 bytes
-// END BYTE   - 8 bits  - 1 byte
-int8_t create_packets(uint8_t to, uint8_t subject, uint16_t frame,uint16_t *data, uint8_t data_len, uint64_t **packets){
+// *******************************************************************
+//                  create_packets
+//  This method creates a full packet (minus start and stop bytes)
+//  First it creates data "chunks" which consist of an array of 4 5 byte chunks
+//  Then it creates the packets. Since a 15 byte packet cannot be created, a 2D array
+//  of containing packets that are broken into 2 8 byte chunks.
+//  For example, Packet 1 contains two 8 byte chunks
+int8_t create_packets(uint8_t to, uint8_t subject, uint16_t frame,uint8_t *data, uint8_t data_len, uint64_t **packets){
     uint8_t i = 0;
     uint8_t j = 0;
     uint8_t k = 0;
-    uint8_t data_byte_len = 0;
-    uint8_t data_byte[32] = {}; //MAX data input is 32 bytes
     uint64_t data_chunk[4] = {};// max is 4 chunks based on above
 
+    /*
     //Convert Data into bytes
     while(i < data_len){
-        data_byte[k] = (data[i]>>(j*8))
-        j++;
-        k++;
-        if((j%2)==0){
-            i++;
-            j = 0;
-        }
+    data_byte[k] = (data[i]>>(j*8))
+    j++;
+    k++;
+    if((j%2)==0){
+    i++;
+    j = 0;
+    }
     }
 
     //Store length of byte data
     data_byte_len = k+1;
 
     i = j = k = 0;
+    */
 
-    //place data into 10 byte chunks (for our cube this the max should be 2 chunks)
-    while(i < data_byte_len){
+    //place data into 5 byte chunks (for our cube this the max should be 2 chunks)
+    j=5;
+    while(i < data_len){
         data_chunk[k] = (data[i]<<(j*8))
-        j++;
-        k++;
-        if((j%5)==0){
-            i++;
-            j = 0;
+            j--;
+        i++;
+        if(j==0){
+            k++;
+            j = 5;
         }
-    
+
     }
 
+    i = j = k = 0;
     //Create Packets
-    while(i <= k){
-        packet[j][i] = START_BYTE;
-        packet[j][i] = to;
-        packet[j][i] = ID_SELF;
-        packet[j][i] = subject;
-        packet[j]
-        packet[j][i] = length;
-        packet[j][i] = checksum();
-                (ID_SELF<<FROM_SHIFT)|(subject<<SUBJ_SHIFT)
-
-            |(LENGTH<<LEN_SHIFT)|(frame<<FRAME_SHIFT)|(i<<PACKET_SHIFT)
-            (data_chunk[i]<<DATA_SHIFT)|
-            (checksum<<CHECK_SHIFT)|(END_BYTE);
+    while(j <= 4){
+        /*
+           packet[j][0] = START_BYTE;
+           packet[j][1] = to;
+           packet[j][2] = ID_SELF;
+           packet[j][3] = subject;
+           packet[j][4] = data_chunk[j];
+           packet[j][5] = data_chunk[j+1];
+           packet[j][6] = length;
+           packet[j][7] = checksum();
+           j++;
+           */
+        packet[k][0] = (TO<<TO_SHIFT)|(ID_SELF<<FROM_SHIFT)|(subject<<SUBJ_SHIFT)
+            |(frame<<FRAME_SHIFT)|(k<<PACKET_SHIFT)|(data_chunk[j]<<DATA_SHIFT1);//add in 1 "chunk" of data
+        if((j+1)<=4){
+            packet[k][1] |= (data_chunk[j+1]<<DATA_SHIFT2);//add second "chunk" of data
+        }
+        checksum = checksum(packet[k][0],packet[k][1]) // calculate checksum
+            packet[k][1] = (START_BYTE<<START_SHIFT)|(CHECKSUM<<CHECK_SHIFT);
+        k++;
     }
 }
 
-    //      break data into 9 byte increments
-
-    //for data in list of data
-    //      output[i] = startbyte + all that stuff listted in the header
-
-    // return success otherwise return -1
-
-}
 
 /*
-uint16_t calculate_checksum(uint8_t *data, uint8_t len){
-    uint8_t ileft = len;
-    uint8_t *i = data;
-    uint16_t checksum;
-    uint16_t sum =0;
+   uint16_t calculate_checksum(uint8_t *data, uint8_t len){
+   uint8_t ileft = len;
+   uint8_t *i = data;
+   uint16_t checksum;
+   uint16_t sum =0;
 
-    while(ileft > 1){
-        sum ^= *i++;
-        ileft -= 2;
-    }
+   while(ileft > 1){
+   sum ^= *i++;
+   ileft -= 2;
+   }
 
-    return (checksum);
+   return (checksum);
+   }
 
-}
 */
 
-
-uint16_t calculate_checksum(uint8_t *data, uint8_t len){
-    uint8_t ileft = len;
-    uint8_t *i = data;
+// ****************************************************************
+//                  calculate_checksum
+//
+//  Calculates the checksum for a given packet.
+//  Checksum is calculated by breaking the backet into 16 bytes and
+//  XOR all of them together. Finally the answer is truncated to 16
+//  bits.
+//
+uint16_t calculate_checksum(uint64_t *data1, uint64_t *data2){
+    uint8_t data_byte[16] = {};
     uint16_t checksum;
-    uint16_t sum =0;
+    uint32_t sum =0;
 
-    while (ileft > 1)  {
-        sum ^= *i++;
-        ileft -= 2;
+    uint8_t k = 0;
+    uint8_t l = 7;
+    uint8_t m = 0;
+
+    //Convert Data into bytes
+    while(k < 16){
+        data_byte[k] = ((data[m]>>(l*8))&(0xFF))
+            l--;
+        k++;
+        if(l==0xFF){
+            m++;
+            l = 7;
+        }
     }
 
-    // mop up an odd byte, if necessary 
-    if (ileft == 1){
-        sum ^= *(uint8_t *)i;
+    while (k < 16)  {
+        sum ^= data_byte[k];
+        k++;
     }
 
-    checksum = sum;                    // truncate to 8 bits 
-    return (checksum);
+    checksum = sum;                    // truncate to 16 bits 
+    return checksum;
 }
 
 uint8_t destuffer(uint8_t data){
@@ -201,7 +215,7 @@ uint8_t destuffer(uint8_t data){
 
 
 /* step before transmitting usart
- */
+*/
 uint8_t stuffer(uint8_t data){
     if(data == START_BYTE){
         //do stuff
@@ -225,15 +239,15 @@ uint8_t transmit(uint8_t id, uint8_t type, uint32_t *data)_{
     // Break data into packets
     create_packets(id, type, frame, data, length, packets)
 
-    // load data into buffer of bytes
+        // load data into buffer of bytes
 
-    // while (there is a packet): 
-    //      send packet   - Stuff while sending packet
-    //      wait for ack
-    //      if ack        if nack
-    //      check ack     do nothing
-    //      store data
-    //      increment packet counter
+        // while (there is a packet): 
+        //      send packet   - Stuff while sending packet
+        //      wait for ack
+        //      if ack        if nack
+        //      check ack     do nothing
+        //      store data
+        //      increment packet counter
 
 }
 
