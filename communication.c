@@ -198,18 +198,39 @@ uint16_t calculate_checksum(uint64_t *data1, uint64_t *data2){
     return checksum;
 }
 
-uint8_t destuffer(uint8_t data){
-    if(data == START_BYTE){
-        //do stuff
-        //return stuff
-    }
-    if(data == STOP_BYTE){
-        //do stuff
-        //return stuff
-    }
-    if(data == STUFF_BYTE){
-        //do stuff 
-        //return stuff
+// ******************************************************
+//              destuffer
+//
+// Decodes received data back into its original packet 
+// form.
+// I.E. It removes all the stuffing for the start, stop 
+// and stuff bytes.
+//
+uint8_t destuffer(uint8_t *data, uint8_t *packet){
+    uint8_t i = 0;
+    uint8_t j = 0;
+    //check each byte for stuffing
+     while(i<32){
+         if(data[i] == STUFF_BYTE){
+             i++
+             if(data[i] == STUFF_START){
+                packet[j] = START_BYTE;
+                j++;
+             }
+             if(data[i] == STUFF_STOP){
+                packet[j] = STOP_BYTE;
+                j++;
+             }
+             if(data[i] == STUFF_STUFF){
+                packet[j] = STUFF_BYTE;
+                j++
+             }
+         }
+         else{
+            packet[j] = data[i];
+            j++
+         }
+         i++;
     }
 }
 
