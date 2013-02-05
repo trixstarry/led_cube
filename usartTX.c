@@ -1,14 +1,12 @@
 //************************************************************************\\
-// wifi.c
+// usartTX.c
 //
-// 	Author:	Thao-Trang "Valerie Hoang
-// 	Date:	1.16.13
+// 	Author:	Valerie Hoang and Alex Dziggel
+// 	Date:	1.26.13
 //
 // Description:
-// This program sends and receives data between two nrf24l01 chips.
+// This program tests out the Tiny 2313's USART with PySerial.
 //
-// Notable information:
-// Both the Reads on rising edge and changes on falling edge.
 //************************************************************************//
 
 #define F_CPU 8000000UL	// 1Mhz clock
@@ -101,6 +99,7 @@ int main (void)
 			USART_Transmit(data[k]);
 		}
 		USART_Transmit('#');
+
 		//PORTB |= (1<<PB1);
 		//USART_Transmit(buffer[i]);
 		//i++;
