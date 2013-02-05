@@ -216,30 +216,65 @@ uint8_t destuffer(uint8_t data){
 
 /* step before transmitting usart
 */
-uint8_t stuffer(uint8_t data){
-    if(data == START_BYTE){
-        //do stuff
-        //return stuff
+uint8_t stuffer(uint64_t **packets, uint64_t **stuffed_packets){
+    uint8_t length = sizeof(packets)/sizeof(packets[0]);
+    uint8_t data_byte[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    uint8_t k = 0;
+    uint8_t i = 0;
+    uint8_t j = 0;
+
+    //break packet into bytes
+     while(k < 32){
+        data_byte[k] = ((packets[i]>>(j*8))&(0xFF))
+            j--;
+        k++;
+        if(j==0xFF){
+            i++;
+            j = 7;
+        }
     }
-    if(data == STOP_BYTE){
-        //do stuff
-        //return stuff
-    }
-    if(data == STUFF_BYTE){
-        //do stuff 
-        //return stuff
+
+    //check each byte for stuffing
+     while(i<16){
+         if(data_byte[i] == START_BYTE){
+             stuffed_packet[j] = STUFF_BYTE;
+             j++;
+             stuffed_packet[j] = STUFF_START;
+         }
+         if(data_byte[i]== STOP_BYTE){
+             stuffed_packet[j] = STUFF_BYTE;
+             j++;
+             stuffed_packet[j] = STUFF_STOP;
+         }
+         if(data_byte[i] == STUFF_BYTE){
+             stuffed_packet[j] = STUFF_BYTE;
+             j++;
+             stuffed_packet[j] = STUFF_STUFF;
+         }
+         else{
+            stuffed_packet[j] = data_byte[i];
+            j++;
+         }
+         i++;
     }
 }
 
-//Transmit sends data to the specified location and returns 
-// the value of the cubes touching it
-uint8_t transmit(uint8_t id, uint8_t type, uint32_t *data)_{
+// ***********************************************************
+//                      transmit
+//
+//Transmit sends data to the specified location
+//
+// NOTE: MAX data can be is 32 bytes
+//
+uint8_t transmit(uint8_t id, uint8_t type, uint8_t *data)_{
     uint8_t length = sizeof(data)/sizeof(data[0]);
-    uint32_t packets[5] = {0,0,0,0,0};
-    // Break data into packets
-    create_packets(id, type, frame, data, length, packets)
+    if(length > MAX_DATA_BYTES){return -1;}
+    uint64_t packets[5][2] = {{0,0},{0,0},{0,0},{0,0},{0,0}};
+    uint64_t stuffed_packets[5][4] = {{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}}
 
-        // load data into buffer of bytes
+    // Break data into packets
+    // includes checksum but does not include START and END bytes
+    create_packets(id, type, frame, data, length, packets)
 
         // while (there is a packet): 
         //      send packet   - Stuff while sending packet
@@ -248,6 +283,11 @@ uint8_t transmit(uint8_t id, uint8_t type, uint32_t *data)_{
         //      check ack     do nothing
         //      store data
         //      increment packet counter
+    uint8_t i = 0;
+    while(i<packet_len){
+        
+    
+    }
 
 }
 
