@@ -18,40 +18,50 @@
 // TO         - 4 bits
 // FROM       - 4 bits  - 1 bytes
 // SUBJECT    - 3 bits
-// Frame #    - 10 bits  - 1 byte         Possible Stuffing
+// Frame #    - 10 bits  - 2 byte         Possible Stuffing
 // Packet #   - 3 bits  - 
-// DATA       - 64 bits - 8 bytes       Possible to get up to twice the bytes here with stuffing
+// DATA       - 80 bits - 10 bytes       Possible to get up to twice the bytes here with stuffing
 // CHECKSUM   - 16 bits -  2 bytes       Possible to get up to 4 bytes
 // END BYTE   - 8 bits  - 1 byte
 //
 // This is the uC's communication file
 //
-//packet[i] = (START_BYTE<<START_SHIFT)|(TO<<TO_SHIFT)|(ID_SELF<<FROM_SHIFT)|(subject<<SUBJ_SHIFT)
-//            |(LENGTH<<LEN_SHIFT)|(frame<<FRAME_SHIFT)|(i<<PACKET_SHIFT)|(data[i]<<DATA_SHIFT)|
-//            (checksum<<CHECK_SHIFT)|(END_BYTE);
+// TODO:
+//      1. Finish Receive function.
+//      2. Finish Transmit function.
+//      3. Fill out defines.
+//      4. Finish parse packet.
+//      5. TEST Code
+//
 
 
 // NOTE: Protocol and ID defines are randomly generated.
-// PROTOCOLS:
-#define START_BYTE      0x01
-#define END_BYTE        0xFF
+// Subjects:
 #define DATA            0x03
 #define ACK             0x04
 #define NACK            0x05
 #define NEXT_FRAME      0x06
+#define END_DATA        0x07
+
+// Control:
+#define START_BYTE      0x01
+#define END_BYTE        0xFF
 #define STUFF_BYTE      0x02
+#define STUFF_STUFF     0x03 //if stuff byte is found in data stuff it to 0x03
+#define STUFF_START     0x04 // same
+#define STUFF_STOP      0x05 // same
 
 // SHIFTING DEFINES
-#define START_SHIFT     0x18
-#define TO_SHIFT        0x14
-#define FROM_SHIFT      0x10
-#define SUBJ_SHIFT      0x0D
-#define LEN_SHIFT       0x09
-#define FRAME_SHIFT     0x0
-#define PACKET_SHIFT
-#define DATA_SHIFT
-#define CHECK_SHIFT
-
+#define TO_SHIFT        0x3C  //shift 60 bits
+#define FROM_SHIFT      0x38  //shift 56 bits
+#define SUBJ_SHIFT      0x35  //shift 53 bits
+#define FRAME_SHIFT     0x2B  //shift 43 bits
+#define PACKET_SHIFT    0x28  //shift 40 bits
+#define DATA_SHIFT1     0x00  //shift none -- end of packet part
+#define DATA_SHIFT2     0x18  //shift 24 bits
+#define CHECK_SHIFT     0x08  //shift 8  bits
+                            //NOTE: packet part contains an extra byte.
+                            //      Be sure to remove before transmission.
 //IDs:
 #define ID_SELF         0x03 
 #define ID_COMP         0x04
@@ -138,7 +148,7 @@ int8_t create_packets(uint8_t to, uint8_t subject, uint16_t frame,uint8_t *data,
             packet[k][1] |= (data_chunk[j+1]<<DATA_SHIFT2);//add second "chunk" of data
         }
         checksum = checksum(packet[k][0],packet[k][1]) // calculate checksum
-            packet[k][1] = (START_BYTE<<START_SHIFT)|(CHECKSUM<<CHECK_SHIFT);
+            packet[k][1] = (CHECKSUM<<CHECK_SHIFT);
         k++;
     }
 }
@@ -235,8 +245,12 @@ uint8_t destuffer(uint8_t *data, uint8_t *packet){
 }
 
 
-/* step before transmitting usart
-*/
+// ***************************************************************
+//                      stuffer
+//
+//  Encodes the packet into a transmittable form. Translates any
+//  Start, stop or stuff bytes into stuff bytes.
+//
 uint8_t stuffer(uint64_t **packets, uint64_t **stuffed_packets){
     uint8_t length = sizeof(packets)/sizeof(packets[0]);
     uint8_t data_byte[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
@@ -283,7 +297,10 @@ uint8_t stuffer(uint64_t **packets, uint64_t **stuffed_packets){
 // ***********************************************************
 //                      transmit
 //
-//Transmit sends data to the specified location
+// Transmit sends data to the specified location by first
+// creating packets of 15 bytes in length, then stuffing them
+// and finally transmitting them (also wrapping them in start
+// and stop bytes).
 //
 // NOTE: MAX data can be is 32 bytes
 //
@@ -317,6 +334,7 @@ uint8_t transmit(uint8_t id, uint8_t type, uint8_t *data)_{
 //
 uint8_t receive( void ){
     // parse packet
+    parse_packet(uint8_t from, uint8_t)
     // ACK
 
 
