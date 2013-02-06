@@ -18,8 +18,9 @@
 // TO         - 4 bits
 // FROM       - 4 bits  - 1 bytes
 // SUBJECT    - 3 bits
-// Frame #    - 10 bits  - 2 byte         Possible Stuffing
+// Frame #    - 9 bits  - 2 byte         Possible Stuffing
 // Packet #   - 3 bits  - 
+// Last Packet- 1 bit
 // DATA       - 80 bits - 10 bytes       Possible to get up to twice the bytes here with stuffing
 // CHECKSUM   - 16 bits -  2 bytes       Possible to get up to 4 bytes
 // END BYTE   - 8 bits  - 1 byte
@@ -28,8 +29,7 @@
 //
 // TODO:
 //      1. Finish Receive function.
-//      2. Finish Transmit function.
-//      3. Fill out defines.
+//      2. REDO shift defines
 //      4. Finish parse packet.
 //      5. TEST Code
 //
@@ -321,21 +321,39 @@ uint8_t transmit(uint8_t id, uint8_t type, uint8_t *data)_{
         //      check ack     do nothing
         //      store data
         //      increment packet counter
-    uint8_t i = 0;
-    while(i<packet_len){
-        
-    
-    }
 
+    //Stuff all packets
+    stuffer(packets[][],stuffed_packets[][]);
+
+    //send first packet. Rely on Receive() to send remaining packets and handle errors.
+    uint8_t i = 0;
+    while(i<16){
+       if(i<8){
+            TRANSMIT(stuffed_packet[0][i]);
+       } 
+       else{
+            TRANSMIT(stuffed_packet[0][i-8]);
+       }
+    }
 }
 
 
 //
 //
 uint8_t receive( void ){
+    //check transmit flag
     // parse packet
     parse_packet(uint8_t from, uint8_t)
-    // ACK
+    // if ACK
+    // respond with next packet
+    //      if end of packets
+    //      transmit last packet
+    // if NACK
+    // resend previous packet
+    // If DATA
+    // respond with ACK 
+    // If NEXT_FRAME
+    // increment frame counter
 
 
 }
