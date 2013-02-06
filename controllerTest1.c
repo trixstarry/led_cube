@@ -28,8 +28,7 @@
 //******************************************************************************
 void init()
 {
-	DDRB	= ~(1<<PB0);	// Outputs except PB0
-	PORTB	= (1<<PB3);		// initial value
+	DDRA    |= (1<<PA0);	// SET PA0 to input
 
 	// ZigBee send/receive (PA0), ZigBee SS_N (PA1), SCK (PA5), LED Driver Toggle (PA6)
 	//DDRA	= (1<<PA0) | (1<<PA1) | (1<<PA4) | (1<<PA5) | (1<<PA6);
@@ -88,7 +87,7 @@ int main()
 	
 	while( 1 == 1 )
 	{
-		if( 0 == (counter2 % 2) ){
+/*		if( 0 == (counter2 % 2) ){
 			cData = 'a';
 		}
 		else{
@@ -113,9 +112,9 @@ int main()
 			counter1++;
 		}
 		counter2++;
-
-//		SPI_MasterTransmit('a');
+*/
+		SPI_MasterTransmit('a');
 	}
 
 }
-//accidentally merged controller to led driver
+

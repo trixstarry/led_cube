@@ -1,16 +1,8 @@
-<<<<<<< HEAD
 PRG            = leddriver
 
 OBJ            = $(PRG).o
 
-MCU_TARGET     = atmega128
-=======
-PRG            = controllerTest1
-
-OBJ            = $(PRG).o
-
 MCU_TARGET     = attiny167
->>>>>>> 026e927b865723edf8fc84c903e124ce567ba0cf
 #OPTIMIZE       = -O0    # options are 1, 2, 3, s
 #OPTIMIZE       = -O1    # options are 1, 2, 3, s
 OPTIMIZE        = -O2    # options are 1, 2, 3, s
@@ -40,11 +32,7 @@ clean:
 
 program: $(PRG).hex
 #	avrdude -p m128 -c usbasp  -e -U flash:w:$(PRG).hex 
-<<<<<<< HEAD
-	avrdude -p m128 -c osuisp2 -e -U flash:w:$(PRG).hex 
-=======
 	avrdude -p t167 -c osuisp2 -e -U flash:w:$(PRG).hex 
->>>>>>> 026e927b865723edf8fc84c903e124ce567ba0cf
 
 lst:  $(PRG).lst
 

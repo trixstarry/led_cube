@@ -23,14 +23,31 @@
 // P17-24	LED16-9
 //
 
-#include <avr/io.h>
-#include <avr/interrupt.h>
-#include <util/delay.h>
-
+/*
 #define MISO PB3 // Master in, Slave out: configure as input (with pullup)
 #define MOSI PB2 // Master out, Slave in: configure as output
 #define SCK  PB1 // SPI clock: configure as output
 #define SS_N PB0 // Slave Select: Configure to output
+*/
+
+#define TRUE 1
+#define FALSE 0
+#define F_CPU 8000000		// 8 MHz cpu speed
+#define LEVELS 5			// the LED array has 5 levels
+#define PIN_NUM 5*5*3		// each level has 5x5 LEDs with 3 pins per LED
+#define HALL_NUM 4			// there are 4 hall effect sensors per cube
+//#define CUBE_ID 1			// an ID to identify this cube
+
+#include <avr/io.h>
+#include <util/delay.h>
+
+
+#define SS 8
+#define MOSI 6
+#define SCK 7
+//#include "controllerTest.h"
+
+
 
 /***********************************************************************/
 //                            spi_init                               
@@ -40,6 +57,7 @@
 //interrupts disabled, poll SPIF bit in SPSR to check xmit completion
 /***********************************************************************/
 void spi_init(void){
+    /*
 	DDRB  |=   (1<<SS_N)|(1<<MOSI)|(1<<SCK);          //Turn on SS, MOSI, SCLK, MISO
 	SPCR  |=   (1<<SPE)|(1<<MSTR);           //set up SPI mode
 	//Bit 7 = SPIE = SPI interrupt enable   
@@ -50,7 +68,15 @@ void spi_init(void){
 	//Bit 2 = CPHA = Clock phase
 	//Bits 1, 0 = SPR1, SPR0 =  
 	//SPSR  |=   (1<<SPI2X);           // double speed operation
+    */
+
+    //ATtiny167 SPI INIT
+	DDRA |= (1<<SS)|(1<<MOSI)|(1<<SCK);
+	SPCR |= (1<<SPE)|(1<<MSTR)|(1<<SPR0);
+	SPSR |= (1<<SPI2X);
+
 }//spi_init
+
 
 /***********************************************************************/
 //                              tcnt0_init                             
@@ -58,11 +84,13 @@ void spi_init(void){
 //with external 32khz crystal.  Runs in normal mode with no prescaling.
 //Interrupt occurs at overflow 0xFF.
 //
+/*
 void tcnt0_init(void){
 	ASSR   |=  (1<<AS0);    //ext osc TOSC
 	TIMSK  |=  (1<<TOIE0);  //enable timer/counter0 overflow interrupt
 	TCCR0  |=  (1<<CS00);   //normal mode, no prescale
 }
+*/
 
 void transmit(uint32_t data){
 	//break the data up into 4 bytes
@@ -94,8 +122,8 @@ void transmit(uint32_t data){
 	while(bit_is_clear(SPSR,SPIF)){};
 	
 	//Toggle latch
-	PORTB |= 0x80;
-	PORTB &= ~(0x80);
+	PORTA |= 0x01;
+	PORTA &= ~(0x01);
 }
 
 void test_run(void){
@@ -239,6 +267,7 @@ void test3(void){
 //(1/32768)*256    = 7.8125ms
 //(1/32768)*256*64 = 500mS
 /*************************************************************************/
+/*
 ISR(TIMER0_OVF_vect){
 	static uint8_t count_7ms = 0;        //holds 7ms tick count in binary
 	static uint32_t display_count = 0x00000001; //holds count for display 
@@ -255,6 +284,7 @@ ISR(TIMER0_OVF_vect){
 	}
 	//if (display_count == 0x00){display_count=0x01;} //display back to 1st positon
 }
+*/
 
 /***********************************************************************/
 //                                main                                 
@@ -262,17 +292,21 @@ ISR(TIMER0_OVF_vect){
 int main(){
 
 	//port initialization
-	DDRB = 0xF7;  //set port B bits 7,6,5,4,2,1,0  as outputs
-	DDRD = 0x00;
-	tcnt0_init();  //initalize counter timer zero
+	DDRA |= (1<<PA0)|(1<<PA1);  //set port B bits 7,6,5,4,2,1,0  as outputs
+    DDRB = 0xFF;
+    PORTB = 0x01;
+	//tcnt0_init();  //initalize counter timer zero
+    PORTA |= 0x02;
 	spi_init();    //initalize SPI port
+    PORTB = 0x02;
 	//sei();         //enable interrupts before entering loop
 	while(1){
-        //test1();
-        shift_LED();
-        _delay_ms(500);
-        _delay_ms(500);
-        _delay_ms(500);
+        test1();
+        PORTB = 0x03;
+        //shift_LED();
+        //_delay_ms(500);
+        //_delay_ms(500);
+        //_delay_ms(500);
 		/*
 		//load first byte
 		SPDR = 0x01;
