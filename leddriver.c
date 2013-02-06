@@ -25,6 +25,7 @@
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
+#include <util/delay.h>
 
 #define MISO PB3 // Master in, Slave out: configure as input (with pullup)
 #define MOSI PB2 // Master out, Slave in: configure as output
@@ -80,13 +81,13 @@ void transmit(uint32_t data){
 	//temp = 0x0F & display_count;
 	while(bit_is_clear(SPSR,SPIF)){};
 
-	temp = (data);
+	temp = (data>>16);
 	//load third byte
 	SPDR = temp;
 	//temp = 0x0F & display_count;
 	while(bit_is_clear(SPSR,SPIF)){};
 
-	temp = (data>>8);
+	temp = (data>>24);
 	//load fourth byte
 	SPDR = temp;
 	//temp = 0x0F & display_count;
@@ -143,6 +144,92 @@ void test_run(void){
 	PORTB &= ~(0x80);
 }
 
+void on(void){
+    uint8_t output = -1; //All on
+    transmit(output);
+	}
+
+void off(void){
+    uint32_t output = 0;
+    transmit(output);
+}
+
+void LED1on(void){
+    uint32_t output = 0x01000000;
+    transmit(output);
+}
+
+void LED17on(void){
+    uint32_t output = 0x00000100;
+    transmit(output);
+}
+
+void driver1_count(void){
+    static uint16_t count = 0;
+    transmit((count<<16));
+    }
+
+void driver2_count(void){
+    static uint16_t count = 0;
+    transmit(count);
+    }
+
+void shift_LED(void){
+    static uint32_t LED = 0x00000001;
+    if(LED == 0){
+        LED = 0x00000001;
+    }
+    transmit(LED);
+    LED = LED << 1;
+    }
+
+void test1(void){
+    static uint32_t output = -1;
+    transmit(output);
+}
+
+void test2p1(void){
+    uint32_t output = 0x00010000;
+    transmit(output);
+}
+
+void test2p2(void){
+    uint32_t output = 0x00000001;
+    transmit(output);
+}
+
+void test3(void){
+    static uint8_t i = 0;
+    static uint32_t output1 = 0x00010000;
+    static uint32_t output2 = 0x00000001;
+    switch(i){
+        case 0:
+            transmit(output1);
+            break;
+        case 1:
+            transmit(output2);
+            break;
+        case 2:
+            transmit(0);
+            break;
+        case 3:
+            transmit(0);
+            break;
+        case 4:
+            transmit(0);
+            break;
+    }
+    i++;
+    i = i%5;
+    /*
+    if((i%5)==0){
+    i = 0;
+    transmit(output1);
+    }
+    else{transmit(output2);}
+    i++;
+    */
+}
 /*************************************************************************/
 //                           timer/counter0 ISR                          
 //When the TCNT0 overflow interrupt occurs, the count_7ms variable is    
@@ -179,8 +266,13 @@ int main(){
 	DDRD = 0x00;
 	tcnt0_init();  //initalize counter timer zero
 	spi_init();    //initalize SPI port
-	sei();         //enable interrupts before entering loop
+	//sei();         //enable interrupts before entering loop
 	while(1){
+        //test1();
+        shift_LED();
+        _delay_ms(500);
+        _delay_ms(500);
+        _delay_ms(500);
 		/*
 		//load first byte
 		SPDR = 0x01;
