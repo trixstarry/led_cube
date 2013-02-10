@@ -42,9 +42,9 @@
 #include <util/delay.h>
 
 
-#define SS 8
-#define MOSI 6
-#define SCK 7
+#define SS PA6
+#define MOSI PA4
+#define SCK PA5
 //#include "controllerTest.h"
 
 
@@ -122,8 +122,8 @@ void transmit(uint32_t data){
 	while(bit_is_clear(SPSR,SPIF)){};
 	
 	//Toggle latch
-	PORTA |= 0x01;
-	PORTA &= ~(0x01);
+	PORTA |= (1<<SS);
+	PORTA &= ~(1<<SS);
 }
 
 void test_run(void){
@@ -292,30 +292,33 @@ ISR(TIMER0_OVF_vect){
 int main(){
 
 	//port initialization
-	DDRA |= (1<<PA0)|(1<<PA1);  //set port B bits 7,6,5,4,2,1,0  as outputs
-    DDRB = 0xFF;
-    PORTB = 0x01;
+	//DDRA &= ~(0x03);  //set port B bits 7,6,5,4,2,1,0  as outputs
+    //PORTA |= (0x03);
+    //DDRB = 0xFF;
+    //PORTB = 0x01;
 	//tcnt0_init();  //initalize counter timer zero
-    PORTA |= 0x02;
+    //PORTA |= 0x02;
 	spi_init();    //initalize SPI port
-    PORTB = 0x02;
+    //PORTB = 0x02;
 	//sei();         //enable interrupts before entering loop
+    uint8_t input = 0;
 	while(1){
-        test1();
-        PORTB = 0x03;
+        input = 3;
+        if(input == 0){
+            off();
+        }
+        if(input == 1){
+            test1();
+        }
+        if(input == 2){
+            shift_LED();
+            _delay_ms(250);
+        }
+        //test2p2();
+        if(input == 3){
+            test3();
+        }
         //shift_LED();
-        //_delay_ms(500);
-        //_delay_ms(500);
-        //_delay_ms(500);
-		/*
-		//load first byte
-		SPDR = 0x01;
-		//temp = 0x0F & display_count;
-		while(bit_is_clear(SPSR,SPIF)){};
-		//Toggle latch
-		PORTB |= 0x00;
-		PORTB &= ~(0x80);
-		*/
-
-	}     //empty main while loop
+        //_delay_ms(250);
+    }     //empty main while loop
 } //main
