@@ -303,7 +303,7 @@ int main(){
 	//sei();         //enable interrupts before entering loop
     uint8_t input = 0;
 	while(1){
-        input = 3;
+        input = 2;
         if(input == 0){
             off();
         }
