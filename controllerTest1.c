@@ -122,7 +122,6 @@ int main()
         */
         
 
-        /*
         input = (PINB & (1<<PB0));
 
         if( 1 == input )
@@ -150,8 +149,8 @@ int main()
 			counter1++;
 		}
 		counter2++;
-        */
-		SPI_MasterTransmit('a');
+        
+		//SPI_MasterTransmit('a');
 	}
 
 }
