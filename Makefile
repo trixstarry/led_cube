@@ -1,4 +1,4 @@
-PRG            = wifi
+PRG            = test_communication
 
 OBJ            = $(PRG).o spi.o mirf.o
 

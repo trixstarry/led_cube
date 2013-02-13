@@ -11,8 +11,6 @@
 //
 // Send Check Command   - checks hall effect sensors
 //
-// Broadcast to display frame X
-//
 // PACKET:
 // START BYTE - 8 bits  - 1 byte
 // TO         - 4 bits
@@ -73,6 +71,9 @@
 
 
 #define TIMEOUT         40   // in milliseconds
+
+extern uint8_t parse_packet(uint32_t packet);
+
 
 uint8_t parse_packet(uint32_t packet){
     // check ID otherwise ignore
@@ -339,11 +340,36 @@ uint8_t transmit(uint8_t id, uint8_t type, uint8_t *data)_{
 
 
 //
+// PACKET:
+// START BYTE - 8 bits  - 1 byte
+// TO         - 4 bits
+// FROM       - 4 bits  - 1 bytes
+// SUBJECT    - 3 bits
+// Frame #    - 9 bits  - 2 byte         Possible Stuffing
+// Packet #   - 3 bits  - 
+// Last Packet- 1 bit
+// DATA       - 80 bits - 10 bytes       Possible to get up to twice the bytes here with stuffing
+// CHECKSUM   - 16 bits -  2 bytes       Possible to get up to 4 bytes
+// END BYTE   - 8 bits  - 1 byte
 //
 uint8_t receive( void ){
+    uint8_t to = 0;
+    uint8_t from = 0;
+    uint8_t subject = 0;
+    uint16_t frame_num = 0;
+    uint8_t packet_num = 0;
+    bool last_packet = 0;
+    uint8_t data[10] = {0,0,0,0,0,0,0,0,0,0};
+    uint16_t checksum = 0;
+    uint8_t receive[32] = {0,0,0,0,0,0,0,0,0,0,
+                           0,0,0,0,0,0,0,0,0,0,
+                           0,0,0,0,0,0,0,0,0,0,
+                           0,0}
+    get_data();
     //check transmit flag
+    //
     // parse packet
-    parse_packet(uint8_t from, uint8_t)
+    parse_packet(*to, *from, *subject, *frame_num, *packet_num, *last_packet, data*,receive*);
     // if ACK
     // respond with next packet
     //      if end of packets
