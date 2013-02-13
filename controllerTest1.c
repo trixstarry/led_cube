@@ -121,6 +121,7 @@ int main()
 		SPI_MasterTransmit(cData);
         */
         
+        /*
 
         input = (PINB & (1<<PB0));
 
@@ -149,8 +150,9 @@ int main()
 			counter1++;
 		}
 		counter2++;
+        */
         
-		//SPI_MasterTransmit('a');
+		SPI_MasterTransmit('a');
 	}
 
 }
