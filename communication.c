@@ -31,7 +31,11 @@
 //      4. Finish parse packet.
 //      5. TEST Code
 //
-
+/*
+#include <avr/io.h>
+#include <stdlib.h>
+#include "communication.h"
+#include "mirf.h"
 
 // NOTE: Protocol and ID defines are randomly generated.
 // Subjects:
@@ -43,7 +47,7 @@
 
 // Control:
 #define START_BYTE      0x01
-#define END_BYTE        0xFF
+#define STOP_BYTE        0xFF
 #define STUFF_BYTE      0x02
 #define STUFF_STUFF     0x03 //if stuff byte is found in data stuff it to 0x03
 #define STUFF_START     0x04 // same
@@ -58,8 +62,8 @@
 #define DATA_SHIFT1     0x00  //shift none -- end of packet part
 #define DATA_SHIFT2     0x18  //shift 24 bits
 #define CHECK_SHIFT     0x08  //shift 8  bits
-                            //NOTE: packet part contains an extra byte.
-                            //      Be sure to remove before transmission.
+//NOTE: packet part contains an extra byte.
+//      Be sure to remove before transmission.
 //IDs:
 #define ID_SELF         0x03 
 #define ID_COMP         0x04
@@ -68,14 +72,18 @@
 #define ID_CUBE3        0x07
 #define ID_CUBE4        0x08
 #define BROADCAST       0x09
+*/
 
 
 #define TIMEOUT         40   // in milliseconds
+#define MAX_DATA_BYTES  32
 
-extern uint8_t parse_packet(uint32_t packet);
+
+//extern uint8_t parse_packet(uint32_t packet);
+uint16_t frame = 0;
 
 
-uint8_t parse_packet(uint32_t packet){
+uint8_t parse_packet(uint8_t *to, uint8_t *from, uint8_t *subject, uint16_t *frame_num, uint8_t *packet_num, uint8_t *last_packet, uint16_t *checksum,uint8_t *data,uint8_t *packet){
     // check ID otherwise ignore
     // destuff
     // check checksum otherwise nack
@@ -83,6 +91,7 @@ uint8_t parse_packet(uint32_t packet){
     // store who its from incase a response is needed
     // get data
     // return everything
+    return 1;
 }
 
 // *******************************************************************
@@ -92,7 +101,7 @@ uint8_t parse_packet(uint32_t packet){
 //  Then it creates the packets. Since a 15 byte packet cannot be created, a 2D array
 //  of containing packets that are broken into 2 8 byte chunks.
 //  For example, Packet 1 contains two 8 byte chunks
-int8_t create_packets(uint8_t to, uint8_t subject, uint16_t frame,uint8_t *data, uint8_t data_len, uint64_t **packets){
+int8_t create_packets(uint8_t to, uint8_t subject, uint16_t frame,uint8_t *data, uint8_t data_len, uint16_t checksum, uint64_t packets[5][2]){
     uint8_t i = 0;
     uint8_t j = 0;
     uint8_t k = 0;
@@ -119,8 +128,8 @@ int8_t create_packets(uint8_t to, uint8_t subject, uint16_t frame,uint8_t *data,
     //place data into 5 byte chunks (for our cube this the max should be 2 chunks)
     j=5;
     while(i < data_len){
-        data_chunk[k] = (data[i]<<(j*8))
-            j--;
+        data_chunk[k] = (data[i]<<(j*8));
+        j--;
         i++;
         if(j==0){
             k++;
@@ -143,15 +152,16 @@ int8_t create_packets(uint8_t to, uint8_t subject, uint16_t frame,uint8_t *data,
            packet[j][7] = checksum();
            j++;
            */
-        packet[k][0] = (TO<<TO_SHIFT)|(ID_SELF<<FROM_SHIFT)|(subject<<SUBJ_SHIFT)
+        packets[k][0] = (to<<TO_SHIFT)|(ID_SELF<<FROM_SHIFT)|(subject<<SUBJ_SHIFT)
             |(frame<<FRAME_SHIFT)|(k<<PACKET_SHIFT)|(data_chunk[j]<<DATA_SHIFT1);//add in 1 "chunk" of data
         if((j+1)<=4){
-            packet[k][1] |= (data_chunk[j+1]<<DATA_SHIFT2);//add second "chunk" of data
+            packets[k][1] |= (data_chunk[j+1]<<DATA_SHIFT2);//add second "chunk" of data
         }
-        checksum = checksum(packet[k][0],packet[k][1]) // calculate checksum
-            packet[k][1] = (CHECKSUM<<CHECK_SHIFT);
+        checksum = calculate_checksum(packets,k); // calculate checksum
+        packets[k][1] = (checksum<<CHECK_SHIFT);
         k++;
     }
+    return 1;
 }
 
 
@@ -180,8 +190,11 @@ int8_t create_packets(uint8_t to, uint8_t subject, uint16_t frame,uint8_t *data,
 //  XOR all of them together. Finally the answer is truncated to 16
 //  bits.
 //
-uint16_t calculate_checksum(uint64_t *data1, uint64_t *data2){
-    uint8_t data_byte[16] = {};
+uint16_t calculate_checksum(uint64_t (*packet)[2],uint8_t index){
+    uint8_t i = index;
+    uint64_t data1 = packet[i][0];
+    uint64_t data2 = packet[i][1];
+    uint8_t data_byte[16];
     uint16_t checksum;
     uint32_t sum =0;
 
@@ -191,8 +204,8 @@ uint16_t calculate_checksum(uint64_t *data1, uint64_t *data2){
 
     //Convert Data into bytes
     while(k < 16){
-        data_byte[k] = ((data[m]>>(l*8))&(0xFF))
-            l--;
+        data_byte[k] = ((data1>>(l*8))&(0xFF));
+        l--;
         k++;
         if(l==0xFF){
             m++;
@@ -221,28 +234,29 @@ uint8_t destuffer(uint8_t *data, uint8_t *packet){
     uint8_t i = 0;
     uint8_t j = 0;
     //check each byte for stuffing
-     while(i<32){
-         if(data[i] == STUFF_BYTE){
-             i++
-             if(data[i] == STUFF_START){
+    while(i<32){
+        if(data[i] == STUFF_BYTE){
+            i++;
+            if(data[i] == STUFF_START){
                 packet[j] = START_BYTE;
                 j++;
-             }
-             if(data[i] == STUFF_STOP){
+            }
+            if(data[i] == STUFF_STOP){
                 packet[j] = STOP_BYTE;
                 j++;
-             }
-             if(data[i] == STUFF_STUFF){
+            }
+            if(data[i] == STUFF_STUFF){
                 packet[j] = STUFF_BYTE;
-                j++
-             }
-         }
-         else{
+                j++;
+            }
+        }
+        else{
             packet[j] = data[i];
-            j++
-         }
-         i++;
+            j++;
+        }
+        i++;
     }
+    return 1;
 }
 
 
@@ -252,17 +266,18 @@ uint8_t destuffer(uint8_t *data, uint8_t *packet){
 //  Encodes the packet into a transmittable form. Translates any
 //  Start, stop or stuff bytes into stuff bytes.
 //
-uint8_t stuffer(uint64_t **packets, uint64_t **stuffed_packets){
+uint8_t stuffer(uint64_t packets[5][2], uint64_t stuffed_packets[5][4]){
     uint8_t length = sizeof(packets)/sizeof(packets[0]);
-    uint8_t data_byte[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
+    uint8_t data_byte[16] = {0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0};
     uint8_t k = 0;
     uint8_t i = 0;
     uint8_t j = 0;
+    uint8_t l = 0;
 
     //break packet into bytes
-     while(k < 32){
-        data_byte[k] = ((packets[i]>>(j*8))&(0xFF))
-            j--;
+    while(k < 32){
+        data_byte[k] = ((packets[l][i]>>(j*8))&(0xFF));
+        j--;
         k++;
         if(j==0xFF){
             i++;
@@ -271,28 +286,45 @@ uint8_t stuffer(uint64_t **packets, uint64_t **stuffed_packets){
     }
 
     //check each byte for stuffing
-     while(i<16){
-         if(data_byte[i] == START_BYTE){
-             stuffed_packet[j] = STUFF_BYTE;
-             j++;
-             stuffed_packet[j] = STUFF_START;
-         }
-         if(data_byte[i]== STOP_BYTE){
-             stuffed_packet[j] = STUFF_BYTE;
-             j++;
-             stuffed_packet[j] = STUFF_STOP;
-         }
-         if(data_byte[i] == STUFF_BYTE){
-             stuffed_packet[j] = STUFF_BYTE;
-             j++;
-             stuffed_packet[j] = STUFF_STUFF;
-         }
-         else{
-            stuffed_packet[j] = data_byte[i];
+    while(i<16){
+        if(data_byte[i] == START_BYTE){
+            stuffed_packets[l][j] = STUFF_BYTE;
             j++;
-         }
-         i++;
+            if(j>8){
+                j=0; 
+                l++;
+            }
+            stuffed_packets[l][j] = STUFF_START;
+        }
+        if(data_byte[i]== STOP_BYTE){
+            stuffed_packets[l][j] = STUFF_BYTE;
+            j++;
+            if(j>8){
+                j=0; 
+                l++;
+            }
+            stuffed_packets[l][j] = STUFF_STOP;
+        }
+        if(data_byte[i] == STUFF_BYTE){
+            stuffed_packets[l][j] = STUFF_BYTE;
+            j++;
+            if(j>8){
+                j=0; 
+                l++;
+            }
+            stuffed_packets[l][j] = STUFF_STUFF;
+        }
+        else{
+            stuffed_packets[l][j] = data_byte[i];
+            j++;
+        }
+        if(j>8){
+            j=0; 
+            l++;
+        }
+        i++;
     }
+    return 1;
 }
 
 // ***********************************************************
@@ -305,37 +337,44 @@ uint8_t stuffer(uint64_t **packets, uint64_t **stuffed_packets){
 //
 // NOTE: MAX data can be is 32 bytes
 //
-uint8_t transmit(uint8_t id, uint8_t type, uint8_t *data)_{
+uint8_t transmit(uint8_t id, uint8_t type, uint8_t *data){
     uint8_t length = sizeof(data)/sizeof(data[0]);
+    uint16_t checksum = 0;
     if(length > MAX_DATA_BYTES){return -1;}
     uint64_t packets[5][2] = {{0,0},{0,0},{0,0},{0,0},{0,0}};
-    uint64_t stuffed_packets[5][4] = {{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}}
+    uint64_t stuffed_packets[5][4] = {{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0},{0,0,0,0}};
 
     // Break data into packets
     // includes checksum but does not include START and END bytes
-    create_packets(id, type, frame, data, length, packets)
+    create_packets(id, type, frame, data, length, checksum, packets);
 
-        // while (there is a packet): 
-        //      send packet   - Stuff while sending packet
-        //      wait for ack
-        //      if ack        if nack
-        //      check ack     do nothing
-        //      store data
-        //      increment packet counter
+
+    // while (there is a packet): 
+    //      send packet   - Stuff while sending packet
+    //      wait for ack
+    //      if ack        if nack
+    //      check ack     do nothing
+    //      store data
+    //      increment packet counter
 
     //Stuff all packets
-    stuffer(packets[][],stuffed_packets[][]);
+    stuffer(packets,stuffed_packets);
 
     //send first packet. Rely on Receive() to send remaining packets and handle errors.
+    /*
     uint8_t i = 0;
     while(i<16){
-       if(i<8){
-            TRANSMIT(stuffed_packet[0][i]);
-       } 
-       else{
-            TRANSMIT(stuffed_packet[0][i-8]);
-       }
+        if(i<8){
+            mirf_send(stuffed_packets[0][i]);
+        } 
+        else{
+            mirf_send(stuffed_packets[0][i-8]);
+        }
     }
+    */
+    uint8_t i = 0;
+    mirf_send(stuffed_packets[index]);
+    return 1;
 }
 
 
@@ -358,18 +397,18 @@ uint8_t receive( void ){
     uint8_t subject = 0;
     uint16_t frame_num = 0;
     uint8_t packet_num = 0;
-    bool last_packet = 0;
+    uint8_t last_packet = 0;
     uint8_t data[10] = {0,0,0,0,0,0,0,0,0,0};
     uint16_t checksum = 0;
     uint8_t receive[32] = {0,0,0,0,0,0,0,0,0,0,
-                           0,0,0,0,0,0,0,0,0,0,
-                           0,0,0,0,0,0,0,0,0,0,
-                           0,0}
-    get_data();
+        0,0,0,0,0,0,0,0,0,0,
+        0,0,0,0,0,0,0,0,0,0,
+        0,0};
+    //get_data();
     //check transmit flag
     //
     // parse packet
-    parse_packet(*to, *from, *subject, *frame_num, *packet_num, *last_packet, data*,receive*);
+    parse_packet(&to, &from, &subject, &frame_num, &packet_num, &last_packet, &checksum, data,receive);
     // if ACK
     // respond with next packet
     //      if end of packets
@@ -380,13 +419,15 @@ uint8_t receive( void ){
     // respond with ACK 
     // If NEXT_FRAME
     // increment frame counter
-
-
+    return 1;
 }
 
+void init_communicate(void){
+    mirf_init();
+    _delay_ms(50);
+    mirf_config();
 
-
-
+}
 
 
 

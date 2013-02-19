@@ -1,31 +1,37 @@
 //This file tests communication.c's methods
 //
 //
+
+#include "communication.h"
+
+//#include "mirf.h"
+//#include "nRF24L01.h"
+//#include "avr/io.h"
 //
-//
-
-#include "communication.c"
-#include "avr/io.h"
+//adsf
 
 
-
-
-
-extern int8_t create_packets(uint8_t to, uint8_t subject, uint16_t frame, uint8_t *data, uint8_t data_len, uint64_t **packets);
-
-test_create_packets(){
+/*
+int8_t test_create_packets( void ){
     uint8_t data[10] = {0,0,0,0,0,0,0,0,0,0};
-
+    uint8_t length = 0;
     //check length algorithm
     length = sizeof(data)/sizeof(data[0]);
-
-
     //test
-
+    return 1;
 }
+*/
 
-uint8_t main(){
+//
+uint8_t main()
+{
+    uint8_t data[10] = {0,0,0,0,0,0,0,0,0,0};
+    uint8_t subject = DATA;
+    uint8_t id = ID_CUBE1;
+    uint8_t i = 0;
+
     while(1){
-        test_create_packets();
+        i = transmit(id,subject,data);
     }
+    return 1;
 }

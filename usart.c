@@ -6,7 +6,9 @@
 
 #include "usart.h"
 
-//**********************************************************
+/*
+
+// **********************************************************
 //						usart_put
 //
 //Takes a character and sends it to USART0
@@ -17,7 +19,7 @@ void usart_put(uint8_t data){
 	while (!(UCSR0A&(1<<UDRE))); // Wait for previous transmission
 }
 
-//***************************************************************
+// ***************************************************************
 //						usart_putframe
 //Takes a string and sends each character to be sent to USART0
 //void usart_puts(unsigned char *str) {
@@ -27,7 +29,7 @@ void usart_putframe(uint8_t *data){
 	while(data[i] != '\0'){usart_put(data[i]); i++;}
 }
 
-//**************************************************************
+// **************************************************************
 //						usart_get
 //Modified to not block indefinately in the case of a lost byte
 //
@@ -40,16 +42,15 @@ uint8_t usart_get(void){
 	return UDR0;
 }
 
-//**************************************************************
+// **************************************************************
 //						usart_getframe
 //Modified to not block indefinately in the case of a lost byte
 //
 //NOTE: THIS USES MALLOC. WHEN THE POINTER IS DONE BEING USED
 //FREE THE MEMORY!!!!!!!
 //
-uint8_t *usart_get(void){
+void usart_get(uint8_t received[32]){
 	uint8_t byte_count = 0;
-    uint8_t *data = malloc(PACKET_SIZE);
 	while(timer < PACKET_SIZE){
         data[byte_count] = usart_get();
         if(data[byte_count] == 0){
@@ -60,10 +61,10 @@ uint8_t *usart_get(void){
 	return data;
 }
 
-//**************************************************************
+// **************************************************************
 //
 //                            usart_init
-//
+
 //
 //
 //RXD0 is PORT E bit 0
@@ -85,8 +86,40 @@ void usart_init(){
 
 	//set to 9600 baud
 
-	UBRR0H=0x00;
-
+	UBRR0H=0x00; 
 	UBRR0L=0x67;
 
 }
+*/
+
+void USART_Init( unsigned int baud )
+{
+	/* Set baud rate */
+	UBRRH = (unsigned char)(baud>>8);
+	UBRRL = (unsigned char)baud;
+	if (SET_U2X)
+	{
+		UCSRA |= (1<<U2X);
+	}
+	/* Enable receiver and transmitter */
+	UCSRB = (1<<RXEN)|(1<<TXEN);
+	/* Set frame format: 8data, 2stop bit */
+	UCSRC = (1<<USBS)|(3<<UCSZ0);
+}
+
+void USART_Transmit( unsigned char data )
+{
+	/* Wait for empty transmit buffer */
+	while ( !( UCSRA & (1<<UDRE)) );
+	/* Put data into buffer, sends the data */
+	UDR = data;
+}
+
+unsigned char USART_Receive( void )
+{
+	/* Wait for data to be received */
+	while ( !(UCSRA & (1<<RXC)) );
+	/* Get and return received data from buffer */
+	return UDR;
+}
+
