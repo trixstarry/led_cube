@@ -1,6 +1,6 @@
 PRG            = wifi
 
-OBJ            = $(PRG).o
+OBJ            = $(PRG).o	spi.o	mirf.o
 
 MCU_TARGET     = attiny167
 #OPTIMIZE       = -O0    # options are 1, 2, 3, s

@@ -61,9 +61,13 @@ void mirf_init()
     PCICR  = (1<<PCIE2);
 #endif // __AVR_ATmega168__    */
 
-// Initialize PCINT4
-	GIMSK |= (1<<PCIE);
-	PCMSK |= (1<<PCINT4);
+// Initialize PCINT4 for ATtiny2313
+//	GIMSK |= (1<<PCIE);
+//	PCMSK |= (1<<PCINT4);
+
+// Initialize PCINT12 for ATtiny167
+    PCICR |= (1<<PCIE1);
+    PCMSK1 |= (1<<PCINT12);
 
     // Initialize spi module
     spi_init();

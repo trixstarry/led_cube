@@ -60,16 +60,15 @@ unsigned char USART_Receive( void )
 	// Get and return received data from buffer 
 	return UDR;
 }
-
+*/
 transmit_string(char *ptr)
 {
 	while(*ptr)
 	{
-		USART_Transmit(*ptr);
+//		USART_Transmit(*ptr);
 		ptr++;
 	}
 }
-*/
 
 int main (void)
 {
