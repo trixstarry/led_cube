@@ -2,7 +2,7 @@ import serial
 #import time
 
 print "1"
-s = serial.Serial('/dev/ttyUSB1')
+s = serial.Serial('/dev/ttyUSB0')
 #s.write("hello")
 print "2"
 
