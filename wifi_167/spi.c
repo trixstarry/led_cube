@@ -29,60 +29,66 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-#define PORT_SPI    PORTA
-#define DDR_SPI     DDRA
-#define DI			PA4
-#define DO			PA2
-#define USCK		PA5
+#define SS 6
+#define MOSI 4
+#define SCK 5
 
-void spi_init()
-// Initialize pins for spi communication
-{
-    DDR_SPI &= ~(1<<DI);
-	PORT_SPI |= (1<<DI); 
-	DDR_SPI |= (1<<USCK)|(1<<DO); 
-	USICR = (1<<USIWM0)|(1<<USICS1)|(1<<USICLK); 
-	
-	// For disabling SPI
-	//DDRB &= ~((1<<USCK)|(1<<DI)|(1<<DO)); 
-	//USICR = 0; 
+void spi_init(){
+
+	DDRA |= (1<<SS)|(1<<MOSI)|(1<<SCK);
+	SPCR |= (1<<SPE)|(1<<MSTR)|(1<<SPR0);
+	SPSR |= (1<<SPI2X);
+
+
 }
 
-unsigned char spi(unsigned char val) 
-{ 
-	USIDR = val; 
-	USISR = (1<<USIOIF); 
-	do
-	{ 
-		USICR = (1<<USIWM0)|(1<<USICS1)|(1<<USICLK)|(1<<USITC); 
-	}
-	while ((USISR & (1<<USIOIF)) == 0); 
-	return USIDR; 
-} 
 
-void spi_transfer_sync (uint8_t * dataout, uint8_t * datain, uint8_t len)
-// Shift full array through target device
+//	SPI_MasterTransmit
+//******************************************************************************
+char SPI_Transmit(char cData)
 {
-	uint8_t i;      
-	for (i = 0; i < len; i++)
-	{
-		datain[i] = spi(dataout[i]);
-	}
+	// Start transmission
+	SPDR = cData;
+	// Wait for transmission complete
+	while( bit_is_clear(SPSR,SPIF)){};
+	return SPDR;
 }
 
-void spi_transmit_sync (uint8_t * dataout, uint8_t len)
-// Shift full array to target device without receiving any byte
+void SPI_Transmit_All(uint8_t *data, uint8_t len)
 {
-	uint8_t i;      
-	for (i = 0; i < len; i++)
-	{
-		spi(dataout[i]);
-	}
+    uint8_t i = 0;
+    for(i = 0; i < len; i++){
+        SPDR = 0x00;
+        while(bit_is_clear(SPSR,SPIF)){};
+        data[i] = SPDR;
+    }
 }
 
-uint8_t spi_fast_shift (uint8_t data)
-// Clocks only one byte to target device and returns the received one
-{
-	return spi(data);
+char SPI_Receive(void){
+    SPDR = 0x00;
+    while(bit_is_clear(SPSR,SPIF)){};
+    return SPDR;
 }
+
+void SPI_Receive_All(uint8_t *data,uint8_t len)
+{
+    uint8_t i = 0;
+    for(i = 0; i < 32; i++){
+        SPDR = 0x00;
+        while(bit_is_clear(SPSR,SPIF)){};
+        data[i] = SPDR;
+    }
+}
+
+void SPI_Transceive(uint8_t *dataout, uint8_t *datain, uint8_t len)
+{
+    uint8_t i;
+    for(i = 0; i < len; i++)
+    {
+        datain[i] = SPI_Transmit(dataout[i]); 
+    }
+
+}
+
+
 
