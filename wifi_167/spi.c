@@ -29,11 +29,11 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 
-#define PORT_SPI    PORTB
-#define DDR_SPI     DDRB
-#define DI			PB5
-#define DO			PB6
-#define USCK		PB7
+#define PORT_SPI    PORTA
+#define DDR_SPI     DDRA
+#define DI			PA4
+#define DO			PA2
+#define USCK		PA5
 
 void spi_init()
 // Initialize pins for spi communication

@@ -229,19 +229,19 @@ int main (void)
  126:	ed cf       	rjmp	.-38     	; 0x102 <main+0x62>
 
 00000128 <spi_init>:
-#define USCK		PB7
+#define USCK		PA5
 
 void spi_init()
 // Initialize pins for spi communication
 {
     DDR_SPI &= ~(1<<DI);
- 128:	25 98       	cbi	0x04, 5	; 4
+ 128:	0c 98       	cbi	0x01, 4	; 1
 	PORT_SPI |= (1<<DI); 
- 12a:	2d 9a       	sbi	0x05, 5	; 5
+ 12a:	14 9a       	sbi	0x02, 4	; 2
 	DDR_SPI |= (1<<USCK)|(1<<DO); 
- 12c:	84 b1       	in	r24, 0x04	; 4
- 12e:	80 6c       	ori	r24, 0xC0	; 192
- 130:	84 b9       	out	0x04, r24	; 4
+ 12c:	81 b1       	in	r24, 0x01	; 1
+ 12e:	84 62       	ori	r24, 0x24	; 36
+ 130:	81 b9       	out	0x01, r24	; 1
 	USICR = (1<<USIWM0)|(1<<USICS1)|(1<<USICLK); 
  132:	8a e1       	ldi	r24, 0x1A	; 26
  134:	80 93 b8 00 	sts	0x00B8, r24
