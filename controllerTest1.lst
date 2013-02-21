@@ -3,11 +3,11 @@ controllerTest1.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         000000da  00000000  00000000  00000054  2**1
+  0 .text         00000120  00000000  00000000  00000054  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .stab         00000c78  00000000  00000000  00000130  2**2
+  1 .stab         00000ccc  00000000  00000000  00000174  2**2
                   CONTENTS, READONLY, DEBUGGING
-  2 .stabstr      0000080b  00000000  00000000  00000da8  2**0
+  2 .stabstr      0000083a  00000000  00000000  00000e40  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -15,7 +15,7 @@ Disassembly of section .text:
 00000000 <__vectors>:
    0:	0c 94 28 00 	jmp	0x50	; 0x50 <__ctors_end>
    4:	0c 94 32 00 	jmp	0x64	; 0x64 <__bad_interrupt>
-   8:	0c 94 32 00 	jmp	0x64	; 0x64 <__bad_interrupt>
+   8:	0c 94 53 00 	jmp	0xa6	; 0xa6 <__vector_2>
    c:	0c 94 32 00 	jmp	0x64	; 0x64 <__bad_interrupt>
   10:	0c 94 32 00 	jmp	0x64	; 0x64 <__bad_interrupt>
   14:	0c 94 32 00 	jmp	0x64	; 0x64 <__bad_interrupt>
@@ -41,8 +41,8 @@ Disassembly of section .text:
   56:	d2 e0       	ldi	r29, 0x02	; 2
   58:	de bf       	out	0x3e, r29	; 62
   5a:	cd bf       	out	0x3d, r28	; 61
-  5c:	0e 94 51 00 	call	0xa2	; 0xa2 <main>
-  60:	0c 94 6b 00 	jmp	0xd6	; 0xd6 <_exit>
+  5c:	0e 94 70 00 	call	0xe0	; 0xe0 <main>
+  60:	0c 94 8e 00 	jmp	0x11c	; 0x11c <_exit>
 
 00000064 <__bad_interrupt>:
   64:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -59,149 +59,201 @@ void init()
 	PORTB	= (1<<PB3);		// initial value
   6c:	88 e0       	ldi	r24, 0x08	; 8
   6e:	85 b9       	out	0x05, r24	; 5
+    DDRA    |= (1<<PA7)|(1<<PA3);
+  70:	81 b1       	in	r24, 0x01	; 1
+  72:	88 68       	ori	r24, 0x88	; 136
+  74:	81 b9       	out	0x01, r24	; 1
 	// Set MOSI and SCK output 
 	//DDR_SPI |= (1<<DD_MOSI)|(1<<DD_SCK);
 	// Enable SPI, Master, set clock rate clk/8
 	//SPCR	|= (1<<SPE)|(1<<MSTR)|(1<<SPR0);
 	//SPSR	|= (1<<SPI2X);
 }
-  70:	08 95       	ret
+  76:	08 95       	ret
 
-00000072 <interrupt_init>:
+00000078 <interrupt_init>:
 
 void interrupt_init(){
     EICRA |= (1<<ISC11)|(1<<ISC10); //rising edge
-  72:	e9 e6       	ldi	r30, 0x69	; 105
-  74:	f0 e0       	ldi	r31, 0x00	; 0
-  76:	80 81       	ld	r24, Z
-  78:	8c 60       	ori	r24, 0x0C	; 12
-  7a:	80 83       	st	Z, r24
+  78:	e9 e6       	ldi	r30, 0x69	; 105
+  7a:	f0 e0       	ldi	r31, 0x00	; 0
+  7c:	80 81       	ld	r24, Z
+  7e:	8c 60       	ori	r24, 0x0C	; 12
+  80:	80 83       	st	Z, r24
                                     //0 0 The low level of INTn generates an interrupt request.
                                     //0 1 Any logical change on INTn generates an interrupt request.
                                     //1 0 The falling edge of INTn generates an interrupt request.
                                     //1 1 The rising edge of INTn generates an interrupt request.
     EIMSK |= (1<<INT1);
-  7c:	e9 9a       	sbi	0x1d, 1	; 29
+  82:	e9 9a       	sbi	0x1d, 1	; 29
 }
-  7e:	08 95       	ret
+  84:	08 95       	ret
 
-00000080 <spi_init>:
+00000086 <spi_init>:
 
 void spi_init(){
 
 	DDRA |= (1<<SS)|(1<<MOSI)|(1<<SCK);
-  80:	81 b1       	in	r24, 0x01	; 1
-  82:	80 67       	ori	r24, 0x70	; 112
-  84:	81 b9       	out	0x01, r24	; 1
+  86:	81 b1       	in	r24, 0x01	; 1
+  88:	80 67       	ori	r24, 0x70	; 112
+  8a:	81 b9       	out	0x01, r24	; 1
 	SPCR |= (1<<SPE)|(1<<MSTR)|(1<<SPR0);
-  86:	8c b5       	in	r24, 0x2c	; 44
-  88:	81 65       	ori	r24, 0x51	; 81
-  8a:	8c bd       	out	0x2c, r24	; 44
+  8c:	8c b5       	in	r24, 0x2c	; 44
+  8e:	81 65       	ori	r24, 0x51	; 81
+  90:	8c bd       	out	0x2c, r24	; 44
 	SPSR |= (1<<SPI2X);
-  8c:	8d b5       	in	r24, 0x2d	; 45
-  8e:	81 60       	ori	r24, 0x01	; 1
-  90:	8d bd       	out	0x2d, r24	; 45
+  92:	8d b5       	in	r24, 0x2d	; 45
+  94:	81 60       	ori	r24, 0x01	; 1
+  96:	8d bd       	out	0x2d, r24	; 45
 
 
 }
-  92:	08 95       	ret
+  98:	08 95       	ret
 
-00000094 <SPI_MasterTransmit>:
+0000009a <SPI_MasterTransmit>:
 //	SPI_MasterTransmit
 //******************************************************************************
 void SPI_MasterTransmit(char cData)
 {
 	// Start transmission
 	SPDR = cData;
-  94:	8e bd       	out	0x2e, r24	; 46
+  9a:	8e bd       	out	0x2e, r24	; 46
 	// Wait for transmission complete
 	while( bit_is_clear(SPSR,SPIF)){};
-  96:	0d b4       	in	r0, 0x2d	; 45
-  98:	07 fe       	sbrs	r0, 7
-  9a:	fd cf       	rjmp	.-6      	; 0x96 <SPI_MasterTransmit+0x2>
+  9c:	0d b4       	in	r0, 0x2d	; 45
+  9e:	07 fe       	sbrs	r0, 7
+  a0:	fd cf       	rjmp	.-6      	; 0x9c <SPI_MasterTransmit+0x2>
 	return SPDR;
-  9c:	8e b5       	in	r24, 0x2e	; 46
+  a2:	8e b5       	in	r24, 0x2e	; 46
 }
-  9e:	08 95       	ret
+  a4:	08 95       	ret
 
-000000a0 <ISR>:
+000000a6 <__vector_2>:
 
 ISR(INT1_vect){
+  a6:	1f 92       	push	r1
+  a8:	0f 92       	push	r0
+  aa:	0f b6       	in	r0, 0x3f	; 63
+  ac:	0f 92       	push	r0
+  ae:	11 24       	eor	r1, r1
+  b0:	8f 93       	push	r24
+  b2:	9f 93       	push	r25
+  b4:	af 93       	push	r26
+  b6:	bf 93       	push	r27
 
     //TURN ON A LED
-    //PORTA |= (1<<PA7);
-}
-  a0:	08 95       	ret
+	//PORTB |= (1<<PB2);	
+    PORTA |= (1<<PA7);
+  b8:	17 9a       	sbi	0x02, 7	; 2
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
 
-000000a2 <main>:
+	__builtin_avr_delay_cycles(__ticks_dc);
+  ba:	8f ef       	ldi	r24, 0xFF	; 255
+  bc:	94 e3       	ldi	r25, 0x34	; 52
+  be:	ac e0       	ldi	r26, 0x0C	; 12
+  c0:	81 50       	subi	r24, 0x01	; 1
+  c2:	90 40       	sbci	r25, 0x00	; 0
+  c4:	a0 40       	sbci	r26, 0x00	; 0
+  c6:	e1 f7       	brne	.-8      	; 0xc0 <__vector_2+0x1a>
+  c8:	00 c0       	rjmp	.+0      	; 0xca <__vector_2+0x24>
+  ca:	00 00       	nop
+    _delay_ms(500);
+    PORTA &= ~(1<<PA7);
+  cc:	17 98       	cbi	0x02, 7	; 2
+}
+  ce:	bf 91       	pop	r27
+  d0:	af 91       	pop	r26
+  d2:	9f 91       	pop	r25
+  d4:	8f 91       	pop	r24
+  d6:	0f 90       	pop	r0
+  d8:	0f be       	out	0x3f, r0	; 63
+  da:	0f 90       	pop	r0
+  dc:	1f 90       	pop	r1
+  de:	18 95       	reti
+
+000000e0 <main>:
 
 //	init
 //******************************************************************************
 void init()
 {
 	DDRB	= ~(1<<PB0);	// Outputs except PB0
-  a2:	8e ef       	ldi	r24, 0xFE	; 254
-  a4:	84 b9       	out	0x04, r24	; 4
+  e0:	8e ef       	ldi	r24, 0xFE	; 254
+  e2:	84 b9       	out	0x04, r24	; 4
 	PORTB	= (1<<PB3);		// initial value
-  a6:	88 e0       	ldi	r24, 0x08	; 8
-  a8:	85 b9       	out	0x05, r24	; 5
+  e4:	88 e0       	ldi	r24, 0x08	; 8
+  e6:	85 b9       	out	0x05, r24	; 5
+    DDRA    |= (1<<PA7)|(1<<PA3);
+  e8:	81 b1       	in	r24, 0x01	; 1
+  ea:	88 68       	ori	r24, 0x88	; 136
+  ec:	81 b9       	out	0x01, r24	; 1
     EIMSK |= (1<<INT1);
 }
 
 void spi_init(){
 
 	DDRA |= (1<<SS)|(1<<MOSI)|(1<<SCK);
-  aa:	81 b1       	in	r24, 0x01	; 1
-  ac:	80 67       	ori	r24, 0x70	; 112
-  ae:	81 b9       	out	0x01, r24	; 1
+  ee:	81 b1       	in	r24, 0x01	; 1
+  f0:	80 67       	ori	r24, 0x70	; 112
+  f2:	81 b9       	out	0x01, r24	; 1
 	SPCR |= (1<<SPE)|(1<<MSTR)|(1<<SPR0);
-  b0:	8c b5       	in	r24, 0x2c	; 44
-  b2:	81 65       	ori	r24, 0x51	; 81
-  b4:	8c bd       	out	0x2c, r24	; 44
+  f4:	8c b5       	in	r24, 0x2c	; 44
+  f6:	81 65       	ori	r24, 0x51	; 81
+  f8:	8c bd       	out	0x2c, r24	; 44
 	SPSR |= (1<<SPI2X);
-  b6:	8d b5       	in	r24, 0x2d	; 45
-  b8:	81 60       	ori	r24, 0x01	; 1
-  ba:	8d bd       	out	0x2d, r24	; 45
+  fa:	8d b5       	in	r24, 0x2d	; 45
+  fc:	81 60       	ori	r24, 0x01	; 1
+  fe:	8d bd       	out	0x2d, r24	; 45
 	//SPCR	|= (1<<SPE)|(1<<MSTR)|(1<<SPR0);
 	//SPSR	|= (1<<SPI2X);
 }
 
 void interrupt_init(){
     EICRA |= (1<<ISC11)|(1<<ISC10); //rising edge
-  bc:	80 91 69 00 	lds	r24, 0x0069
-  c0:	8c 60       	ori	r24, 0x0C	; 12
-  c2:	80 93 69 00 	sts	0x0069, r24
+ 100:	80 91 69 00 	lds	r24, 0x0069
+ 104:	8c 60       	ori	r24, 0x0C	; 12
+ 106:	80 93 69 00 	sts	0x0069, r24
                                     //0 0 The low level of INTn generates an interrupt request.
                                     //0 1 Any logical change on INTn generates an interrupt request.
                                     //1 0 The falling edge of INTn generates an interrupt request.
                                     //1 1 The rising edge of INTn generates an interrupt request.
     EIMSK |= (1<<INT1);
-  c6:	e9 9a       	sbi	0x1d, 1	; 29
+ 10a:	e9 9a       	sbi	0x1d, 1	; 29
+		0b01100000, //6 0x60
+		0b01110000, //7 0x70
+	};
+  //  PORTA |= (1<<PA3);
+	
+    sei();
+ 10c:	78 94       	sei
 //	SPI_MasterTransmit
 //******************************************************************************
 void SPI_MasterTransmit(char cData)
 {
 	// Start transmission
 	SPDR = cData;
-  c8:	81 e6       	ldi	r24, 0x61	; 97
-  ca:	8e bd       	out	0x2e, r24	; 46
+ 10e:	81 e6       	ldi	r24, 0x61	; 97
+ 110:	8e bd       	out	0x2e, r24	; 46
 	// Wait for transmission complete
 	while( bit_is_clear(SPSR,SPIF)){};
-  cc:	0d b4       	in	r0, 0x2d	; 45
-  ce:	07 fe       	sbrs	r0, 7
-  d0:	fd cf       	rjmp	.-6      	; 0xcc <main+0x2a>
+ 112:	0d b4       	in	r0, 0x2d	; 45
+ 114:	07 fe       	sbrs	r0, 7
+ 116:	fd cf       	rjmp	.-6      	; 0x112 <main+0x32>
 	return SPDR;
-  d2:	9e b5       	in	r25, 0x2e	; 46
-			counter1++;
+ 118:	9e b5       	in	r25, 0x2e	; 46
 		}
 		counter2++;
-*/
+        */
+        
 		SPI_MasterTransmit('a');
 	}
-  d4:	fa cf       	rjmp	.-12     	; 0xca <main+0x28>
+ 11a:	fa cf       	rjmp	.-12     	; 0x110 <main+0x30>
 
-000000d6 <_exit>:
-  d6:	f8 94       	cli
+0000011c <_exit>:
+ 11c:	f8 94       	cli
 
-000000d8 <__stop_program>:
-  d8:	ff cf       	rjmp	.-2      	; 0xd8 <__stop_program>
+0000011e <__stop_program>:
+ 11e:	ff cf       	rjmp	.-2      	; 0x11e <__stop_program>
