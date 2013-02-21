@@ -14,7 +14,15 @@
 /*
 int8_t test_create_packets( void ){
     uint8_t data[10] = {0,0,0,0,0,0,0,0,0,0};
+<<<<<<< HEAD
     uint8_t length = 0;
+=======
+    uint8_t to = 0;
+    uint8_t subject = 0;
+    uint16_t frame = 0;
+    uint8_t data_len = 0;
+    uint64_t packets[][] = { {0} };
+>>>>>>> 2fb83e5bd63b873200210a78c0f9395ced3401a7
     //check length algorithm
     length = sizeof(data)/sizeof(data[0]);
     //test

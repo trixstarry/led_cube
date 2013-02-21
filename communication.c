@@ -1,5 +1,3 @@
-// Communication.c
-//
 // Author: Doug Dziggel, Valerie Trang Hoang
 // Date: 2/2/13
 //
