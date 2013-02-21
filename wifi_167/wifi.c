@@ -83,7 +83,7 @@ int main (void)
 	// Wait for mirf to come up
 	_delay_ms(50);
 	// Activate interrupts
-	sei();
+	//sei();
 	
 	/*while (1)
 	{
@@ -111,6 +111,7 @@ int main (void)
 	// Test transmitting
 	buffer[0] = 'h';
 	
+    /*
 	char testing_sender = 1;
 	while (testing_sender)
 	{
@@ -123,6 +124,8 @@ int main (void)
 		mirf_send(buffer,buffersize);
 		_delay_ms(5);
 	}
+    */
+    SPI_Transmit('a');
 	
     /*
 	char expected [16] = {'h','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}'};

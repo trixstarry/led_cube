@@ -112,7 +112,7 @@ SIGNAL(SIG_PIN_CHANGE2)
 #endif // __AVR_ATmega168__  */
 
 // Interrupt handler 
-ISR(PCINT_vect)
+ISR(PCINT1_vect)
 {
     uint8_t status;   
     // If still in transmitting mode then finish transmission
