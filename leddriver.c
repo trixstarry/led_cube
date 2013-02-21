@@ -92,7 +92,7 @@ void tcnt0_init(void){
 }
 */
 
-void transmit(uint16_t data1,uint16_t data2,uint16_t data3,uint16_t data4,uint16_t data5){
+void transmit1(uint16_t data1,uint16_t data2,uint16_t data3,uint16_t data4,uint16_t data5){
 	//break the data up into 4 bytes
 	
 	uint8_t temp = 0;
@@ -169,10 +169,43 @@ void patrick_test(void){
     uint16_t data4 = 0x00FF;
     uint16_t data5 = 0x00FF;
 
-    transmit(data1,data2,data3,data4,data5);
+    transmit1(data1,data2,data3,data4,data5);
 }
 
-/*
+void transmit(uint32_t data){
+	//break the data up into 4 bytes
+	
+	uint8_t temp = 0;
+
+	temp = (data);
+	//load first byte
+	SPDR = temp;
+	//temp = 0x0F & display_count;
+	while(bit_is_clear(SPSR,SPIF)){};
+
+	temp = (data>>8);
+	//load second byte
+	SPDR = temp;
+	//temp = 0x0F & display_count;
+	while(bit_is_clear(SPSR,SPIF)){};
+
+	temp = (data>>16);
+	//load third byte
+	SPDR = temp;
+	//temp = 0x0F & display_count;
+	while(bit_is_clear(SPSR,SPIF)){};
+
+	temp = (data>>24);
+	//load fourth byte
+	SPDR = temp;
+	//temp = 0x0F & display_count;
+	while(bit_is_clear(SPSR,SPIF)){};
+
+	//Toggle latch
+	PORTA |= (1<<SS);
+	PORTA &= ~(1<<SS);
+}
+
 void test_run(void){
 	//break the data up into 4 bytes
 	
@@ -305,7 +338,7 @@ void test3(void){
     //i++;
     //
 }
-*/
+
 /*************************************************************************/
 //                           timer/counter0 ISR                          
 //When the TCNT0 overflow interrupt occurs, the count_7ms variable is    
