@@ -92,40 +92,87 @@ void tcnt0_init(void){
 }
 */
 
-void transmit(uint32_t data){
+void transmit(uint16_t data1,uint16_t data2,uint16_t data3,uint16_t data4,uint16_t data5){
 	//break the data up into 4 bytes
 	
 	uint8_t temp = 0;
 
-	temp = (data);
+	temp = (data1);
 	//load first byte
 	SPDR = temp;
 	//temp = 0x0F & display_count;
 	while(bit_is_clear(SPSR,SPIF)){};
 
-	temp = (data>>8);
+	temp = (data1>>8);
 	//load second byte
 	SPDR = temp;
 	//temp = 0x0F & display_count;
 	while(bit_is_clear(SPSR,SPIF)){};
 
-	temp = (data>>16);
+	temp = (data2);
 	//load third byte
 	SPDR = temp;
 	//temp = 0x0F & display_count;
 	while(bit_is_clear(SPSR,SPIF)){};
 
-	temp = (data>>24);
+	temp = (data2>>8);
 	//load fourth byte
 	SPDR = temp;
 	//temp = 0x0F & display_count;
 	while(bit_is_clear(SPSR,SPIF)){};
-	
+
+	temp = (data3);
+	//load first byte
+	SPDR = temp;
+	//temp = 0x0F & display_count;
+	while(bit_is_clear(SPSR,SPIF)){};
+
+	temp = (data3>>8);
+	//load second byte
+	SPDR = temp;
+	//temp = 0x0F & display_count;
+	while(bit_is_clear(SPSR,SPIF)){};
+
+	temp = (data4);
+	//load third byte
+	SPDR = temp;
+	//temp = 0x0F & display_count;
+	while(bit_is_clear(SPSR,SPIF)){};
+
+	temp = (data4>>8);
+	//load fourth byte
+	SPDR = temp;
+	//temp = 0x0F & display_count;
+	while(bit_is_clear(SPSR,SPIF)){};
+
+	temp = (data5);
+	//load first byte
+	SPDR = temp;
+	//temp = 0x0F & display_count;
+	while(bit_is_clear(SPSR,SPIF)){};
+
+	temp = (data5>>8);
+	//load second byte
+	SPDR = temp;
+	//temp = 0x0F & display_count;
+	while(bit_is_clear(SPSR,SPIF)){};
+    
 	//Toggle latch
 	PORTA |= (1<<SS);
 	PORTA &= ~(1<<SS);
 }
 
+void patrick_test(void){
+    uint16_t data1 = 0x00FF;
+    uint16_t data2 = 0x00FF;
+    uint16_t data3 = 0x00FF;
+    uint16_t data4 = 0x00FF;
+    uint16_t data5 = 0x00FF;
+
+    transmit(data1,data2,data3,data4,data5);
+}
+
+/*
 void test_run(void){
 	//break the data up into 4 bytes
 	
@@ -133,32 +180,32 @@ void test_run(void){
 	SPDR = 0xff;
 	//temp = 0x0F & display_count;
 	while(bit_is_clear(SPSR,SPIF)){};
-	/*
+	//
 	//Toggle latch
-	PORTB |= 0x80;
-	PORTB &= ~(0x80);
-	*/
+	//PORTB |= 0x80;
+	//PORTB &= ~(0x80);
+	//
 
 	//load second byte
 	SPDR = 0xff;
 	//temp = 0x0F & display_count;
 	while(bit_is_clear(SPSR,SPIF)){};
 
-	/*
+	//
 	//Toggle latch
-	PORTB |= 0x00;
-	PORTB &= ~(0x80);
-	*/
+	//PORTB |= 0x00;
+	//PORTB &= ~(0x80);
+	//
 	
 	//load third byte
 	SPDR = 0xff;
 	//temp = 0x0F & display_count;
 	while(bit_is_clear(SPSR,SPIF)){};
-	/*
+	//
 	//Toggle latch
-	PORTB |= 0x00;
-	PORTB &= ~(0x80);
-	*/
+	//PORTB |= 0x00;
+	//PORTB &= ~(0x80);
+	//
 	
 
 
@@ -249,15 +296,16 @@ void test3(void){
     }
     i++;
     i = i%5;
-    /*
-    if((i%5)==0){
-    i = 0;
-    transmit(output1);
-    }
-    else{transmit(output2);}
-    i++;
-    */
+    //
+    //if((i%5)==0){
+    //i = 0;
+    //transmit(output1);
+    //}
+    //else{transmit(output2);}
+    //i++;
+    //
 }
+*/
 /*************************************************************************/
 //                           timer/counter0 ISR                          
 //When the TCNT0 overflow interrupt occurs, the count_7ms variable is    
@@ -303,6 +351,8 @@ int main(){
 	//sei();         //enable interrupts before entering loop
     uint8_t input = 0;
 	while(1){
+        patrick_test();
+        /*
         input = 2;
         if(input == 0){
             off();
@@ -318,6 +368,7 @@ int main(){
         if(input == 3){
             test3();
         }
+        */
         //shift_LED();
         //_delay_ms(250);
     }     //empty main while loop
