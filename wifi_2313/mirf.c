@@ -183,6 +183,7 @@ void mirf_send(uint8_t * value, uint8_t len)
 // Sends a data package to the default address. Be sure to send the correct
 // amount of bytes as configured as payload on the receiver.
 {
+    uint8_t testbuffer[16] = {0x60,0x61,0x62,0x63,0x64,0x65,0x66,0x67,0x68,0x69,0x6A,0x6B,0x6C,0x6D,0x6E,0x6F};
     while (PTX) {}                  // Wait until last paket is send
 
     mirf_CE_lo;
@@ -195,7 +196,8 @@ void mirf_send(uint8_t * value, uint8_t len)
     mirf_CSN_hi;                    // Pull up chip select
     mirf_CSN_lo;                    // Pull down chip select
     spi_fast_shift( W_TX_PAYLOAD ); // Write cmd to write payload
-    spi_transmit_sync(value,len);   // Write payload
+    spi_transmit_sync(testbuffer,16);
+    //spi_transmit_sync(value,len);   // Write payload
     mirf_CSN_hi;                    // Pull up chip select
     
     mirf_CE_hi;                     // Start transmission

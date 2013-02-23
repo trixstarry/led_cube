@@ -110,7 +110,8 @@ int main (void)
 	// Test transmitting
 	buffer[0] = 'h';
 	
-	char testing_sender = 0;
+    uint8_t i;
+	char testing_sender = 1;
 	while (testing_sender)
 	{
 		buffer[15]++;
@@ -120,6 +121,10 @@ int main (void)
 		}
 		
 		mirf_send(buffer,buffersize);
+        for(i = 0; i <0; i++)
+        {
+            _delay_ms(500);
+        }
 		_delay_ms(5);
 	}
 	
@@ -144,11 +149,13 @@ int main (void)
 		USART_Transmit(buffer[15]);
 		if (matched)
 		{
-			transmit_string(" OK\r\n");
+//			transmit_string(" OK\r\n");
+            transmit_string("");
 		}
 		else
 		{
-			transmit_string(" BAD\r\n");
+//			transmit_string(" BAD\r\n");
+            transmit_string("");
 		}
 	}
 

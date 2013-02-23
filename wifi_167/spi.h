@@ -29,7 +29,7 @@
 
 
 extern void spi_init();
-extern char SPI_Transmit(char cData);
+extern uint8_t SPI_Transmit(uint8_t cData);
 extern void SPI_Transmit_All(uint8_t *data,uint8_t len);
 extern char SPI_Receive(void);
 extern void SPI_Receive_All(uint8_t *data, uint8_t len);
