@@ -72,9 +72,8 @@ transmit_string(char *ptr)
 int main (void)
 {
 	USART_Init(MY_UBBR);
-	DDRB |= (0<<PB1); // Test passed LED
+	DDRB |= (1<<PB1); // Test passed LED
 	DDRB |= (1<<PB0); // Test failed LED
-    PORTB = (1<<PB1);
 	
 	char buffer [16] = {'h','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
 	uint8_t buffersize = 16;
@@ -83,9 +82,9 @@ int main (void)
 	// Wait for mirf to come up
 	_delay_ms(50);
 	// Activate interrupts
-    PORTB = (1<<PB1);
 	sei();
 	
+
 	/*while (1)
 	{
 		char s = USART_Receive();
@@ -123,16 +122,18 @@ int main (void)
 		
 		mirf_send(buffer,buffersize);
 		_delay_ms(5);
+        PORTB = (1<<PB1);
 	}
 	
 	char expected [16] = {'h','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
 	// Test receiving
 	while (1)
 	{
-        PORTB = (1<<PB1);
+        USART_Transmit(0x13);
+//      PORTB = (1<<PB1);
 		while (!mirf_data_ready());
 		mirf_get_data(buffer);
-		PORTB |= (1<<PB1);
+//		PORTB |= (1<<PB1);
 		char i;
 		char matched = 1;
 		//transmit_string("data = ");
@@ -142,7 +143,7 @@ int main (void)
 			{
 				matched = 0;
 			}
-			//USART_Transmit(buffer[i]);
+		//	USART_Transmit(buffer[i]);
 		}
 		USART_Transmit(buffer[15]);
 		if (matched)
