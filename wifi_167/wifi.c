@@ -12,8 +12,11 @@
 //************************************************************************//
 //
 
-#define F_CPU 8000000UL	// 1Mhz clock
+#define F_CPU 8000000UL	// 16Mhz clock
 #define BAUD 250000
+
+
+
 //#define MY_UBBR 1 // F_CPU/(16*BAUD)-1
 #define SET_U2X 0
 #define MY_UBBR 12 // BAUD = 38400
@@ -77,7 +80,8 @@ int main (void)
 	DDRB |= (1<<PB0); // Test failed LED
 	
 	char buffer [16] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
-    PORTB |= (1<<PB0);
+                        //'l','a','u','g','h',' ','i','t',' ','u','p',' ','R','u','t','h',};
+    //PORTB |= (1<<PB0);
 	uint8_t buffersize = 16;
 	// Initialize AVR for use with mirf
 	mirf_init();
@@ -86,7 +90,7 @@ int main (void)
 	// Activate interrupts
 	sei();
 	
-    PORTB = (1<<PB0);
+   // PORTB = (1<<PB0);
 	/*while (1)
 	{
 		char s = USART_Receive();
@@ -118,14 +122,14 @@ int main (void)
     uint8_t testbuffer[2] = {'a','a'};
 	while (testing_sender)
 	{
-        PORTB = (1<<PB0);
+        //PORTB = (1<<PB0);
 		buffer[15]++;
 		if (buffer[15] < 'a' || buffer[15] > 'z')
 		{
 			buffer[15] = 'a';
 		}
-//		mirf_send(buffer,buffersize);
-        mirf_send(testbuffer,testbuffersize);
+    	mirf_send(buffer,buffersize);
+        //mirf_send(testbuffer,testbuffersize);
         //
 		_delay_ms(5);
 	}

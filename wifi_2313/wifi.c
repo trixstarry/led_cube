@@ -76,6 +76,7 @@ int main (void)
 	DDRB |= (1<<PB0); // Test failed LED
 	
 	char buffer [16] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
+                        //'l','a','u','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
 	uint8_t buffersize = 16;
 	// Initialize AVR for use with mirf
 	mirf_init();
@@ -111,7 +112,7 @@ int main (void)
 	buffer[0] = 'h';
 	
     uint8_t i;
-	char testing_sender = 1;
+	char testing_sender = 0;
 	while (testing_sender)
 	{
 		buffer[15]++;
@@ -128,7 +129,9 @@ int main (void)
 		_delay_ms(5);
 	}
 	
-	char expected [16] = {'h','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
+	char expected [16] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
+                        //'l','a','u','g','h',' ','i','t',' ','u','p',' ','R','u','t','h'};
+
 	// Test receiving
 	while (1)
 	{
@@ -138,15 +141,15 @@ int main (void)
 		char i;
 		char matched = 1;
 		//transmit_string("data = ");
-		for(i = 0; i < 15; i++)
+		for(i = 0; i < 31; i++)
 		{
 			if (expected[i] != buffer[i])
 			{
 				matched = 0;
 			}
-			//USART_Transmit(buffer[i]);
+			USART_Transmit(buffer[i]);
 		}
-		USART_Transmit(buffer[15]);
+		//USART_Transmit(buffer[15]);
 		if (matched)
 		{
 //			transmit_string(" OK\r\n");
