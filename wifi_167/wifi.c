@@ -114,8 +114,8 @@ int main (void)
 	buffer[0] = 'h';
 	
 	char testing_sender = 1;
-    uint8_t testbuffersize = 1;
-    uint8_t testbuffer[1] = {'a'};
+    uint8_t testbuffersize = 2;
+    uint8_t testbuffer[2] = {'a','a'};
 	while (testing_sender)
 	{
         PORTB = (1<<PB0);
@@ -126,6 +126,7 @@ int main (void)
 		}
 //		mirf_send(buffer,buffersize);
         mirf_send(testbuffer,testbuffersize);
+        //
 		_delay_ms(5);
 	}
     /*

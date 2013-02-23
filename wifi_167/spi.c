@@ -45,7 +45,7 @@ void spi_init(){
 
 //	SPI_MasterTransmit
 //******************************************************************************
-char SPI_Transmit(char cData)
+uint8_t SPI_Transmit(uint8_t cData)
 {
 	// Start transmission
 	SPDR = cData;
@@ -58,9 +58,7 @@ void SPI_Transmit_All(uint8_t *data, uint8_t len)
 {
     uint8_t i = 0;
     for(i = 0; i < len; i++){
-        SPDR = 0x00;
-        while(bit_is_clear(SPSR,SPIF)){};
-        data[i] = SPDR;
+        SPI_Transmit(data[i]);
     }
 }
 
