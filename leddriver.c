@@ -45,6 +45,27 @@
 #define SS PA6
 #define MOSI PA4
 #define SCK PA5
+
+// *********************************
+// LAYER DEFINITIONS
+// *********************************
+#define LAYER_1() \
+                PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6)) \
+                PORTB |= ((0<<PIN4)|(0<<PIN5)|(0<<PIN6))
+
+#define LAYER_2 PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6))  \
+                PORTB |= ((1<<PIN4)|(0<<PIN5)|(0<<PIN6))
+
+#define LAYER_3 PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6))  \
+                PORTB |= ((0<<PIN4)|(1<<PIN5)|(0<<PIN6))
+
+#define LAYER_4 PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6))  \
+                PORTB |= ((1<<PIN4)|(j<<PIN5)|(0<<PIN6))
+
+#define LAYER_5 PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6))  \
+                PORTB |= ((0<<PIN4)|(0<<PIN5)|(1<<PIN6))
+// *********************************
+
 //#include "controllerTest.h"
 
 
@@ -162,6 +183,26 @@ void transmit1(uint16_t data1,uint16_t data2,uint16_t data3,uint16_t data4,uint1
 	PORTA &= ~(1<<SS);
 }
 
+void level(uint8_t layer){
+    switch(layer){
+        case 0:
+            PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6));
+            PORTB |= ((0<<PIN4)|(0<<PIN5)|(0<<PIN6));
+        case 1:
+            PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6));
+            PORTB |= ((1<<PIN4)|(0<<PIN5)|(0<<PIN6));
+        case 2:
+            PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6));
+            PORTB |= ((0<<PIN4)|(1<<PIN5)|(0<<PIN6));
+        case 3:
+            PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6));
+            PORTB |= ((1<<PIN4)|(1<<PIN5)|(0<<PIN6));
+        case 4:
+            PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6));
+            PORTB |= ((0<<PIN4)|(0<<PIN5)|(1<<PIN6));
+            }
+}
+
 void patrick_test(void){
     uint16_t data1 = 0x00FF;
     uint16_t data2 = 0x00FF;
@@ -170,6 +211,17 @@ void patrick_test(void){
     uint16_t data5 = 0x00FF;
 
     transmit1(data1,data2,data3,data4,data5);
+}
+
+void level_test(void){
+    uint16_t data1 = 0x00FF;
+    uint16_t data2 = 0x00FF;
+    uint16_t data3 = 0x00FF;
+    uint16_t data4 = 0x00FF;
+    uint16_t data5 = 0x00FF;
+
+    transmit1(data1,data2,data3,data4,data5);
+    level(0);
 }
 
 void transmit(uint32_t data){
@@ -384,7 +436,8 @@ int main(){
 	//sei();         //enable interrupts before entering loop
     uint8_t input = 0;
 	while(1){
-        patrick_test();
+       // patrick_test();
+        level_test();
         /*
         input = 2;
         if(input == 0){
