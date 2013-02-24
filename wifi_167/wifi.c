@@ -145,13 +145,18 @@ int main (void)
         //LED1_OFF;
         */
         if(Receive(buffer,BUFFER_SIZE) == 1){
-            if(buffer[2] == 'e'){
+            if(buffer[3] == 'l'){
                 led1_on();
+                //led2_off();
+            }
+            else{
+            led2_on();
             }
         }
         else{
             led2_on();
             _delay_ms(100);
+            led1_off();
             led2_off();
         }
     }
