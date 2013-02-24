@@ -10,6 +10,7 @@
 // Notable information:
 // Both the Reads on rising edge and changes on falling edge.
 //************************************************************************//
+//oh yea
 
 #define F_CPU 8000000UL	// 1Mhz clock
 #define BAUD 250000
