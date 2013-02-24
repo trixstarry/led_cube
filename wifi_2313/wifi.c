@@ -13,6 +13,7 @@
 
 #define F_CPU 8000000UL	// 1Mhz clock
 #define BAUD 250000
+#define BUFFER_SIZE 32
 //#define MY_UBBR 1 // F_CPU/(16*BAUD)-1
 #define SET_U2X 0
 #define MY_UBBR 12 // BAUD = 38400
@@ -75,9 +76,14 @@ int main (void)
 	DDRB |= (1<<PB1); // Test passed LED
 	DDRB |= (1<<PB0); // Test failed LED
 	
+	//char buffer [16] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
+	//char buffer [24] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}',
+    //                    'l','a','u','l','o',' ','n','o'};
+	//char buffer [30] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}',
+    //                    'l','a','u','l','o',' ','n','o','o','d','l','e','!','.'};
 	char buffer [32] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}',
                         'l','a','u','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
-	uint8_t buffersize = 32;
+	uint8_t buffersize = BUFFER_SIZE;
 	// Initialize AVR for use with mirf
 	mirf_init();
 	// Wait for mirf to come up
@@ -129,8 +135,8 @@ int main (void)
 		_delay_ms(5);
 	}
 	
-	char expected [32] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}',
-                        'l','a','u','g','h',' ','i','t',' ','u','p',' ','R','u','t','h'};
+	char expected [32] = {'h','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}','l','a','u','g','h',' ','i','t',' ','u','p',' ','R','u','t','h'};
+	//char expected [16] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
 
 	// Test receiving
 	while (1)
@@ -144,24 +150,24 @@ int main (void)
 		uint8_t i;
 		uint8_t matched = 1;
 		//transmit_string("data = ");
-		for(i = 0; i < 31; i++)
+		for(i = 0; i < (BUFFER_SIZE-1); i++)
 		{
-			if (expected[i] != buffer[i])
-			{
-				matched = 0;
-			}
+			//if (expected[i] != buffer[i])
+			//{
+		//		matched = 0;
+		//	}
 			USART_Transmit(buffer[i]);
 		}
 
-		USART_Transmit(buffer[31]);
+		USART_Transmit(buffer[BUFFER_SIZE-1]);
 		if (matched)
 		{
-			//transmit_string("  OK\r\n");
+			transmit_string("  OK\r\n");
             //transmit_string("");
 		}
 		else
 		{
-			//transmit_string(" BAD\r\n");
+			transmit_string(" BAD\r\n");
             //transmit_string("");
 		}
 	}
