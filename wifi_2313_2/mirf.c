@@ -129,6 +129,24 @@ ISR(PCINT_vect)
     }
 }
 
+void rx_powerup(void){
+    uint8_t status;
+    if (PTX) {
+        // Read MiRF status 
+        mirf_CSN_lo;                                // Pull down chip select
+        status = spi_fast_shift(NOP);               // Read status register
+        mirf_CSN_hi;                                // Pull up chip select
+
+        mirf_CE_lo;                             // Deactivate transreceiver
+        RX_POWERUP;                             // Power up in receiving mode
+        mirf_CE_hi;                             // Listening for pakets
+        PTX = 0;                                // Set to receiving mode
+
+        // Reset status register for further interaction
+        mirf_config_register(STATUS,(1<<TX_DS)|(1<<MAX_RT)); // Reset status register
+    }
+}
+
 extern uint8_t mirf_data_ready() 
 // Checks if data is available for reading
 {

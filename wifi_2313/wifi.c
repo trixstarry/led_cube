@@ -84,9 +84,9 @@ int main (void)
 	while (1)
 	{
         //test_Transmit(buffer,BUFFER_SIZE);
-        transmit_string("preSending\n");
-        //Receive(buffer,BUFFER_SIZE);
-        test_Transmit(buffer,BUFFER_SIZE);
+        //transmit_string("preSending\n");
+        Receive(buffer,BUFFER_SIZE);
+        //test_Transmit(buffer,BUFFER_SIZE);
        //Transmit(buffer,BUFFER_SIZE);
         //transmit_string("Did i send?\r\n");
         //_delay_ms(100);

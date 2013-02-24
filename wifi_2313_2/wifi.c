@@ -94,6 +94,9 @@ void test_Transmit(uint8_t *buffer, uint8_t len){
         buffer[15] = ' ';
     }
     Transmit(buffer,len);
+    _delay_ms(5);
+    rx_powerup();
+    _delay_ms(1);
 }
 
 void test_protocol(uint8_t *buffer, uint8_t len){
