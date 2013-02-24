@@ -84,7 +84,7 @@ void Receive(uint8_t *buffer,uint8_t buffersize){
     {
         USART_Transmit(buffer[i]);
     }
-    USART_Transmit("\n");
+    USART_Transmit('\n');
 }
 
 void test_Transmit(uint8_t *buffer, uint8_t len){
@@ -94,11 +94,12 @@ void test_Transmit(uint8_t *buffer, uint8_t len){
         buffer[15] = ' ';
     }
     Transmit(buffer,len);
+    
 }
 
 void test_protocol(uint8_t *buffer, uint8_t len){
     Transmit(buffer,len);
-    Receive(buffer,len);
+    //Receive(buffer,len);
 }
 
 int main (void)
@@ -121,8 +122,10 @@ int main (void)
 	
 	while (1)
 	{
-        //Receive()
-        test_protocol(buffer,BUFFER_SIZE);
+       // Receive(buffer,BUFFER_SIZE);
+       Transmit(buffer,BUFFER_SIZE);
+        //transmit_string("Did i send?\r\n");
+        //test_protocol(buffer,BUFFER_SIZE);
 	}
 	
 }

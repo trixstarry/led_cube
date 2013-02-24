@@ -20,8 +20,10 @@
 #define SET_U2X 0
 #define MY_UBBR 12 // BAUD = 38400
 
-#define TEST_PASSED PORTB |= 0x01
-#define TEST_FAILED PORTB &= ~(0x01)
+#define LED1_ON     PORTB |= (1<<PB0)
+#define LED1_OFF    PORTB &= ~(1<<PB0)
+#define LED2_ON     PORTB |=  (1<<PB1)
+#define LED2_OFF    PORTB &= ~(1<<PB1)
 
 
 
@@ -41,11 +43,11 @@ void Transmit(uint8_t *buffer, uint8_t buffersize){
 int8_t Receive(uint8_t *buffer,uint8_t buffersize){
         uint64_t i = 0;
 		while (!mirf_data_ready()){
-            if(i > 0x7FFFF){
-       //         TEST_PASSED;
+            if(i > 0x1FFFF){
+       //         LED1_ON;
                 return -1;
             }
-            //TEST_PASSED;
+            LED1_ON;
             i++;
         }
 		mirf_get_data(buffer);
@@ -67,12 +69,12 @@ void test_protocol(uint8_t *buffer, uint8_t len){
     }
     //Transmit(buffer,len);
     else{
-      TEST_PASSED;
+      LED1_ON;
     }
 }
 
 void init(){
-    DDRB |= (1<<PB0);
+    DDRB |= (1<<PB0)|(1<<PB1);
 	// Initialize AVR for use with mirf
 	mirf_init();
 	// Wait for mirf to come up
@@ -91,16 +93,29 @@ int main (void)
 {
     init();
     //char buffer [16] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
-    char buffer [32] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}',
-        'l','a','u','g','h',' ','i','t',' ','u','p',' ','R','u','t','h',};
+    char buffer [32] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
+        'q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F',};
 	sei();
-	buffer[0] = 'h';
     init2(buffer);
+	buffer[0] = 'h';
+    //LED2_ON;
+    //LED1_ON;
 	
 	while (1)
 	{
+        //_delay_ms(100);
         //test_Transmit(buffer, BUFFER_SIZE);
-        test_protocol(buffer,BUFFER_SIZE);
-	}
+        //test_protocol(buffer,BUFFER_SIZE);
+        //_delay_ms(500);
+        //LED1_OFF;
+        if(Receive(buffer,BUFFER_SIZE) == 1){
+            if(buffer[2] == 'e'){
+                LED1_ON;
+            }
+        }
+        else{
+            LED2_ON;
+        }
+    }
 
 }
