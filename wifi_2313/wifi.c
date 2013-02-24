@@ -71,19 +71,34 @@ transmit_string(char *ptr)
 	}
 }
 
-void Transmit(){
+void Transmit(uint8_t *buffer,uint8_t buffersize){
     mirf_send(buffer,buffersize);
     _delay_ms(5);
 }
 
-void Receive(){
+void Receive(uint8_t *buffer,uint8_t buffersize){
     while (!mirf_data_ready()){};
     mirf_get_data(buffer);
     uint8_t i;
-    for(i = 0; i < (BUFFER_SIZE); i++)
+    for(i = 0; i < (buffersize); i++)
     {
         USART_Transmit(buffer[i]);
     }
+    USART_Transmit("\n");
+}
+
+void test_Transmit(uint8_t *buffer, uint8_t len){
+    buffer[15]++;
+    if (buffer[15] < ' ' || buffer[15] > 'z')
+    {
+        buffer[15] = ' ';
+    }
+    Transmit(buffer,len);
+}
+
+void test_protocol(uint8_t *buffer, uint8_t len){
+    Transmit(buffer,len);
+    Receive(buffer,len);
 }
 
 int main (void)
@@ -104,21 +119,10 @@ int main (void)
 	// Test transmitting
 	buffer[0] = 'h';
 	
-    uint8_t i;
-	char testing_sender = 0;
-	while (testing_sender)
-	{
-		buffer[15]++;
-		if (buffer[15] < ' ' || buffer[15] > 'z')
-		{
-			buffer[15] = ' ';
-		}
-		Transmit();
-	}
-	
-	// Test receiving
 	while (1)
 	{
-        Receive();
-    }
+        //Receive()
+        test_protocol(buffer,BUFFER_SIZE);
+	}
+	
 }
