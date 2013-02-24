@@ -353,15 +353,74 @@ void driver1_count(void){
 void driver2_count(void){
     static uint16_t count = 0;
     transmit(count);
-    }
+}
 
 void shift_LED(void){
-    static uint32_t LED = 0x00000001;
-    if(LED == 0){
-        LED = 0x00000001;
+    static uint16_t LED1 = 0x0001;
+    static uint16_t LED2 = 0x0000;
+    static uint16_t LED3 = 0x0000;
+    static uint16_t LED4 = 0x0000;
+    static uint16_t LED5 = 0x0000;
+
+    static uint8_t first1 = 1;
+    static uint8_t first2 = 1;
+    static uint8_t first3 = 1;
+    static uint8_t first4 = 1;
+    static uint8_t first5 = 1;
+
+    if(LED1 == 0)
+    {
+        if(first2){
+            LED2 = 0x0001;
+            first2 = 0;
+        }
+        if(~first2 && LED2){
+            LED2 = LED2 << 1;
+        }
+        else{
+            if(first3){
+                LED3= 0x0001;
+                first3 = 0;
+            }
+            if(~first3 && LED3){
+                LED3 = LED3 << 1;
+            }
+            else{
+                if(first4){
+                    LED4= 0x0001;
+                    first4 = 0;
+                }
+                if(~first4 && LED4){
+                    LED4 = LED4 << 1;
+                }
+                else{
+                    if(first5){
+                        LED5= 0x0001;
+                        first5 = 0;
+                    }
+                    if(~first5 && LED5){
+                        LED5 = LED5 << 1;
+                    }
+                    else{
+                        LED1 = 0x0001;
+                        first1 = first2 = first3 = first4 = first5 = 1;
+                    }
+                }
+            }
+        }
     }
-    transmit(LED);
-    LED = LED << 1;
+    else
+    {
+        if(first1){
+            first1 = 0;
+        }
+        else{
+            LED1 = LED1 << 1;
+        }
+    }
+
+    transmit1(LED1,LED2,LED3,LED4,LED5);
+    _delay_ms(50);
     }
 
 void test1(void){
@@ -458,7 +517,9 @@ int main(){
     uint8_t input = 0;
 	while(1){
        // patrick_test();
-        level_test();
+        //level_test();
+        shift_LED();
+
         /*
         input = 2;
         if(input == 0){
