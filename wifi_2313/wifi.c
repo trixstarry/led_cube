@@ -71,17 +71,25 @@ transmit_string(char *ptr)
 	}
 }
 
+void Transmit(){
+    mirf_send(buffer,buffersize);
+    _delay_ms(5);
+}
+
+void Receive(){
+    while (!mirf_data_ready()){};
+    mirf_get_data(buffer);
+    uint8_t i;
+    for(i = 0; i < (BUFFER_SIZE); i++)
+    {
+        USART_Transmit(buffer[i]);
+    }
+}
+
 int main (void)
 {
 	USART_Init(MY_UBBR);
-	DDRB |= (1<<PB1); // Test passed LED
-	DDRB |= (1<<PB0); // Test failed LED
 	
-	//char buffer [16] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
-	//char buffer [24] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}',
-    //                    'l','a','u','l','o',' ','n','o'};
-	//char buffer [30] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}',
-    //                    'l','a','u','l','o',' ','n','o','o','d','l','e','!','.'};
 	char buffer [32] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}',
                         'l','a','u','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
 	uint8_t buffersize = BUFFER_SIZE;
@@ -89,30 +97,8 @@ int main (void)
 	mirf_init();
 	// Wait for mirf to come up
 	_delay_ms(50);
-	// Activate interrupts
-	sei();
-	
-	/*while (1)
-	{
-		char s = USART_Receive();
-		USART_Transmit(s+1);
-		transmit_string("Hallo Welt!\r\n");
-	}*/
-	
-	//while (1)
-	//{
-		mirf_read_register (STATUS, buffer, 1);
-		/*if (buffer[0] == 0x0E)
-		{	
-			PORTB |= (1<<PB1); // Test passed LED on
-		}
-		else
-		{
-			PORTB |= (1<<PB0); // Test failed LED on
-		}*/
-		//_delay_ms (100);
-	//}
-	
+	// Activate interrupts sei(); 
+	mirf_read_register (STATUS, buffer, 1);
 	// Configure mirf
 	mirf_config();
 	// Test transmitting
@@ -127,74 +113,12 @@ int main (void)
 		{
 			buffer[15] = ' ';
 		}
-		
-		mirf_send(buffer,buffersize);
-        for(i = 0; i <0; i++)
-        {
-            _delay_ms(500);
-        }
-		_delay_ms(5);
+		Transmit();
 	}
 	
-	char expected [32] = {'h','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}','l','a','u','g','h',' ','i','t',' ','u','p',' ','R','u','t','h'};
-	//char expected [16] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
-
 	// Test receiving
 	while (1)
 	{
-		while (!mirf_data_ready()){};
-        //transmit_string("Mary had a little lamb puffartly");
-		mirf_get_data(buffer);
-        
-        //transmit_string("Mary had a little lamb puffartly");
-		PORTB |= (1<<PB1);
-		uint8_t i;
-		uint8_t matched = 1;
-		//transmit_string("data = ");
-		for(i = 0; i < (BUFFER_SIZE-1); i++)
-		{
-			//if (expected[i] != buffer[i])
-			//{
-		//		matched = 0;
-		//	}
-			USART_Transmit(buffer[i]);
-		}
-
-		USART_Transmit(buffer[BUFFER_SIZE-1]);
-		if (matched)
-		{
-			transmit_string("  OK\r\n");
-            //transmit_string("");
-		}
-		else
-		{
-			transmit_string(" BAD\r\n");
-            //transmit_string("");
-		}
-	}
-
-	/*enable_spi(1); // Initialize SPI stuff
-
-	DDRB |= (1<<PB2); // Chip select line set to output
-
-	while (1)
-	{
-		PORTB &= ~(1<<PB2); // CSN goes low, radio selected
-
-		_delay_us(10); // Wait a little bit for the heck of it...  (it might take a couple uS for the CSN line to move)
-		spi (0x07); // Request status byte
-		char data = spi (0x00); // Get back the status byte
-		if (data == 0x0E) // Default value for status is 0x0E
-		{
-			PORTB |= (1<<PB0); // Do something here to indicate we got the expected value :)
-		}	
-		else
-		{
-			PORTB |= (1<<PB1); // Do something here to indicate we got a bad value... :(
-		}
-
-		PORTB |= (1<<PB2); // CSN goes high, radio unselected
-		
-		_delay_ms (200);// Wait a while before doing it again
-	}*/
+        Receive();
+    }
 }
