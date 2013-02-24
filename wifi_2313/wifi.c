@@ -75,6 +75,7 @@ int main (void)
 	USART_Init(MY_UBBR);
 	DDRB |= (1<<PB1); // Test passed LED
 	DDRB |= (1<<PB0); // Test failed LED
+    //PORTB |= (1<<PB4);
 	
 	//char buffer [16] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
 	//char buffer [24] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}',
@@ -118,21 +119,19 @@ int main (void)
 	buffer[0] = 'h';
 	
     uint8_t i;
-	char testing_sender = 1;
+	char testing_sender = 0;
 	while (testing_sender)
 	{
-		buffer[15]++;
-		if (buffer[15] < ' ' || buffer[15] > 'z')
+		buffer[BUFFER_SIZE-1]++;
+		if (buffer[BUFFER_SIZE-1] < ' ' || buffer[BUFFER_SIZE-1] > 'z')
 		{
-			buffer[15] = ' ';
+			buffer[BUFFER_SIZE-1] = ' ';
 		}
 		
-		mirf_send(buffer,buffersize);
-        for(i = 0; i <0; i++)
-        {
-            _delay_ms(500);
-        }
+		mirf_send(buffer,BUFFER_SIZE);
 		_delay_ms(5);
+        PORTB |= (1<<PB4);
+        PORTB &= ~(1<<PB4);
 	}
 	
 	char expected [32] = {'h','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}','l','a','u','g','h',' ','i','t',' ','u','p',' ','R','u','t','h'};

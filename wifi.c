@@ -122,6 +122,9 @@ int main (void)
 		
 		mirf_send(buffer,buffersize);
 		_delay_ms(5);
+        //transmit_string("sending data");
+        //USART_Transmit(buffer[15]);
+        //USART_Transmit('\n');
 	}
 	
 	char expected [16] = {'h','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
