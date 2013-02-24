@@ -135,8 +135,11 @@ int main (void)
 	// Test receiving
 	while (1)
 	{
-		while (!mirf_data_ready());
+		while (!mirf_data_ready()){};
+        //transmit_string("Mary had a little lamb puffartly");
 		mirf_get_data(buffer);
+        
+        //transmit_string("Mary had a little lamb puffartly");
 		PORTB |= (1<<PB1);
 		uint8_t i;
 		uint8_t matched = 1;
@@ -153,13 +156,13 @@ int main (void)
 		USART_Transmit(buffer[31]);
 		if (matched)
 		{
-			transmit_string("  OK\r\n");
-            transmit_string("");
+			//transmit_string("  OK\r\n");
+            //transmit_string("");
 		}
 		else
 		{
-			transmit_string(" BAD\r\n");
-            transmit_string("");
+			//transmit_string(" BAD\r\n");
+            //transmit_string("");
 		}
 	}
 

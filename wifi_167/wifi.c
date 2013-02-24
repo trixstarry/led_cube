@@ -131,7 +131,7 @@ int main (void)
     	mirf_send(buffer,buffersize);
         //mirf_send(testbuffer,testbuffersize);
         //
-		_delay_ms(10);
+		_delay_ms(100);
 	}
     /*
     while(1){
