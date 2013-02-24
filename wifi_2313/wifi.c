@@ -118,7 +118,7 @@ int main (void)
 	buffer[0] = 'h';
 	
     uint8_t i;
-	char testing_sender = 0;
+	char testing_sender = 1;
 	while (testing_sender)
 	{
 		buffer[15]++;
