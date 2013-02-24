@@ -3,15 +3,15 @@ leddriver.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         00000004  00800100  00000360  000003f4  2**0
+  0 .data         00000004  00800100  000003d8  0000046c  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000360  00000000  00000000  00000094  2**1
+  1 .text         000003d8  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          00000001  00800104  00800104  000003f8  2**0
+  2 .bss          00000001  00800104  00800104  00000470  2**0
                   ALLOC
-  3 .stab         00001374  00000000  00000000  000003f8  2**2
+  3 .stab         0000141c  00000000  00000000  00000470  2**2
                   CONTENTS, READONLY, DEBUGGING
-  4 .stabstr      000008e3  00000000  00000000  0000176c  2**0
+  4 .stabstr      0000091c  00000000  00000000  0000188c  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -50,7 +50,7 @@ Disassembly of section .text:
   5c:	11 e0       	ldi	r17, 0x01	; 1
   5e:	a0 e0       	ldi	r26, 0x00	; 0
   60:	b1 e0       	ldi	r27, 0x01	; 1
-  62:	e0 e6       	ldi	r30, 0x60	; 96
+  62:	e8 ed       	ldi	r30, 0xD8	; 216
   64:	f3 e0       	ldi	r31, 0x03	; 3
   66:	02 c0       	rjmp	.+4      	; 0x6c <__do_copy_data+0x10>
   68:	05 90       	lpm	r0, Z+
@@ -72,8 +72,8 @@ Disassembly of section .text:
   7c:	a5 30       	cpi	r26, 0x05	; 5
   7e:	b1 07       	cpc	r27, r17
   80:	e1 f7       	brne	.-8      	; 0x7a <.do_clear_bss_loop>
-  82:	0e 94 96 01 	call	0x32c	; 0x32c <main>
-  86:	0c 94 ae 01 	jmp	0x35c	; 0x35c <_exit>
+  82:	0e 94 cf 01 	call	0x39e	; 0x39e <main>
+  86:	0c 94 ea 01 	jmp	0x3d4	; 0x3d4 <_exit>
 
 0000008a <__bad_interrupt>:
   8a:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -227,550 +227,647 @@ void transmit1(uint16_t data1,uint16_t data2,uint16_t data3,uint16_t data4,uint1
 void level(uint8_t layer){
     switch(layer){
  100:	82 30       	cpi	r24, 0x02	; 2
- 102:	79 f0       	breq	.+30     	; 0x122 <level+0x22>
+ 102:	91 f0       	breq	.+36     	; 0x128 <level+0x28>
  104:	83 30       	cpi	r24, 0x03	; 3
- 106:	28 f0       	brcs	.+10     	; 0x112 <level+0x12>
+ 106:	40 f0       	brcs	.+16     	; 0x118 <level+0x18>
  108:	83 30       	cpi	r24, 0x03	; 3
- 10a:	79 f0       	breq	.+30     	; 0x12a <level+0x2a>
+ 10a:	91 f0       	breq	.+36     	; 0x130 <level+0x30>
  10c:	84 30       	cpi	r24, 0x04	; 4
- 10e:	99 f0       	breq	.+38     	; 0x136 <level+0x36>
- 110:	08 95       	ret
- 112:	88 23       	and	r24, r24
- 114:	a9 f0       	breq	.+42     	; 0x140 <level+0x40>
- 116:	81 30       	cpi	r24, 0x01	; 1
- 118:	d9 f7       	brne	.-10     	; 0x110 <level+0x10>
-        case 0:
-            PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6));
-            PORTB |= ((0<<PIN4)|(0<<PIN5)|(0<<PIN6));
-        case 1:
-            PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6));
- 11a:	85 b1       	in	r24, 0x05	; 5
- 11c:	8f 78       	andi	r24, 0x8F	; 143
- 11e:	85 b9       	out	0x05, r24	; 5
-            PORTB |= ((1<<PIN4)|(0<<PIN5)|(0<<PIN6));
- 120:	2c 9a       	sbi	0x05, 4	; 5
-        case 2:
-            PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6));
- 122:	85 b1       	in	r24, 0x05	; 5
- 124:	8f 78       	andi	r24, 0x8F	; 143
- 126:	85 b9       	out	0x05, r24	; 5
-            PORTB |= ((0<<PIN4)|(1<<PIN5)|(0<<PIN6));
- 128:	2d 9a       	sbi	0x05, 5	; 5
-        case 3:
-            PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6));
- 12a:	85 b1       	in	r24, 0x05	; 5
- 12c:	8f 78       	andi	r24, 0x8F	; 143
- 12e:	85 b9       	out	0x05, r24	; 5
-            PORTB |= ((1<<PIN4)|(1<<PIN5)|(0<<PIN6));
- 130:	85 b1       	in	r24, 0x05	; 5
- 132:	80 63       	ori	r24, 0x30	; 48
- 134:	85 b9       	out	0x05, r24	; 5
+ 10e:	b1 f0       	breq	.+44     	; 0x13c <level+0x3c>
+            PORTB |= ((1<<PB4)|(1<<PB5)|(0<<PB6));
         case 4:
-            PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6));
+            PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+            PORTB |= ((0<<PB4)|(0<<PB5)|(1<<PB6));
+        default:
+            PORTB |= ((1<<PB4)|(1<<PB5)|(1<<PB6));
+ 110:	85 b1       	in	r24, 0x05	; 5
+ 112:	80 67       	ori	r24, 0x70	; 112
+ 114:	85 b9       	out	0x05, r24	; 5
+            }
+}
+ 116:	08 95       	ret
+	PORTA |= (1<<SS);
+	PORTA &= ~(1<<SS);
+}
+
+void level(uint8_t layer){
+    switch(layer){
+ 118:	88 23       	and	r24, r24
+ 11a:	c1 f0       	breq	.+48     	; 0x14c <level+0x4c>
+ 11c:	81 30       	cpi	r24, 0x01	; 1
+ 11e:	91 f4       	brne	.+36     	; 0x144 <level+0x44>
+        case 0:
+            PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+            PORTB |= ((0<<PB4)|(0<<PB5)|(0<<PB6));
+        case 1:
+            PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+ 120:	85 b1       	in	r24, 0x05	; 5
+ 122:	8f 78       	andi	r24, 0x8F	; 143
+ 124:	85 b9       	out	0x05, r24	; 5
+            PORTB |= ((1<<PB4)|(0<<PB5)|(0<<PB6));
+ 126:	2c 9a       	sbi	0x05, 4	; 5
+        case 2:
+            PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+ 128:	85 b1       	in	r24, 0x05	; 5
+ 12a:	8f 78       	andi	r24, 0x8F	; 143
+ 12c:	85 b9       	out	0x05, r24	; 5
+            PORTB |= ((0<<PB4)|(1<<PB5)|(0<<PB6));
+ 12e:	2d 9a       	sbi	0x05, 5	; 5
+        case 3:
+            PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+ 130:	85 b1       	in	r24, 0x05	; 5
+ 132:	8f 78       	andi	r24, 0x8F	; 143
+ 134:	85 b9       	out	0x05, r24	; 5
+            PORTB |= ((1<<PB4)|(1<<PB5)|(0<<PB6));
  136:	85 b1       	in	r24, 0x05	; 5
- 138:	8f 78       	andi	r24, 0x8F	; 143
+ 138:	80 63       	ori	r24, 0x30	; 48
  13a:	85 b9       	out	0x05, r24	; 5
-            PORTB |= ((0<<PIN4)|(0<<PIN5)|(1<<PIN6));
- 13c:	2e 9a       	sbi	0x05, 6	; 5
- 13e:	08 95       	ret
+        case 4:
+            PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+ 13c:	85 b1       	in	r24, 0x05	; 5
+ 13e:	8f 78       	andi	r24, 0x8F	; 143
+ 140:	85 b9       	out	0x05, r24	; 5
+            PORTB |= ((0<<PB4)|(0<<PB5)|(1<<PB6));
+ 142:	2e 9a       	sbi	0x05, 6	; 5
+        default:
+            PORTB |= ((1<<PB4)|(1<<PB5)|(1<<PB6));
+ 144:	85 b1       	in	r24, 0x05	; 5
+ 146:	80 67       	ori	r24, 0x70	; 112
+ 148:	85 b9       	out	0x05, r24	; 5
+            }
+}
+ 14a:	08 95       	ret
 }
 
 void level(uint8_t layer){
     switch(layer){
         case 0:
-            PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6));
- 140:	85 b1       	in	r24, 0x05	; 5
- 142:	8f 78       	andi	r24, 0x8F	; 143
- 144:	85 b9       	out	0x05, r24	; 5
-            PORTB |= ((0<<PIN4)|(0<<PIN5)|(0<<PIN6));
- 146:	85 b1       	in	r24, 0x05	; 5
- 148:	85 b9       	out	0x05, r24	; 5
- 14a:	e7 cf       	rjmp	.-50     	; 0x11a <level+0x1a>
+            PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+ 14c:	85 b1       	in	r24, 0x05	; 5
+ 14e:	8f 78       	andi	r24, 0x8F	; 143
+ 150:	85 b9       	out	0x05, r24	; 5
+            PORTB |= ((0<<PB4)|(0<<PB5)|(0<<PB6));
+ 152:	85 b1       	in	r24, 0x05	; 5
+ 154:	85 b9       	out	0x05, r24	; 5
+ 156:	e4 cf       	rjmp	.-56     	; 0x120 <level+0x20>
 
-0000014c <patrick_test>:
-            PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6));
-            PORTB |= ((0<<PIN4)|(0<<PIN5)|(1<<PIN6));
+00000158 <patrick_test>:
+        default:
+            PORTB |= ((1<<PB4)|(1<<PB5)|(1<<PB6));
             }
 }
 
 void patrick_test(void){
- 14c:	0f 93       	push	r16
- 14e:	1f 93       	push	r17
+ 158:	0f 93       	push	r16
+ 15a:	1f 93       	push	r17
     uint16_t data2 = 0x00FF;
     uint16_t data3 = 0x00FF;
     uint16_t data4 = 0x00FF;
     uint16_t data5 = 0x00FF;
 
     transmit1(data1,data2,data3,data4,data5);
- 150:	8f ef       	ldi	r24, 0xFF	; 255
- 152:	90 e0       	ldi	r25, 0x00	; 0
- 154:	6f ef       	ldi	r22, 0xFF	; 255
- 156:	70 e0       	ldi	r23, 0x00	; 0
- 158:	4f ef       	ldi	r20, 0xFF	; 255
- 15a:	50 e0       	ldi	r21, 0x00	; 0
- 15c:	2f ef       	ldi	r18, 0xFF	; 255
- 15e:	30 e0       	ldi	r19, 0x00	; 0
- 160:	0f ef       	ldi	r16, 0xFF	; 255
- 162:	10 e0       	ldi	r17, 0x00	; 0
- 164:	0e 94 51 00 	call	0xa2	; 0xa2 <transmit1>
+ 15c:	8f ef       	ldi	r24, 0xFF	; 255
+ 15e:	90 e0       	ldi	r25, 0x00	; 0
+ 160:	6f ef       	ldi	r22, 0xFF	; 255
+ 162:	70 e0       	ldi	r23, 0x00	; 0
+ 164:	4f ef       	ldi	r20, 0xFF	; 255
+ 166:	50 e0       	ldi	r21, 0x00	; 0
+ 168:	2f ef       	ldi	r18, 0xFF	; 255
+ 16a:	30 e0       	ldi	r19, 0x00	; 0
+ 16c:	0f ef       	ldi	r16, 0xFF	; 255
+ 16e:	10 e0       	ldi	r17, 0x00	; 0
+ 170:	0e 94 51 00 	call	0xa2	; 0xa2 <transmit1>
 }
- 168:	1f 91       	pop	r17
- 16a:	0f 91       	pop	r16
- 16c:	08 95       	ret
+ 174:	1f 91       	pop	r17
+ 176:	0f 91       	pop	r16
+ 178:	08 95       	ret
 
-0000016e <level_test>:
+0000017a <level_test>:
 
 void level_test(void){
- 16e:	0f 93       	push	r16
- 170:	1f 93       	push	r17
+ 17a:	0f 93       	push	r16
+ 17c:	1f 93       	push	r17
     uint16_t data2 = 0x00FF;
     uint16_t data3 = 0x00FF;
     uint16_t data4 = 0x00FF;
     uint16_t data5 = 0x00FF;
 
     transmit1(data1,data2,data3,data4,data5);
- 172:	8f ef       	ldi	r24, 0xFF	; 255
- 174:	90 e0       	ldi	r25, 0x00	; 0
- 176:	6f ef       	ldi	r22, 0xFF	; 255
- 178:	70 e0       	ldi	r23, 0x00	; 0
- 17a:	4f ef       	ldi	r20, 0xFF	; 255
- 17c:	50 e0       	ldi	r21, 0x00	; 0
- 17e:	2f ef       	ldi	r18, 0xFF	; 255
- 180:	30 e0       	ldi	r19, 0x00	; 0
- 182:	0f ef       	ldi	r16, 0xFF	; 255
- 184:	10 e0       	ldi	r17, 0x00	; 0
- 186:	0e 94 51 00 	call	0xa2	; 0xa2 <transmit1>
+ 17e:	8f ef       	ldi	r24, 0xFF	; 255
+ 180:	90 e0       	ldi	r25, 0x00	; 0
+ 182:	6f ef       	ldi	r22, 0xFF	; 255
+ 184:	70 e0       	ldi	r23, 0x00	; 0
+ 186:	4f ef       	ldi	r20, 0xFF	; 255
+ 188:	50 e0       	ldi	r21, 0x00	; 0
+ 18a:	2f ef       	ldi	r18, 0xFF	; 255
+ 18c:	30 e0       	ldi	r19, 0x00	; 0
+ 18e:	0f ef       	ldi	r16, 0xFF	; 255
+ 190:	10 e0       	ldi	r17, 0x00	; 0
+ 192:	0e 94 51 00 	call	0xa2	; 0xa2 <transmit1>
     level(0);
- 18a:	80 e0       	ldi	r24, 0x00	; 0
- 18c:	0e 94 80 00 	call	0x100	; 0x100 <level>
-}
- 190:	1f 91       	pop	r17
- 192:	0f 91       	pop	r16
- 194:	08 95       	ret
+ 196:	80 e0       	ldi	r24, 0x00	; 0
+ 198:	0e 94 80 00 	call	0x100	; 0x100 <level>
+	#else
+		//round up by default
+		__ticks_dc = (uint32_t)(ceil(fabs(__tmp)));
+	#endif
 
-00000196 <transmit>:
+	__builtin_avr_delay_cycles(__ticks_dc);
+ 19c:	8f ef       	ldi	r24, 0xFF	; 255
+ 19e:	94 e3       	ldi	r25, 0x34	; 52
+ 1a0:	ac e0       	ldi	r26, 0x0C	; 12
+ 1a2:	81 50       	subi	r24, 0x01	; 1
+ 1a4:	90 40       	sbci	r25, 0x00	; 0
+ 1a6:	a0 40       	sbci	r26, 0x00	; 0
+ 1a8:	e1 f7       	brne	.-8      	; 0x1a2 <level_test+0x28>
+ 1aa:	00 c0       	rjmp	.+0      	; 0x1ac <level_test+0x32>
+ 1ac:	00 00       	nop
+ 1ae:	8f ef       	ldi	r24, 0xFF	; 255
+ 1b0:	94 e3       	ldi	r25, 0x34	; 52
+ 1b2:	ac e0       	ldi	r26, 0x0C	; 12
+ 1b4:	81 50       	subi	r24, 0x01	; 1
+ 1b6:	90 40       	sbci	r25, 0x00	; 0
+ 1b8:	a0 40       	sbci	r26, 0x00	; 0
+ 1ba:	e1 f7       	brne	.-8      	; 0x1b4 <level_test+0x3a>
+ 1bc:	00 c0       	rjmp	.+0      	; 0x1be <level_test+0x44>
+ 1be:	00 00       	nop
+    data1 = ~0x00FF;
+    data2 = ~0x00FF;
+    data3 = ~0x00FF;
+    data4 = ~0x00FF;
+    data5 = ~0x00FF;
+    transmit1(data1,data2,data3,data4,data5);
+ 1c0:	80 e0       	ldi	r24, 0x00	; 0
+ 1c2:	9f ef       	ldi	r25, 0xFF	; 255
+ 1c4:	60 e0       	ldi	r22, 0x00	; 0
+ 1c6:	7f ef       	ldi	r23, 0xFF	; 255
+ 1c8:	40 e0       	ldi	r20, 0x00	; 0
+ 1ca:	5f ef       	ldi	r21, 0xFF	; 255
+ 1cc:	20 e0       	ldi	r18, 0x00	; 0
+ 1ce:	3f ef       	ldi	r19, 0xFF	; 255
+ 1d0:	00 e0       	ldi	r16, 0x00	; 0
+ 1d2:	1f ef       	ldi	r17, 0xFF	; 255
+ 1d4:	0e 94 51 00 	call	0xa2	; 0xa2 <transmit1>
+    level(1);
+ 1d8:	81 e0       	ldi	r24, 0x01	; 1
+ 1da:	0e 94 80 00 	call	0x100	; 0x100 <level>
+ 1de:	8f ef       	ldi	r24, 0xFF	; 255
+ 1e0:	94 e3       	ldi	r25, 0x34	; 52
+ 1e2:	ac e0       	ldi	r26, 0x0C	; 12
+ 1e4:	81 50       	subi	r24, 0x01	; 1
+ 1e6:	90 40       	sbci	r25, 0x00	; 0
+ 1e8:	a0 40       	sbci	r26, 0x00	; 0
+ 1ea:	e1 f7       	brne	.-8      	; 0x1e4 <level_test+0x6a>
+ 1ec:	00 c0       	rjmp	.+0      	; 0x1ee <level_test+0x74>
+ 1ee:	00 00       	nop
+ 1f0:	8f ef       	ldi	r24, 0xFF	; 255
+ 1f2:	94 e3       	ldi	r25, 0x34	; 52
+ 1f4:	ac e0       	ldi	r26, 0x0C	; 12
+ 1f6:	81 50       	subi	r24, 0x01	; 1
+ 1f8:	90 40       	sbci	r25, 0x00	; 0
+ 1fa:	a0 40       	sbci	r26, 0x00	; 0
+ 1fc:	e1 f7       	brne	.-8      	; 0x1f6 <level_test+0x7c>
+ 1fe:	00 c0       	rjmp	.+0      	; 0x200 <level_test+0x86>
+ 200:	00 00       	nop
+    _delay_ms(500);
+    _delay_ms(500);
+}
+ 202:	1f 91       	pop	r17
+ 204:	0f 91       	pop	r16
+ 206:	08 95       	ret
+
+00000208 <transmit>:
 	
 	uint8_t temp = 0;
 
 	temp = (data);
 	//load first byte
 	SPDR = temp;
- 196:	6e bd       	out	0x2e, r22	; 46
+ 208:	6e bd       	out	0x2e, r22	; 46
 	//temp = 0x0F & display_count;
 	while(bit_is_clear(SPSR,SPIF)){};
- 198:	0d b4       	in	r0, 0x2d	; 45
- 19a:	07 fe       	sbrs	r0, 7
- 19c:	fd cf       	rjmp	.-6      	; 0x198 <transmit+0x2>
+ 20a:	0d b4       	in	r0, 0x2d	; 45
+ 20c:	07 fe       	sbrs	r0, 7
+ 20e:	fd cf       	rjmp	.-6      	; 0x20a <transmit+0x2>
 
 	temp = (data>>8);
- 19e:	27 2f       	mov	r18, r23
- 1a0:	38 2f       	mov	r19, r24
- 1a2:	49 2f       	mov	r20, r25
- 1a4:	55 27       	eor	r21, r21
+ 210:	27 2f       	mov	r18, r23
+ 212:	38 2f       	mov	r19, r24
+ 214:	49 2f       	mov	r20, r25
+ 216:	55 27       	eor	r21, r21
 	//load second byte
 	SPDR = temp;
- 1a6:	2e bd       	out	0x2e, r18	; 46
+ 218:	2e bd       	out	0x2e, r18	; 46
 	//temp = 0x0F & display_count;
 	while(bit_is_clear(SPSR,SPIF)){};
- 1a8:	0d b4       	in	r0, 0x2d	; 45
- 1aa:	07 fe       	sbrs	r0, 7
- 1ac:	fd cf       	rjmp	.-6      	; 0x1a8 <transmit+0x12>
+ 21a:	0d b4       	in	r0, 0x2d	; 45
+ 21c:	07 fe       	sbrs	r0, 7
+ 21e:	fd cf       	rjmp	.-6      	; 0x21a <transmit+0x12>
 
 	temp = (data>>16);
- 1ae:	9c 01       	movw	r18, r24
- 1b0:	44 27       	eor	r20, r20
- 1b2:	55 27       	eor	r21, r21
+ 220:	9c 01       	movw	r18, r24
+ 222:	44 27       	eor	r20, r20
+ 224:	55 27       	eor	r21, r21
 	//load third byte
 	SPDR = temp;
- 1b4:	2e bd       	out	0x2e, r18	; 46
+ 226:	2e bd       	out	0x2e, r18	; 46
 	//temp = 0x0F & display_count;
 	while(bit_is_clear(SPSR,SPIF)){};
- 1b6:	0d b4       	in	r0, 0x2d	; 45
- 1b8:	07 fe       	sbrs	r0, 7
- 1ba:	fd cf       	rjmp	.-6      	; 0x1b6 <transmit+0x20>
+ 228:	0d b4       	in	r0, 0x2d	; 45
+ 22a:	07 fe       	sbrs	r0, 7
+ 22c:	fd cf       	rjmp	.-6      	; 0x228 <transmit+0x20>
 
 	temp = (data>>24);
- 1bc:	69 2f       	mov	r22, r25
- 1be:	77 27       	eor	r23, r23
- 1c0:	88 27       	eor	r24, r24
- 1c2:	99 27       	eor	r25, r25
+ 22e:	69 2f       	mov	r22, r25
+ 230:	77 27       	eor	r23, r23
+ 232:	88 27       	eor	r24, r24
+ 234:	99 27       	eor	r25, r25
 	//load fourth byte
 	SPDR = temp;
- 1c4:	6e bd       	out	0x2e, r22	; 46
+ 236:	6e bd       	out	0x2e, r22	; 46
 	//temp = 0x0F & display_count;
 	while(bit_is_clear(SPSR,SPIF)){};
- 1c6:	0d b4       	in	r0, 0x2d	; 45
- 1c8:	07 fe       	sbrs	r0, 7
- 1ca:	fd cf       	rjmp	.-6      	; 0x1c6 <transmit+0x30>
+ 238:	0d b4       	in	r0, 0x2d	; 45
+ 23a:	07 fe       	sbrs	r0, 7
+ 23c:	fd cf       	rjmp	.-6      	; 0x238 <transmit+0x30>
 
 	//Toggle latch
 	PORTA |= (1<<SS);
- 1cc:	16 9a       	sbi	0x02, 6	; 2
+ 23e:	16 9a       	sbi	0x02, 6	; 2
 	PORTA &= ~(1<<SS);
- 1ce:	16 98       	cbi	0x02, 6	; 2
+ 240:	16 98       	cbi	0x02, 6	; 2
 }
- 1d0:	08 95       	ret
+ 242:	08 95       	ret
 
-000001d2 <test_run>:
+00000244 <test_run>:
 
 void test_run(void){
 	//break the data up into 4 bytes
 	
 	//load first byte
 	SPDR = 0xff;
- 1d2:	8f ef       	ldi	r24, 0xFF	; 255
- 1d4:	8e bd       	out	0x2e, r24	; 46
+ 244:	8f ef       	ldi	r24, 0xFF	; 255
+ 246:	8e bd       	out	0x2e, r24	; 46
 	//temp = 0x0F & display_count;
 	while(bit_is_clear(SPSR,SPIF)){};
- 1d6:	0d b4       	in	r0, 0x2d	; 45
- 1d8:	07 fe       	sbrs	r0, 7
- 1da:	fd cf       	rjmp	.-6      	; 0x1d6 <test_run+0x4>
+ 248:	0d b4       	in	r0, 0x2d	; 45
+ 24a:	07 fe       	sbrs	r0, 7
+ 24c:	fd cf       	rjmp	.-6      	; 0x248 <test_run+0x4>
 	//PORTB |= 0x80;
 	//PORTB &= ~(0x80);
 	//
 
 	//load second byte
 	SPDR = 0xff;
- 1dc:	8f ef       	ldi	r24, 0xFF	; 255
- 1de:	8e bd       	out	0x2e, r24	; 46
+ 24e:	8f ef       	ldi	r24, 0xFF	; 255
+ 250:	8e bd       	out	0x2e, r24	; 46
 	//temp = 0x0F & display_count;
 	while(bit_is_clear(SPSR,SPIF)){};
- 1e0:	0d b4       	in	r0, 0x2d	; 45
- 1e2:	07 fe       	sbrs	r0, 7
- 1e4:	fd cf       	rjmp	.-6      	; 0x1e0 <test_run+0xe>
+ 252:	0d b4       	in	r0, 0x2d	; 45
+ 254:	07 fe       	sbrs	r0, 7
+ 256:	fd cf       	rjmp	.-6      	; 0x252 <test_run+0xe>
 	//PORTB |= 0x00;
 	//PORTB &= ~(0x80);
 	//
 	
 	//load third byte
 	SPDR = 0xff;
- 1e6:	8f ef       	ldi	r24, 0xFF	; 255
- 1e8:	8e bd       	out	0x2e, r24	; 46
+ 258:	8f ef       	ldi	r24, 0xFF	; 255
+ 25a:	8e bd       	out	0x2e, r24	; 46
 	//temp = 0x0F & display_count;
 	while(bit_is_clear(SPSR,SPIF)){};
- 1ea:	0d b4       	in	r0, 0x2d	; 45
- 1ec:	07 fe       	sbrs	r0, 7
- 1ee:	fd cf       	rjmp	.-6      	; 0x1ea <test_run+0x18>
+ 25c:	0d b4       	in	r0, 0x2d	; 45
+ 25e:	07 fe       	sbrs	r0, 7
+ 260:	fd cf       	rjmp	.-6      	; 0x25c <test_run+0x18>
 	//
 	
 
 
 	//load fourth byte
 	SPDR = 0xff;
- 1f0:	8f ef       	ldi	r24, 0xFF	; 255
- 1f2:	8e bd       	out	0x2e, r24	; 46
+ 262:	8f ef       	ldi	r24, 0xFF	; 255
+ 264:	8e bd       	out	0x2e, r24	; 46
 	//temp = 0x0F & display_count;
 	while(bit_is_clear(SPSR,SPIF)){};
- 1f4:	0d b4       	in	r0, 0x2d	; 45
- 1f6:	07 fe       	sbrs	r0, 7
- 1f8:	fd cf       	rjmp	.-6      	; 0x1f4 <test_run+0x22>
+ 266:	0d b4       	in	r0, 0x2d	; 45
+ 268:	07 fe       	sbrs	r0, 7
+ 26a:	fd cf       	rjmp	.-6      	; 0x266 <test_run+0x22>
 	
 	//Toggle latch
 	PORTB |= 0x80;
- 1fa:	2f 9a       	sbi	0x05, 7	; 5
+ 26c:	2f 9a       	sbi	0x05, 7	; 5
 	PORTB &= ~(0x80);
- 1fc:	2f 98       	cbi	0x05, 7	; 5
+ 26e:	2f 98       	cbi	0x05, 7	; 5
 }
- 1fe:	08 95       	ret
+ 270:	08 95       	ret
 
-00000200 <on>:
+00000272 <on>:
 
 void on(void){
     uint8_t output = -1; //All on
     transmit(output);
- 200:	6f ef       	ldi	r22, 0xFF	; 255
- 202:	70 e0       	ldi	r23, 0x00	; 0
- 204:	80 e0       	ldi	r24, 0x00	; 0
- 206:	90 e0       	ldi	r25, 0x00	; 0
- 208:	0e 94 cb 00 	call	0x196	; 0x196 <transmit>
+ 272:	6f ef       	ldi	r22, 0xFF	; 255
+ 274:	70 e0       	ldi	r23, 0x00	; 0
+ 276:	80 e0       	ldi	r24, 0x00	; 0
+ 278:	90 e0       	ldi	r25, 0x00	; 0
+ 27a:	0e 94 04 01 	call	0x208	; 0x208 <transmit>
 	}
- 20c:	08 95       	ret
+ 27e:	08 95       	ret
 
-0000020e <off>:
+00000280 <off>:
 
 void off(void){
     uint32_t output = 0;
     transmit(output);
- 20e:	60 e0       	ldi	r22, 0x00	; 0
- 210:	70 e0       	ldi	r23, 0x00	; 0
- 212:	cb 01       	movw	r24, r22
- 214:	0e 94 cb 00 	call	0x196	; 0x196 <transmit>
+ 280:	60 e0       	ldi	r22, 0x00	; 0
+ 282:	70 e0       	ldi	r23, 0x00	; 0
+ 284:	cb 01       	movw	r24, r22
+ 286:	0e 94 04 01 	call	0x208	; 0x208 <transmit>
 }
- 218:	08 95       	ret
+ 28a:	08 95       	ret
 
-0000021a <LED1on>:
+0000028c <LED1on>:
 
 void LED1on(void){
     uint32_t output = 0x01000000;
     transmit(output);
- 21a:	60 e0       	ldi	r22, 0x00	; 0
- 21c:	70 e0       	ldi	r23, 0x00	; 0
- 21e:	80 e0       	ldi	r24, 0x00	; 0
- 220:	91 e0       	ldi	r25, 0x01	; 1
- 222:	0e 94 cb 00 	call	0x196	; 0x196 <transmit>
+ 28c:	60 e0       	ldi	r22, 0x00	; 0
+ 28e:	70 e0       	ldi	r23, 0x00	; 0
+ 290:	80 e0       	ldi	r24, 0x00	; 0
+ 292:	91 e0       	ldi	r25, 0x01	; 1
+ 294:	0e 94 04 01 	call	0x208	; 0x208 <transmit>
 }
- 226:	08 95       	ret
+ 298:	08 95       	ret
 
-00000228 <LED17on>:
+0000029a <LED17on>:
 
 void LED17on(void){
     uint32_t output = 0x00000100;
     transmit(output);
- 228:	60 e0       	ldi	r22, 0x00	; 0
- 22a:	71 e0       	ldi	r23, 0x01	; 1
- 22c:	80 e0       	ldi	r24, 0x00	; 0
- 22e:	90 e0       	ldi	r25, 0x00	; 0
- 230:	0e 94 cb 00 	call	0x196	; 0x196 <transmit>
+ 29a:	60 e0       	ldi	r22, 0x00	; 0
+ 29c:	71 e0       	ldi	r23, 0x01	; 1
+ 29e:	80 e0       	ldi	r24, 0x00	; 0
+ 2a0:	90 e0       	ldi	r25, 0x00	; 0
+ 2a2:	0e 94 04 01 	call	0x208	; 0x208 <transmit>
 }
- 234:	08 95       	ret
+ 2a6:	08 95       	ret
 
-00000236 <driver1_count>:
+000002a8 <driver1_count>:
 
 void driver1_count(void){
     static uint16_t count = 0;
     transmit((count<<16));
- 236:	60 e0       	ldi	r22, 0x00	; 0
- 238:	70 e0       	ldi	r23, 0x00	; 0
- 23a:	cb 01       	movw	r24, r22
- 23c:	0e 94 cb 00 	call	0x196	; 0x196 <transmit>
+ 2a8:	60 e0       	ldi	r22, 0x00	; 0
+ 2aa:	70 e0       	ldi	r23, 0x00	; 0
+ 2ac:	cb 01       	movw	r24, r22
+ 2ae:	0e 94 04 01 	call	0x208	; 0x208 <transmit>
     }
- 240:	08 95       	ret
+ 2b2:	08 95       	ret
 
-00000242 <driver2_count>:
+000002b4 <driver2_count>:
 
 void driver2_count(void){
     static uint16_t count = 0;
     transmit(count);
- 242:	60 e0       	ldi	r22, 0x00	; 0
- 244:	70 e0       	ldi	r23, 0x00	; 0
- 246:	cb 01       	movw	r24, r22
- 248:	0e 94 cb 00 	call	0x196	; 0x196 <transmit>
+ 2b4:	60 e0       	ldi	r22, 0x00	; 0
+ 2b6:	70 e0       	ldi	r23, 0x00	; 0
+ 2b8:	cb 01       	movw	r24, r22
+ 2ba:	0e 94 04 01 	call	0x208	; 0x208 <transmit>
     }
- 24c:	08 95       	ret
+ 2be:	08 95       	ret
 
-0000024e <shift_LED>:
+000002c0 <shift_LED>:
 
 void shift_LED(void){
- 24e:	ef 92       	push	r14
- 250:	ff 92       	push	r15
- 252:	0f 93       	push	r16
- 254:	1f 93       	push	r17
+ 2c0:	ef 92       	push	r14
+ 2c2:	ff 92       	push	r15
+ 2c4:	0f 93       	push	r16
+ 2c6:	1f 93       	push	r17
     static uint32_t LED = 0x00000001;
     if(LED == 0){
- 256:	60 91 00 01 	lds	r22, 0x0100
- 25a:	70 91 01 01 	lds	r23, 0x0101
- 25e:	80 91 02 01 	lds	r24, 0x0102
- 262:	90 91 03 01 	lds	r25, 0x0103
- 266:	61 15       	cp	r22, r1
- 268:	71 05       	cpc	r23, r1
- 26a:	81 05       	cpc	r24, r1
- 26c:	91 05       	cpc	r25, r1
- 26e:	c1 f4       	brne	.+48     	; 0x2a0 <shift_LED+0x52>
- 270:	52 e0       	ldi	r21, 0x02	; 2
- 272:	e5 2e       	mov	r14, r21
- 274:	f1 2c       	mov	r15, r1
- 276:	01 2d       	mov	r16, r1
- 278:	11 2d       	mov	r17, r1
- 27a:	61 e0       	ldi	r22, 0x01	; 1
- 27c:	70 e0       	ldi	r23, 0x00	; 0
- 27e:	80 e0       	ldi	r24, 0x00	; 0
- 280:	90 e0       	ldi	r25, 0x00	; 0
+ 2c8:	60 91 00 01 	lds	r22, 0x0100
+ 2cc:	70 91 01 01 	lds	r23, 0x0101
+ 2d0:	80 91 02 01 	lds	r24, 0x0102
+ 2d4:	90 91 03 01 	lds	r25, 0x0103
+ 2d8:	61 15       	cp	r22, r1
+ 2da:	71 05       	cpc	r23, r1
+ 2dc:	81 05       	cpc	r24, r1
+ 2de:	91 05       	cpc	r25, r1
+ 2e0:	c1 f4       	brne	.+48     	; 0x312 <__stack+0x14>
+ 2e2:	52 e0       	ldi	r21, 0x02	; 2
+ 2e4:	e5 2e       	mov	r14, r21
+ 2e6:	f1 2c       	mov	r15, r1
+ 2e8:	01 2d       	mov	r16, r1
+ 2ea:	11 2d       	mov	r17, r1
+ 2ec:	61 e0       	ldi	r22, 0x01	; 1
+ 2ee:	70 e0       	ldi	r23, 0x00	; 0
+ 2f0:	80 e0       	ldi	r24, 0x00	; 0
+ 2f2:	90 e0       	ldi	r25, 0x00	; 0
         LED = 0x00000001;
     }
     transmit(LED);
- 282:	0e 94 cb 00 	call	0x196	; 0x196 <transmit>
+ 2f4:	0e 94 04 01 	call	0x208	; 0x208 <transmit>
     LED = LED << 1;
- 286:	e0 92 00 01 	sts	0x0100, r14
- 28a:	f0 92 01 01 	sts	0x0101, r15
- 28e:	00 93 02 01 	sts	0x0102, r16
- 292:	10 93 03 01 	sts	0x0103, r17
+ 2f8:	e0 92 00 01 	sts	0x0100, r14
+ 2fc:	f0 92 01 01 	sts	0x0101, r15
+ 300:	00 93 02 01 	sts	0x0102, r16
+ 304:	10 93 03 01 	sts	0x0103, r17
     }
- 296:	1f 91       	pop	r17
- 298:	0f 91       	pop	r16
- 29a:	ff 90       	pop	r15
- 29c:	ef 90       	pop	r14
- 29e:	08 95       	ret
+ 308:	1f 91       	pop	r17
+ 30a:	0f 91       	pop	r16
+ 30c:	ff 90       	pop	r15
+ 30e:	ef 90       	pop	r14
+ 310:	08 95       	ret
     transmit(count);
     }
 
 void shift_LED(void){
     static uint32_t LED = 0x00000001;
     if(LED == 0){
- 2a0:	7b 01       	movw	r14, r22
- 2a2:	8c 01       	movw	r16, r24
- 2a4:	ee 0c       	add	r14, r14
- 2a6:	ff 1c       	adc	r15, r15
- 2a8:	00 1f       	adc	r16, r16
- 2aa:	11 1f       	adc	r17, r17
- 2ac:	ea cf       	rjmp	.-44     	; 0x282 <shift_LED+0x34>
+ 312:	7b 01       	movw	r14, r22
+ 314:	8c 01       	movw	r16, r24
+ 316:	ee 0c       	add	r14, r14
+ 318:	ff 1c       	adc	r15, r15
+ 31a:	00 1f       	adc	r16, r16
+ 31c:	11 1f       	adc	r17, r17
+ 31e:	ea cf       	rjmp	.-44     	; 0x2f4 <shift_LED+0x34>
 
-000002ae <test1>:
+00000320 <test1>:
     LED = LED << 1;
     }
 
 void test1(void){
     static uint32_t output = -1;
     transmit(output);
- 2ae:	6f ef       	ldi	r22, 0xFF	; 255
- 2b0:	7f ef       	ldi	r23, 0xFF	; 255
- 2b2:	cb 01       	movw	r24, r22
- 2b4:	0e 94 cb 00 	call	0x196	; 0x196 <transmit>
+ 320:	6f ef       	ldi	r22, 0xFF	; 255
+ 322:	7f ef       	ldi	r23, 0xFF	; 255
+ 324:	cb 01       	movw	r24, r22
+ 326:	0e 94 04 01 	call	0x208	; 0x208 <transmit>
 }
- 2b8:	08 95       	ret
+ 32a:	08 95       	ret
 
-000002ba <test2p1>:
+0000032c <test2p1>:
 
 void test2p1(void){
     uint32_t output = 0x00010000;
     transmit(output);
- 2ba:	60 e0       	ldi	r22, 0x00	; 0
- 2bc:	70 e0       	ldi	r23, 0x00	; 0
- 2be:	81 e0       	ldi	r24, 0x01	; 1
- 2c0:	90 e0       	ldi	r25, 0x00	; 0
- 2c2:	0e 94 cb 00 	call	0x196	; 0x196 <transmit>
+ 32c:	60 e0       	ldi	r22, 0x00	; 0
+ 32e:	70 e0       	ldi	r23, 0x00	; 0
+ 330:	81 e0       	ldi	r24, 0x01	; 1
+ 332:	90 e0       	ldi	r25, 0x00	; 0
+ 334:	0e 94 04 01 	call	0x208	; 0x208 <transmit>
 }
- 2c6:	08 95       	ret
+ 338:	08 95       	ret
 
-000002c8 <test2p2>:
+0000033a <test2p2>:
 
 void test2p2(void){
     uint32_t output = 0x00000001;
     transmit(output);
- 2c8:	61 e0       	ldi	r22, 0x01	; 1
- 2ca:	70 e0       	ldi	r23, 0x00	; 0
- 2cc:	80 e0       	ldi	r24, 0x00	; 0
- 2ce:	90 e0       	ldi	r25, 0x00	; 0
- 2d0:	0e 94 cb 00 	call	0x196	; 0x196 <transmit>
+ 33a:	61 e0       	ldi	r22, 0x01	; 1
+ 33c:	70 e0       	ldi	r23, 0x00	; 0
+ 33e:	80 e0       	ldi	r24, 0x00	; 0
+ 340:	90 e0       	ldi	r25, 0x00	; 0
+ 342:	0e 94 04 01 	call	0x208	; 0x208 <transmit>
 }
- 2d4:	08 95       	ret
+ 346:	08 95       	ret
 
-000002d6 <test3>:
+00000348 <test3>:
 
 void test3(void){
- 2d6:	1f 93       	push	r17
+ 348:	1f 93       	push	r17
     static uint8_t i = 0;
     static uint32_t output1 = 0x00010000;
     static uint32_t output2 = 0x00000001;
     switch(i){
- 2d8:	10 91 04 01 	lds	r17, 0x0104
- 2dc:	12 30       	cpi	r17, 0x02	; 2
- 2de:	31 f0       	breq	.+12     	; 0x2ec <test3+0x16>
- 2e0:	13 30       	cpi	r17, 0x03	; 3
- 2e2:	90 f0       	brcs	.+36     	; 0x308 <__stack+0xa>
- 2e4:	13 30       	cpi	r17, 0x03	; 3
- 2e6:	11 f0       	breq	.+4      	; 0x2ec <test3+0x16>
- 2e8:	14 30       	cpi	r17, 0x04	; 4
- 2ea:	29 f4       	brne	.+10     	; 0x2f6 <test3+0x20>
+ 34a:	10 91 04 01 	lds	r17, 0x0104
+ 34e:	12 30       	cpi	r17, 0x02	; 2
+ 350:	31 f0       	breq	.+12     	; 0x35e <test3+0x16>
+ 352:	13 30       	cpi	r17, 0x03	; 3
+ 354:	90 f0       	brcs	.+36     	; 0x37a <test3+0x32>
+ 356:	13 30       	cpi	r17, 0x03	; 3
+ 358:	11 f0       	breq	.+4      	; 0x35e <test3+0x16>
+ 35a:	14 30       	cpi	r17, 0x04	; 4
+ 35c:	29 f4       	brne	.+10     	; 0x368 <test3+0x20>
             break;
         case 3:
             transmit(0);
             break;
         case 4:
             transmit(0);
- 2ec:	60 e0       	ldi	r22, 0x00	; 0
- 2ee:	70 e0       	ldi	r23, 0x00	; 0
- 2f0:	cb 01       	movw	r24, r22
- 2f2:	0e 94 cb 00 	call	0x196	; 0x196 <transmit>
+ 35e:	60 e0       	ldi	r22, 0x00	; 0
+ 360:	70 e0       	ldi	r23, 0x00	; 0
+ 362:	cb 01       	movw	r24, r22
+ 364:	0e 94 04 01 	call	0x208	; 0x208 <transmit>
             break;
     }
     i++;
- 2f6:	81 2f       	mov	r24, r17
- 2f8:	8f 5f       	subi	r24, 0xFF	; 255
+ 368:	81 2f       	mov	r24, r17
+ 36a:	8f 5f       	subi	r24, 0xFF	; 255
     i = i%5;
- 2fa:	65 e0       	ldi	r22, 0x05	; 5
- 2fc:	0e 94 a2 01 	call	0x344	; 0x344 <__udivmodqi4>
- 300:	90 93 04 01 	sts	0x0104, r25
+ 36c:	65 e0       	ldi	r22, 0x05	; 5
+ 36e:	0e 94 de 01 	call	0x3bc	; 0x3bc <__udivmodqi4>
+ 372:	90 93 04 01 	sts	0x0104, r25
     //transmit(output1);
     //}
     //else{transmit(output2);}
     //i++;
     //
 }
- 304:	1f 91       	pop	r17
- 306:	08 95       	ret
+ 376:	1f 91       	pop	r17
+ 378:	08 95       	ret
 
 void test3(void){
     static uint8_t i = 0;
     static uint32_t output1 = 0x00010000;
     static uint32_t output2 = 0x00000001;
     switch(i){
- 308:	11 23       	and	r17, r17
- 30a:	49 f0       	breq	.+18     	; 0x31e <__stack+0x20>
- 30c:	11 30       	cpi	r17, 0x01	; 1
- 30e:	99 f7       	brne	.-26     	; 0x2f6 <test3+0x20>
+ 37a:	11 23       	and	r17, r17
+ 37c:	49 f0       	breq	.+18     	; 0x390 <test3+0x48>
+ 37e:	11 30       	cpi	r17, 0x01	; 1
+ 380:	99 f7       	brne	.-26     	; 0x368 <test3+0x20>
         case 0:
             transmit(output1);
             break;
         case 1:
             transmit(output2);
- 310:	61 e0       	ldi	r22, 0x01	; 1
- 312:	70 e0       	ldi	r23, 0x00	; 0
- 314:	80 e0       	ldi	r24, 0x00	; 0
- 316:	90 e0       	ldi	r25, 0x00	; 0
- 318:	0e 94 cb 00 	call	0x196	; 0x196 <transmit>
+ 382:	61 e0       	ldi	r22, 0x01	; 1
+ 384:	70 e0       	ldi	r23, 0x00	; 0
+ 386:	80 e0       	ldi	r24, 0x00	; 0
+ 388:	90 e0       	ldi	r25, 0x00	; 0
+ 38a:	0e 94 04 01 	call	0x208	; 0x208 <transmit>
             break;
- 31c:	ec cf       	rjmp	.-40     	; 0x2f6 <test3+0x20>
+ 38e:	ec cf       	rjmp	.-40     	; 0x368 <test3+0x20>
     static uint8_t i = 0;
     static uint32_t output1 = 0x00010000;
     static uint32_t output2 = 0x00000001;
     switch(i){
         case 0:
             transmit(output1);
- 31e:	60 e0       	ldi	r22, 0x00	; 0
- 320:	70 e0       	ldi	r23, 0x00	; 0
- 322:	81 e0       	ldi	r24, 0x01	; 1
- 324:	90 e0       	ldi	r25, 0x00	; 0
- 326:	0e 94 cb 00 	call	0x196	; 0x196 <transmit>
+ 390:	60 e0       	ldi	r22, 0x00	; 0
+ 392:	70 e0       	ldi	r23, 0x00	; 0
+ 394:	81 e0       	ldi	r24, 0x01	; 1
+ 396:	90 e0       	ldi	r25, 0x00	; 0
+ 398:	0e 94 04 01 	call	0x208	; 0x208 <transmit>
             break;
- 32a:	e5 cf       	rjmp	.-54     	; 0x2f6 <test3+0x20>
+ 39c:	e5 cf       	rjmp	.-54     	; 0x368 <test3+0x20>
 
-0000032c <main>:
+0000039e <main>:
+int main(){
+
+	//port initialization
+	//DDRA &= ~(0x03);  //set port B bits 7,6,5,4,2,1,0  as outputs
+    //PORTA |= (0x03);
+    DDRB |= (1<<PB4)|(1<<PB5)|(1<<PB6);
+ 39e:	84 b1       	in	r24, 0x04	; 4
+ 3a0:	80 67       	ori	r24, 0x70	; 112
+ 3a2:	84 b9       	out	0x04, r24	; 4
 	//Bits 1, 0 = SPR1, SPR0 =  
 	//SPSR  |=   (1<<SPI2X);           // double speed operation
     */
 
     //ATtiny167 SPI INIT
 	DDRA |= (1<<SS)|(1<<MOSI)|(1<<SCK);
- 32c:	81 b1       	in	r24, 0x01	; 1
- 32e:	80 67       	ori	r24, 0x70	; 112
- 330:	81 b9       	out	0x01, r24	; 1
+ 3a4:	81 b1       	in	r24, 0x01	; 1
+ 3a6:	80 67       	ori	r24, 0x70	; 112
+ 3a8:	81 b9       	out	0x01, r24	; 1
 	SPCR |= (1<<SPE)|(1<<MSTR)|(1<<SPR0);
- 332:	8c b5       	in	r24, 0x2c	; 44
- 334:	81 65       	ori	r24, 0x51	; 81
- 336:	8c bd       	out	0x2c, r24	; 44
+ 3aa:	8c b5       	in	r24, 0x2c	; 44
+ 3ac:	81 65       	ori	r24, 0x51	; 81
+ 3ae:	8c bd       	out	0x2c, r24	; 44
 	SPSR |= (1<<SPI2X);
- 338:	8d b5       	in	r24, 0x2d	; 45
- 33a:	81 60       	ori	r24, 0x01	; 1
- 33c:	8d bd       	out	0x2d, r24	; 45
+ 3b0:	8d b5       	in	r24, 0x2d	; 45
+ 3b2:	81 60       	ori	r24, 0x01	; 1
+ 3b4:	8d bd       	out	0x2d, r24	; 45
     //PORTB = 0x02;
 	//sei();         //enable interrupts before entering loop
     uint8_t input = 0;
 	while(1){
        // patrick_test();
         level_test();
- 33e:	0e 94 b7 00 	call	0x16e	; 0x16e <level_test>
- 342:	fd cf       	rjmp	.-6      	; 0x33e <main+0x12>
+ 3b6:	0e 94 bd 00 	call	0x17a	; 0x17a <level_test>
+ 3ba:	fd cf       	rjmp	.-6      	; 0x3b6 <main+0x18>
 
-00000344 <__udivmodqi4>:
- 344:	99 1b       	sub	r25, r25
- 346:	79 e0       	ldi	r23, 0x09	; 9
- 348:	04 c0       	rjmp	.+8      	; 0x352 <__udivmodqi4_ep>
+000003bc <__udivmodqi4>:
+ 3bc:	99 1b       	sub	r25, r25
+ 3be:	79 e0       	ldi	r23, 0x09	; 9
+ 3c0:	04 c0       	rjmp	.+8      	; 0x3ca <__udivmodqi4_ep>
 
-0000034a <__udivmodqi4_loop>:
- 34a:	99 1f       	adc	r25, r25
- 34c:	96 17       	cp	r25, r22
- 34e:	08 f0       	brcs	.+2      	; 0x352 <__udivmodqi4_ep>
- 350:	96 1b       	sub	r25, r22
+000003c2 <__udivmodqi4_loop>:
+ 3c2:	99 1f       	adc	r25, r25
+ 3c4:	96 17       	cp	r25, r22
+ 3c6:	08 f0       	brcs	.+2      	; 0x3ca <__udivmodqi4_ep>
+ 3c8:	96 1b       	sub	r25, r22
 
-00000352 <__udivmodqi4_ep>:
- 352:	88 1f       	adc	r24, r24
- 354:	7a 95       	dec	r23
- 356:	c9 f7       	brne	.-14     	; 0x34a <__udivmodqi4_loop>
- 358:	80 95       	com	r24
- 35a:	08 95       	ret
+000003ca <__udivmodqi4_ep>:
+ 3ca:	88 1f       	adc	r24, r24
+ 3cc:	7a 95       	dec	r23
+ 3ce:	c9 f7       	brne	.-14     	; 0x3c2 <__udivmodqi4_loop>
+ 3d0:	80 95       	com	r24
+ 3d2:	08 95       	ret
 
-0000035c <_exit>:
- 35c:	f8 94       	cli
+000003d4 <_exit>:
+ 3d4:	f8 94       	cli
 
-0000035e <__stop_program>:
- 35e:	ff cf       	rjmp	.-2      	; 0x35e <__stop_program>
+000003d6 <__stop_program>:
+ 3d6:	ff cf       	rjmp	.-2      	; 0x3d6 <__stop_program>

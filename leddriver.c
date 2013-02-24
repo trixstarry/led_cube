@@ -186,20 +186,27 @@ void transmit1(uint16_t data1,uint16_t data2,uint16_t data3,uint16_t data4,uint1
 void level(uint8_t layer){
     switch(layer){
         case 0:
-            PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6));
-            PORTB |= ((0<<PIN4)|(0<<PIN5)|(0<<PIN6));
+            PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+            PORTB |= ((0<<PB4)|(0<<PB5)|(0<<PB6));
+            return;
         case 1:
-            PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6));
-            PORTB |= ((1<<PIN4)|(0<<PIN5)|(0<<PIN6));
+            PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+            PORTB |= ((1<<PB4)|(0<<PB5)|(0<<PB6));
+            return;
         case 2:
-            PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6));
-            PORTB |= ((0<<PIN4)|(1<<PIN5)|(0<<PIN6));
+            PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+            PORTB |= ((0<<PB4)|(1<<PB5)|(0<<PB6));
+            return;
         case 3:
-            PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6));
-            PORTB |= ((1<<PIN4)|(1<<PIN5)|(0<<PIN6));
+            PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+            PORTB |= ((1<<PB4)|(1<<PB5)|(0<<PB6));
+            return;
         case 4:
-            PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6));
-            PORTB |= ((0<<PIN4)|(0<<PIN5)|(1<<PIN6));
+            PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+            PORTB |= ((0<<PB4)|(0<<PB5)|(1<<PB6));
+            return;
+        default:
+            PORTB |= ((1<<PB4)|(1<<PB5)|(1<<PB6));
             }
 }
 
@@ -219,9 +226,23 @@ void level_test(void){
     uint16_t data3 = 0x00FF;
     uint16_t data4 = 0x00FF;
     uint16_t data5 = 0x00FF;
+    uint8_t layer = 0;
 
     transmit1(data1,data2,data3,data4,data5);
-    level(0);
+    level(layer);
+    _delay_ms(500);
+    _delay_ms(500);
+    layer = 6;
+
+    data1 = ~0x00FF;
+    data2 = ~0x00FF;
+    data3 = ~0x00FF;
+    data4 = ~0x00FF;
+    data5 = ~0x00FF;
+    transmit1(data1,data2,data3,data4,data5);
+    level(layer);
+    _delay_ms(500);
+    _delay_ms(500);
 }
 
 void transmit(uint32_t data){
@@ -427,7 +448,7 @@ int main(){
 	//port initialization
 	//DDRA &= ~(0x03);  //set port B bits 7,6,5,4,2,1,0  as outputs
     //PORTA |= (0x03);
-    //DDRB = 0xFF;
+    DDRB |= (1<<PB4)|(1<<PB5)|(1<<PB6);
     //PORTB = 0x01;
 	//tcnt0_init();  //initalize counter timer zero
     //PORTA |= 0x02;
