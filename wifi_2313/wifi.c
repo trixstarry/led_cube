@@ -88,10 +88,10 @@ void Receive(uint8_t *buffer,uint8_t buffersize){
 }
 
 void test_Transmit(uint8_t *buffer, uint8_t len){
-    buffer[15]++;
-    if (buffer[15] < ' ' || buffer[15] > 'z')
+    buffer[len-1]++;
+    if (buffer[len-1] < ' ' || buffer[15] > 'z')
     {
-        buffer[15] = ' ';
+        buffer[len-1] = ' ';
     }
     Transmit(buffer,len);
     
@@ -122,9 +122,13 @@ int main (void)
 	
 	while (1)
 	{
-       // Receive(buffer,BUFFER_SIZE);
+        //test_Transmit(buffer,BUFFER_SIZE);
+        //transmit_string("preSending\n");
+        //Receive(buffer,BUFFER_SIZE);
        Transmit(buffer,BUFFER_SIZE);
         //transmit_string("Did i send?\r\n");
+        //_delay_ms(100);
+
         //test_protocol(buffer,BUFFER_SIZE);
 	}
 	
