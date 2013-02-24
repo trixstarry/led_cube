@@ -148,6 +148,9 @@ extern void mirf_get_data(uint8_t * data)
     spi_fast_shift( R_RX_PAYLOAD );            // Send cmd to read rx payload
     spi_transfer_sync(data,data,mirf_PAYLOAD); // Read payload
     mirf_CSN_hi;                               // Pull up chip select
+    mirf_CSN_lo;                    // Pull down chip select
+    spi_fast_shift( FLUSH_RX );     // Write cmd to flush tx fifo
+    mirf_CSN_hi;                    // Pull up chip select
     mirf_config_register(STATUS,(1<<RX_DR));   // Reset status register
 }
 
