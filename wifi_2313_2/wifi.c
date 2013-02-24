@@ -121,7 +121,9 @@ int main (void)
 	
 	while (1)
 	{
-        Transmit(buffer,BUFFER_SIZE);
+        //Transmit(buffer,BUFFER_SIZE);
+        
+        test_Transmit(buffer,BUFFER_SIZE);
         //Receive()
         //test_protocol(buffer,BUFFER_SIZE);
 	}

@@ -68,7 +68,7 @@ int main (void)
 	USART_Init(MY_UBBR);
 	
 	char buffer [32] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}',
-                        'l','a','u','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
+                        'l','a','u','l','o',' ','n','o','o','d','l','e','!','.','.','*'};
 	uint8_t buffersize = BUFFER_SIZE;
 	// Initialize AVR for use with mirf
 	mirf_init();
@@ -84,8 +84,9 @@ int main (void)
 	while (1)
 	{
         //test_Transmit(buffer,BUFFER_SIZE);
-        //transmit_string("preSending\n");
-        Receive(buffer,BUFFER_SIZE);
+        transmit_string("preSending\n");
+        //Receive(buffer,BUFFER_SIZE);
+        test_Transmit(buffer,BUFFER_SIZE);
        //Transmit(buffer,BUFFER_SIZE);
         //transmit_string("Did i send?\r\n");
         //_delay_ms(100);
