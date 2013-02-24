@@ -226,7 +226,7 @@ void level_test(void){
     uint16_t data3 = 0x00FF;
     uint16_t data4 = 0x00FF;
     uint16_t data5 = 0x00FF;
-    uint8_t layer = 0;
+    uint8_t layer = 1;
 
     transmit1(data1,data2,data3,data4,data5);
     level(layer);
