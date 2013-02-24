@@ -116,9 +116,9 @@ int main (void)
 	while (testing_sender)
 	{
 		buffer[15]++;
-		if (buffer[15] < 'a' || buffer[15] > 'z')
+		if (buffer[15] < ' ' || buffer[15] > 'z')
 		{
-			buffer[15] = 'a';
+			buffer[15] = ' ';
 		}
 		
 		mirf_send(buffer,buffersize);
@@ -138,10 +138,10 @@ int main (void)
 		while (!mirf_data_ready());
 		mirf_get_data(buffer);
 		PORTB |= (1<<PB1);
-		char i;
-		char matched = 1;
+		uint8_t i;
+		uint8_t matched = 1;
 		//transmit_string("data = ");
-		for(i = 0; i < 31; i++)
+		for(i = 0; i < 15; i++)
 		{
 			if (expected[i] != buffer[i])
 			{
@@ -149,15 +149,16 @@ int main (void)
 			}
 			USART_Transmit(buffer[i]);
 		}
-		//USART_Transmit(buffer[15]);
+
+		USART_Transmit(buffer[15]);
 		if (matched)
 		{
-//			transmit_string(" OK\r\n");
+			transmit_string("  OK\r\n");
             transmit_string("");
 		}
 		else
 		{
-//			transmit_string(" BAD\r\n");
+			transmit_string(" BAD\r\n");
             transmit_string("");
 		}
 	}

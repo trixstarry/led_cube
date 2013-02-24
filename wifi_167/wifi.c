@@ -118,20 +118,20 @@ int main (void)
 	buffer[0] = 'h';
 	
 	char testing_sender = 1;
-    uint8_t testbuffersize = 2;
-    uint8_t testbuffer[2] = {'a','a'};
+    //uint8_t testbuffersize = 2;
+    //uint8_t testbuffer[2] = {'a','a'};
 	while (testing_sender)
 	{
         //PORTB = (1<<PB0);
 		buffer[15]++;
-		if (buffer[15] < 'a' || buffer[15] > 'z')
+		if (buffer[15] < ' ' || buffer[15] > 'z')
 		{
-			buffer[15] = 'a';
+			buffer[15] = ' ';
 		}
     	mirf_send(buffer,buffersize);
         //mirf_send(testbuffer,testbuffersize);
         //
-		_delay_ms(5);
+		_delay_ms(10);
 	}
     /*
     while(1){
