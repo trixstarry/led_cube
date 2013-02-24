@@ -226,12 +226,40 @@ void level_test(void){
     uint16_t data3 = 0x00FF;
     uint16_t data4 = 0x00FF;
     uint16_t data5 = 0x00FF;
-    uint8_t layer = 2;
+    uint16_t on = 0xFFFF;
+    uint16_t off = 0x0000;
+    uint8_t i = 0;
+    for(i = 0; i<5;i++){
 
-    transmit1(data1,data2,data3,data4,data5);
-    level(layer);
+        switch(i){
+            case 0:
+                level(i);
+                transmit1(on,off,off,off,off);
+                break;
+            case 1:
+                level(i);
+                transmit1(off,on,off,off,off);
+                break;
+            case 2:
+                level(i);
+                transmit1(off,off,on,off,off);
+                break;
+            case 3:
+                level(i);
+                transmit1(off,off,off,on,off);
+                break;
+            case 4:
+                level(i);
+                transmit1(off,off,off,off,on);
+                break;
+
+        }
+    //transmit1(data1,data2,data3,data4,data5);
+    //level(layer);
+    //_delay_ms(500);
     _delay_ms(500);
-    _delay_ms(500);
+    }
+    /*
     layer = 6;
 
     data1 = ~0x00FF;
@@ -243,6 +271,7 @@ void level_test(void){
     level(layer);
     _delay_ms(500);
     _delay_ms(500);
+    */
 }
 
 void transmit(uint32_t data){
@@ -517,8 +546,8 @@ int main(){
     uint8_t input = 0;
 	while(1){
        // patrick_test();
-        //level_test();
-        shift_LED();
+        level_test();
+        //shift_LED();
 
         /*
         input = 2;
