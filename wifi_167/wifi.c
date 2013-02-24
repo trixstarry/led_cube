@@ -79,10 +79,10 @@ int main (void)
 	DDRB |= (1<<PB1); // Test passed LED
 	DDRB |= (1<<PB0); // Test failed LED
 	
-	char buffer [16] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
-                        //'l','a','u','g','h',' ','i','t',' ','u','p',' ','R','u','t','h',};
+	char buffer [32] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}',
+                        'l','a','u','g','h',' ','i','t',' ','u','p',' ','R','u','t','h',};
     //PORTB |= (1<<PB0);
-	uint8_t buffersize = 16;
+	uint8_t buffersize = 32;
 	// Initialize AVR for use with mirf
 	mirf_init();
 	// Wait for mirf to come up
@@ -123,10 +123,10 @@ int main (void)
 	while (testing_sender)
 	{
         //PORTB = (1<<PB0);
-		buffer[15]++;
-		if (buffer[15] < ' ' || buffer[15] > 'z')
+		buffer[31]++;
+		if (buffer[31] < ' ' || buffer[31] > 'z')
 		{
-			buffer[15] = ' ';
+			buffer[31] = ' ';
 		}
     	mirf_send(buffer,buffersize);
         //mirf_send(testbuffer,testbuffersize);

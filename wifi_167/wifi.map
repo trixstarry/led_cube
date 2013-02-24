@@ -256,48 +256,48 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
  *(.fini0)
                 0x00000386                _etext = .
 
-.data           0x00800100       0x10 load address 0x00000386
+.data           0x00800100       0x20 load address 0x00000386
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800100        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
- .data          0x00800100       0x10 wifi.o
- .data          0x00800110        0x0 spi.o
- .data          0x00800110        0x0 mirf.o
- .data          0x00800110        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
- .data          0x00800110        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
- .data          0x00800110        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
+ .data          0x00800100       0x20 wifi.o
+ .data          0x00800120        0x0 spi.o
+ .data          0x00800120        0x0 mirf.o
+ .data          0x00800120        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
+ .data          0x00800120        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
+ .data          0x00800120        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
  *(.data*)
  *(.rodata)
  *(.rodata*)
  *(.gnu.linkonce.d*)
-                0x00800110                . = ALIGN (0x2)
-                0x00800110                _edata = .
-                0x00800110                PROVIDE (__data_end, .)
+                0x00800120                . = ALIGN (0x2)
+                0x00800120                _edata = .
+                0x00800120                PROVIDE (__data_end, .)
 
-.bss            0x00800110        0x1
-                0x00800110                PROVIDE (__bss_start, .)
+.bss            0x00800120        0x1
+                0x00800120                PROVIDE (__bss_start, .)
  *(.bss)
- .bss           0x00800110        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
- .bss           0x00800110        0x0 wifi.o
- .bss           0x00800110        0x0 spi.o
- .bss           0x00800110        0x0 mirf.o
- .bss           0x00800110        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
- .bss           0x00800110        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
- .bss           0x00800110        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
+ .bss           0x00800120        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
+ .bss           0x00800120        0x0 wifi.o
+ .bss           0x00800120        0x0 spi.o
+ .bss           0x00800120        0x0 mirf.o
+ .bss           0x00800120        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
+ .bss           0x00800120        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
+ .bss           0x00800120        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
  *(.bss*)
  *(COMMON)
- COMMON         0x00800110        0x1 mirf.o
-                0x00800110                PTX
-                0x00800111                PROVIDE (__bss_end, .)
+ COMMON         0x00800120        0x1 mirf.o
+                0x00800120                PTX
+                0x00800121                PROVIDE (__bss_end, .)
                 0x00000386                __data_load_start = LOADADDR (.data)
-                0x00000396                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x000003a6                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800111        0x0
-                0x00800111                PROVIDE (__noinit_start, .)
+.noinit         0x00800121        0x0
+                0x00800121                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x00800111                PROVIDE (__noinit_end, .)
-                0x00800111                _end = .
-                0x00800111                PROVIDE (__heap_start, .)
+                0x00800121                PROVIDE (__noinit_end, .)
+                0x00800121                _end = .
+                0x00800121                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)

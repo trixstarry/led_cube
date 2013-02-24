@@ -75,9 +75,9 @@ int main (void)
 	DDRB |= (1<<PB1); // Test passed LED
 	DDRB |= (1<<PB0); // Test failed LED
 	
-	char buffer [16] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
-                        //'l','a','u','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
-	uint8_t buffersize = 16;
+	char buffer [32] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}',
+                        'l','a','u','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
+	uint8_t buffersize = 32;
 	// Initialize AVR for use with mirf
 	mirf_init();
 	// Wait for mirf to come up
@@ -129,8 +129,8 @@ int main (void)
 		_delay_ms(5);
 	}
 	
-	char expected [16] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
-                        //'l','a','u','g','h',' ','i','t',' ','u','p',' ','R','u','t','h'};
+	char expected [32] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}',
+                        'l','a','u','g','h',' ','i','t',' ','u','p',' ','R','u','t','h'};
 
 	// Test receiving
 	while (1)
@@ -141,7 +141,7 @@ int main (void)
 		uint8_t i;
 		uint8_t matched = 1;
 		//transmit_string("data = ");
-		for(i = 0; i < 15; i++)
+		for(i = 0; i < 31; i++)
 		{
 			if (expected[i] != buffer[i])
 			{
@@ -150,7 +150,7 @@ int main (void)
 			USART_Transmit(buffer[i]);
 		}
 
-		USART_Transmit(buffer[15]);
+		USART_Transmit(buffer[31]);
 		if (matched)
 		{
 			transmit_string("  OK\r\n");
