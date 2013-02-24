@@ -30,6 +30,7 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#include "usart.h"
 
 // Defines for setting the MiRF registers for transmitting or receiving mode
 #define TX_POWERUP mirf_config_register(CONFIG, mirf_CONFIG | ( (1<<PWR_UP) | (0<<PRIM_RX) ) )
@@ -112,6 +113,7 @@ ISR(PCINT_vect)
 {
     uint8_t status;   
     // If still in transmitting mode then finish transmission
+    transmit_string("interrupted\r\n");
     if (PTX) {
     
         // Read MiRF status 

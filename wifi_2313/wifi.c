@@ -30,46 +30,7 @@
 #include <util/delay.h>
 #include "mirf.h"
 #include "nRF24L01.h"
-
-void USART_Init( unsigned int baud )
-{
-	/* Set baud rate */
-	UBRRH = (unsigned char)(baud>>8);
-	UBRRL = (unsigned char)baud;
-	if (SET_U2X)
-	{
-		UCSRA |= (1<<U2X);
-	}
-	/* Enable receiver and transmitter */
-	UCSRB = (1<<RXEN)|(1<<TXEN);
-	/* Set frame format: 8data, 2stop bit */
-	UCSRC = (1<<USBS)|(3<<UCSZ0);
-}
-
-void USART_Transmit( unsigned char data )
-{
-	/* Wait for empty transmit buffer */
-	while ( !( UCSRA & (1<<UDRE)) );
-	/* Put data into buffer, sends the data */
-	UDR = data;
-}
-
-unsigned char USART_Receive( void )
-{
-	/* Wait for data to be received */
-	while ( !(UCSRA & (1<<RXC)) );
-	/* Get and return received data from buffer */
-	return UDR;
-}
-
-transmit_string(char *ptr)
-{
-	while(*ptr)
-	{
-		USART_Transmit(*ptr);
-		ptr++;
-	}
-}
+#include "usart.h"
 
 void Transmit(uint8_t *buffer,uint8_t buffersize){
     mirf_send(buffer,buffersize);
@@ -124,8 +85,8 @@ int main (void)
 	{
         //test_Transmit(buffer,BUFFER_SIZE);
         //transmit_string("preSending\n");
-        //Receive(buffer,BUFFER_SIZE);
-       Transmit(buffer,BUFFER_SIZE);
+        Receive(buffer,BUFFER_SIZE);
+       //Transmit(buffer,BUFFER_SIZE);
         //transmit_string("Did i send?\r\n");
         //_delay_ms(100);
 

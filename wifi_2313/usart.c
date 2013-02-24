@@ -60,37 +60,11 @@ void usart_get(uint8_t received[32]){
 	}
 	return data;
 }
+*/
 
 // **************************************************************
 //
 //                            usart_init
-
-//
-//
-//RXD0 is PORT E bit 0
-//TXD0 is PORT E bit 1
-//Jumpers J14 and J16 (mega128.1) OR
-//Jumpers  J7 and  J9 (mega128.2)
-//must be in place for the MAX232 chip to get data.
-//
-void usart_init(){
-
-	//	UCSR0A |= (1<<U2X0);
-	//rx and tx enable, 8 bit characters
-
-	UCSR0B |= (1<<RXEN0) | (1<<TXEN0);
-
-	//async operation, no parity,  one stop bit, 8-bit characters
-
-	UCSR0C |= (1<<UCSZ01) | (1<<UCSZ00);
-
-	//set to 9600 baud
-
-	UBRR0H=0x00; 
-	UBRR0L=0x67;
-
-}
-*/
 
 void USART_Init( unsigned int baud )
 {
@@ -123,3 +97,11 @@ unsigned char USART_Receive( void )
 	return UDR;
 }
 
+void transmit_string(char *ptr)
+{
+	while(*ptr)
+	{
+		USART_Transmit(*ptr);
+		ptr++;
+	}
+}
