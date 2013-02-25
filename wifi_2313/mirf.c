@@ -79,11 +79,22 @@ void mirf_config()
 
     // Set length of incoming payload 
     mirf_config_register(RX_PW_P0, mirf_PAYLOAD);
+    mirf_set_RADDR(0x7878787878);
+    mirf_set_RADDR_P1(0xB3B4B5B6F1);
+    mirf_set_TADDR(0x7878787878);
 
     // Start receiver 
     PTX = 0;        // Start in receiving mode
     RX_POWERUP;     // Power up in receiving mode
     mirf_CE_hi;     // Listening for pakets
+}
+
+void mirf_set_RADDR_P1(uint8_t * adr) 
+// Sets the receiving address
+{
+    mirf_CE_lo;
+    mirf_write_register(RX_ADDR_P1,adr,5);
+    mirf_CE_hi;
 }
 
 void mirf_set_RADDR(uint8_t * adr) 

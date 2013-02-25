@@ -51,7 +51,7 @@ int8_t Receive(uint8_t *buffer,uint8_t buffersize){
             i++;
         }
 		mirf_get_data(buffer);
-        SPI_Transmit_All(buffer,buffersize);
+        //SPI_Transmit_All(buffer,buffersize);
         return 1;
 }
 
@@ -146,18 +146,29 @@ int main (void)
         */
      //   test_Transmit(buffer,BUFFER_SIZE);
         if(Receive(buffer,BUFFER_SIZE) == 1){
-            if(buffer[3] == 'l'){
-                Transmit(buffer,BUFFER_SIZE);
+            if((buffer[3] == 'l')){//}&&(buffer[31] == '}')){
                 led1_on();
+                _delay_ms(50);
+                Transmit(buffer,BUFFER_SIZE);
+                rx_powerup();
+                _delay_ms(1);
+                /*
+                // If maximum retries were reached, reset MAX_RT
+                if (mirf_max_rt_reached()) {
+                    mirf_config_register(STATUS, 1<<MAX_RT);
+                }
+                */
+                //led1_on();
                 //led2_off();
             }
             else{
             led2_on();
+            led1_off();
             }
         }
         else{
             led2_on();
-            _delay_ms(100);
+            _delay_ms(50);
             led1_off();
             led2_off();
         }

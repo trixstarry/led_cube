@@ -63,7 +63,7 @@ void SPI_Transmit_All(uint8_t *data, uint8_t len)
 }
 
 char SPI_Receive(void){
-    SPDR = 0x00;
+    SPDR = 0xFF;
     while(bit_is_clear(SPSR,SPIF)){};
     return SPDR;
 }

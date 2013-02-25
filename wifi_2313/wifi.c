@@ -76,7 +76,7 @@ void test_protocol(uint8_t *buffer, uint8_t len){
         transmit_string("received\r\n");
     }
     else{
-        //transmit_string("nothing received\r\n");
+        transmit_string("nothing received\r\n");
     }
 }
 
@@ -85,7 +85,7 @@ int main (void)
 	USART_Init(MY_UBBR);
 	
 	char buffer [32] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}',
-                        'l','a','u','l','o',' ','n','o','o','d','l','e','!','.','.','\n'};
+                        'l','r','b','l','v',' ','n','o','o','d','l','e','!','.','.','\n'};
 	uint8_t buffersize = BUFFER_SIZE;
 	// Initialize AVR for use with mirf
 	mirf_init();
@@ -103,10 +103,10 @@ int main (void)
 	{
         //test_Transmit(buffer,BUFFER_SIZE);
         
-        Transmit(buffer,BUFFER_SIZE);
-        _delay_ms(5);
-        rx_powerup();
-        _delay_ms(5);
+        //Transmit(buffer,BUFFER_SIZE);
+        //_delay_ms(5);
+        //rx_powerup();
+        //_delay_ms(5);
         //transmit_string("preSending\n");
         //Receive(buffer,BUFFER_SIZE);
         //test_Transmit(buffer,BUFFER_SIZE);
@@ -114,7 +114,7 @@ int main (void)
         //transmit_string("Did i send?\r\n");
         //_delay_ms(100);
 
-        //test_protocol(buffer,BUFFER_SIZE);
+        test_protocol(buffer,BUFFER_SIZE);
 	}
 	
 }
