@@ -144,10 +144,10 @@ int main (void)
         //_delay_ms(500);
         //LED1_OFF;
         */
-        test_Transmit(buffer,BUFFER_SIZE);
-        /*
+     //   test_Transmit(buffer,BUFFER_SIZE);
         if(Receive(buffer,BUFFER_SIZE) == 1){
             if(buffer[3] == 'l'){
+                Transmit(buffer,BUFFER_SIZE);
                 led1_on();
                 //led2_off();
             }
@@ -161,7 +161,6 @@ int main (void)
             led1_off();
             led2_off();
         }
-        */
     }
 
 }

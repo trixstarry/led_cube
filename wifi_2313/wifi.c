@@ -37,15 +37,21 @@ void Transmit(uint8_t *buffer,uint8_t buffersize){
     _delay_ms(5);
 }
 
-void Receive(uint8_t *buffer,uint8_t buffersize){
-    while (!mirf_data_ready()){};
+int8_t Receive(uint8_t *buffer,uint8_t buffersize){
+    uint64_t i = 0;
+    while (!mirf_data_ready()){
+        if(i > 0x1FFFF){
+            return -1;
+        }
+        i++;
+    }
     mirf_get_data(buffer);
-    uint8_t i;
     for(i = 0; i < (buffersize); i++)
     {
         USART_Transmit(buffer[i]);
     }
     USART_Transmit('\n');
+    return 1;
 }
 
 void test_Transmit(uint8_t *buffer, uint8_t len){
@@ -59,8 +65,19 @@ void test_Transmit(uint8_t *buffer, uint8_t len){
 }
 
 void test_protocol(uint8_t *buffer, uint8_t len){
+    transmit_string("Transmitting\r\n");
     Transmit(buffer,len);
-    //Receive(buffer,len);
+    _delay_ms(5);
+    transmit_string("Rx_Powerup\r\n");
+    rx_powerup();
+    _delay_ms(1);
+    transmit_string("Receiving\r\n");
+    if(Receive(buffer,len)==1){
+        transmit_string("received\r\n");
+    }
+    else{
+        //transmit_string("nothing received\r\n");
+    }
 }
 
 int main (void)
@@ -68,7 +85,7 @@ int main (void)
 	USART_Init(MY_UBBR);
 	
 	char buffer [32] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}',
-                        'l','a','u','l','o',' ','n','o','o','d','l','e','!','.','.','*'};
+                        'l','a','u','l','o',' ','n','o','o','d','l','e','!','.','.','\n'};
 	uint8_t buffersize = BUFFER_SIZE;
 	// Initialize AVR for use with mirf
 	mirf_init();
@@ -80,12 +97,18 @@ int main (void)
 	mirf_config();
 	// Test transmitting
 	buffer[0] = 'h';
+    rx_powerup();
 	
 	while (1)
 	{
         //test_Transmit(buffer,BUFFER_SIZE);
+        
+        Transmit(buffer,BUFFER_SIZE);
+        _delay_ms(5);
+        rx_powerup();
+        _delay_ms(5);
         //transmit_string("preSending\n");
-        Receive(buffer,BUFFER_SIZE);
+        //Receive(buffer,BUFFER_SIZE);
         //test_Transmit(buffer,BUFFER_SIZE);
        //Transmit(buffer,BUFFER_SIZE);
         //transmit_string("Did i send?\r\n");

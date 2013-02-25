@@ -52,6 +52,7 @@ extern void mirf_set_RADDR(uint8_t * adr);
 extern void mirf_set_TADDR(uint8_t * adr);
 extern uint8_t mirf_data_ready();
 extern void mirf_get_data(uint8_t * data);
+extern void rx_powerup();
 
 
 // Public extended functions
