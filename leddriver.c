@@ -274,114 +274,20 @@ void level_test(void){
     */
 }
 
-void transmit(uint32_t data){
-	//break the data up into 4 bytes
-	
-	uint8_t temp = 0;
-
-	temp = (data);
-	//load first byte
-	SPDR = temp;
-	//temp = 0x0F & display_count;
-	while(bit_is_clear(SPSR,SPIF)){};
-
-	temp = (data>>8);
-	//load second byte
-	SPDR = temp;
-	//temp = 0x0F & display_count;
-	while(bit_is_clear(SPSR,SPIF)){};
-
-	temp = (data>>16);
-	//load third byte
-	SPDR = temp;
-	//temp = 0x0F & display_count;
-	while(bit_is_clear(SPSR,SPIF)){};
-
-	temp = (data>>24);
-	//load fourth byte
-	SPDR = temp;
-	//temp = 0x0F & display_count;
-	while(bit_is_clear(SPSR,SPIF)){};
-
-	//Toggle latch
-	PORTA |= (1<<SS);
-	PORTA &= ~(1<<SS);
-}
-
-void test_run(void){
-	//break the data up into 4 bytes
-	
-	//load first byte
-	SPDR = 0xff;
-	//temp = 0x0F & display_count;
-	while(bit_is_clear(SPSR,SPIF)){};
-	//
-	//Toggle latch
-	//PORTB |= 0x80;
-	//PORTB &= ~(0x80);
-	//
-
-	//load second byte
-	SPDR = 0xff;
-	//temp = 0x0F & display_count;
-	while(bit_is_clear(SPSR,SPIF)){};
-
-	//
-	//Toggle latch
-	//PORTB |= 0x00;
-	//PORTB &= ~(0x80);
-	//
-	
-	//load third byte
-	SPDR = 0xff;
-	//temp = 0x0F & display_count;
-	while(bit_is_clear(SPSR,SPIF)){};
-	//
-	//Toggle latch
-	//PORTB |= 0x00;
-	//PORTB &= ~(0x80);
-	//
-	
-
-
-	//load fourth byte
-	SPDR = 0xff;
-	//temp = 0x0F & display_count;
-	while(bit_is_clear(SPSR,SPIF)){};
-	
-	//Toggle latch
-	PORTB |= 0x80;
-	PORTB &= ~(0x80);
-}
-
 void on(void){
-    uint8_t output = -1; //All on
-    transmit(output);
+    uint16_t output5 = -1;
+
+    transmit1(-1,-1,-1,-1,-1);
 	}
 
 void off(void){
-    uint32_t output = 0;
-    transmit(output);
-}
+    uint16_t output = 0; //All on
+    uint16_t output2 = 0;
+    uint16_t output3 = 0;
+    uint16_t output4 = 0;
+    uint16_t output5 = 0;
 
-void LED1on(void){
-    uint32_t output = 0x01000000;
-    transmit(output);
-}
-
-void LED17on(void){
-    uint32_t output = 0x00000100;
-    transmit(output);
-}
-
-void driver1_count(void){
-    static uint16_t count = 0;
-    transmit((count<<16));
-    }
-
-void driver2_count(void){
-    static uint16_t count = 0;
-    transmit(count);
+    transmit1(output,output2,output3,output4,output5);
 }
 
 void shift_LED(void){
@@ -396,6 +302,8 @@ void shift_LED(void){
     static uint8_t first3 = 1;
     static uint8_t first4 = 1;
     static uint8_t first5 = 1;
+
+    level(3);
 
     if(LED1 == 0)
     {
@@ -448,125 +356,26 @@ void shift_LED(void){
         }
     }
 
-    transmit1(LED1,LED2,LED3,LED4,LED5);
-    _delay_ms(50);
+    transmit1(LED5,LED4,LED3,LED2,LED1);
+    //transmit1(LED1,LED2,LED3,LED4,LED5);
+    _delay_ms(100);
+    //_delay_ms(500);
     }
 
-void test1(void){
-    static uint32_t output = -1;
-    transmit(output);
-}
-
-void test2p1(void){
-    uint32_t output = 0x00010000;
-    transmit(output);
-}
-
-void test2p2(void){
-    uint32_t output = 0x00000001;
-    transmit(output);
-}
-
-void test3(void){
-    static uint8_t i = 0;
-    static uint32_t output1 = 0x00010000;
-    static uint32_t output2 = 0x00000001;
-    switch(i){
-        case 0:
-            transmit(output1);
-            break;
-        case 1:
-            transmit(output2);
-            break;
-        case 2:
-            transmit(0);
-            break;
-        case 3:
-            transmit(0);
-            break;
-        case 4:
-            transmit(0);
-            break;
-    }
-    i++;
-    i = i%5;
-    //
-    //if((i%5)==0){
-    //i = 0;
-    //transmit(output1);
-    //}
-    //else{transmit(output2);}
-    //i++;
-    //
-}
-
-/*************************************************************************/
-//                           timer/counter0 ISR                          
-//When the TCNT0 overflow interrupt occurs, the count_7ms variable is    
-//incremented.  Every 7680 interrupts the minutes counter is incremented.
-//tcnt0 interrupts come at 7.8125ms internals.
-// 1/32768         = 30.517578uS
-//(1/32768)*256    = 7.8125ms
-//(1/32768)*256*64 = 500mS
-/*************************************************************************/
-/*
-ISR(TIMER0_OVF_vect){
-	static uint8_t count_7ms = 0;        //holds 7ms tick count in binary
-	static uint32_t display_count = 0x00000001; //holds count for display 
-	uint8_t temp = 0;
-	count_7ms++;                //increment count every 7.8125 ms 
-	if ((count_7ms % 1)==0){ //?? interrupts equals one half second 
-	//	if((temp % 64) == 0){
-			transmit(display_count);
-			//transmit(0xFFFFFFFF);
-			display_count++;
-			//display_count = (display_count << 1); //shift display bit for next time 
-			temp++;
-//		}
-	}
-	//if (display_count == 0x00){display_count=0x01;} //display back to 1st positon
-}
-*/
 
 /***********************************************************************/
 //                                main                                 
 /***********************************************************************/
 int main(){
 
-	//port initialization
-	//DDRA &= ~(0x03);  //set port B bits 7,6,5,4,2,1,0  as outputs
-    //PORTA |= (0x03);
     DDRB |= (1<<PB4)|(1<<PB5)|(1<<PB6);
-    //PORTB = 0x01;
-	//tcnt0_init();  //initalize counter timer zero
-    //PORTA |= 0x02;
 	spi_init();    //initalize SPI port
-    //PORTB = 0x02;
-	//sei();         //enable interrupts before entering loop
     uint8_t input = 0;
 	while(1){
        // patrick_test();
-        level_test();
+        //level_test();
         //shift_LED();
+        transmit1(0,0,0,0,0x0001);
 
-        /*
-        input = 2;
-        if(input == 0){
-            off();
-        }
-        if(input == 1){
-            test1();
-        }
-        if(input == 2){
-            shift_LED();
-            _delay_ms(250);
-        }
-        //test2p2();
-        if(input == 3){
-            test3();
-        }
-        */
-        //shift_LED();
-        //_delay_ms(250);
     }     //empty main while loop
 } //main

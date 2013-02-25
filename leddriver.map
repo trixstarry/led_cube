@@ -1,7 +1,5 @@
 Archive member included because of file (symbol)
 
-/usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_udivmodqi4.o)
-                              leddriver.o (__udivmodqi4)
 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
                               /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o (exit)
 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
@@ -119,7 +117,7 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x5be
+.text           0x00000000      0x4d2
  *(.vectors)
  .vectors       0x00000000       0x50 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
                 0x00000000                __vectors
@@ -195,42 +193,29 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
                 0x0000008a                __vector_10
                 0x0000008a                __vector_16
                 0x0000008a                __vector_18
- .text          0x0000008e      0x514 leddriver.o
+ .text          0x0000008e      0x440 leddriver.o
                 0x0000008e                spi_init
                 0x000000a2                transmit1
                 0x00000100                level
                 0x00000158                patrick_test
                 0x0000017a                level_test
-                0x0000028a                transmit
-                0x000002c6                test_run
-                0x000002f4                on
-                0x00000302                off
-                0x0000030e                LED1on
-                0x0000031c                LED17on
-                0x0000032a                driver1_count
-                0x00000336                driver2_count
-                0x00000342                shift_LED
-                0x00000506                test1
-                0x00000512                test2p1
-                0x00000520                test2p2
-                0x0000052e                test3
-                0x00000584                main
- .text          0x000005a2        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_udivmodqi4.o)
- .text          0x000005a2        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
- .text          0x000005a2        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
- .text          0x000005a2        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
-                0x000005a2                . = ALIGN (0x2)
+                0x0000028a                on
+                0x000002ac                off
+                0x000002ce                shift_LED
+                0x00000498                main
+ .text          0x000004ce        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
+ .text          0x000004ce        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
+ .text          0x000004ce        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
+                0x000004ce                . = ALIGN (0x2)
  *(.text.*)
- .text.libgcc   0x000005a2       0x18 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_udivmodqi4.o)
-                0x000005a2                __udivmodqi4
- .text.libgcc   0x000005ba        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
- .text.libgcc   0x000005ba        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
- .text.libgcc   0x000005ba        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
-                0x000005ba                . = ALIGN (0x2)
+ .text.libgcc   0x000004ce        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
+ .text.libgcc   0x000004ce        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
+ .text.libgcc   0x000004ce        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
+                0x000004ce                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x000005ba        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
-                0x000005ba                exit
-                0x000005ba                _exit
+ .fini9         0x000004ce        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
+                0x000004ce                exit
+                0x000004ce                _exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -249,16 +234,15 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x000005ba        0x4 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
+ .fini0         0x000004ce        0x4 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
  *(.fini0)
-                0x000005be                _etext = .
+                0x000004d2                _etext = .
 
-.data           0x00800100        0x8 load address 0x000005be
+.data           0x00800100        0x8 load address 0x000004d2
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800100        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
  .data          0x00800100        0x7 leddriver.o
- .data          0x00800107        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_udivmodqi4.o)
  .data          0x00800107        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
  .data          0x00800107        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
  .data          0x00800107        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
@@ -271,27 +255,26 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
                 0x00800108                _edata = .
                 0x00800108                PROVIDE (__data_end, .)
 
-.bss            0x00800108        0x9
+.bss            0x00800108        0x8
                 0x00800108                PROVIDE (__bss_start, .)
  *(.bss)
  .bss           0x00800108        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
- .bss           0x00800108        0x9 leddriver.o
- .bss           0x00800111        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_udivmodqi4.o)
- .bss           0x00800111        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
- .bss           0x00800111        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
- .bss           0x00800111        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
+ .bss           0x00800108        0x8 leddriver.o
+ .bss           0x00800110        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
+ .bss           0x00800110        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
+ .bss           0x00800110        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
  *(.bss*)
  *(COMMON)
-                0x00800111                PROVIDE (__bss_end, .)
-                0x000005be                __data_load_start = LOADADDR (.data)
-                0x000005c6                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00800110                PROVIDE (__bss_end, .)
+                0x000004d2                __data_load_start = LOADADDR (.data)
+                0x000004da                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800111        0x0
-                0x00800111                PROVIDE (__noinit_start, .)
+.noinit         0x00800110        0x0
+                0x00800110                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x00800111                PROVIDE (__noinit_end, .)
-                0x00800111                _end = .
-                0x00800111                PROVIDE (__heap_start, .)
+                0x00800110                PROVIDE (__noinit_end, .)
+                0x00800110                _end = .
+                0x00800110                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)
@@ -309,15 +292,15 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
 .signature
  *(.signature*)
 
-.stab           0x00000000     0x168c
+.stab           0x00000000     0x11c4
  *(.stab)
  .stab          0x00000000      0x6cc /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
- .stab          0x000006cc      0xfc0 leddriver.o
-                                0xfcc (size before relaxing)
+ .stab          0x000006cc      0xaf8 leddriver.o
+                                0xb04 (size before relaxing)
 
-.stabstr        0x00000000      0x993
+.stabstr        0x00000000      0x8d5
  *(.stabstr)
- .stabstr       0x00000000      0x993 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
+ .stabstr       0x00000000      0x8d5 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
 
 .stab.excl
  *(.stab.excl)
