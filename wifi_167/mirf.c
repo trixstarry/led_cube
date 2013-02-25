@@ -84,8 +84,8 @@ void mirf_config()
     // Set length of incoming payload 
     mirf_config_register(RX_PW_P0, mirf_PAYLOAD);
 
-    mirf_set_RADDR(0xB3B4B5B6F1);
-    mirf_set_TADDR(0xB3B4B5B6F1);
+    //mirf_set_RADDR(0xB3B4B5B6F1);
+    //mirf_set_TADDR(0xB3B4B5B6F1);
 
 
 
@@ -215,6 +215,7 @@ void mirf_send(uint8_t * value, uint8_t len)
 
     PTX = 1;                        // Set to transmitter mode
     TX_POWERUP;                     // Power up
+    //mirf_set_TADDR(0x7878787878);
     
     mirf_CSN_lo;                    // Pull down chip select
     SPI_Transmit( FLUSH_TX );     // Write cmd to flush tx fifo

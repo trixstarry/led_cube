@@ -144,7 +144,9 @@ int main (void)
         //_delay_ms(500);
         //LED1_OFF;
         */
-     //   test_Transmit(buffer,BUFFER_SIZE);
+        test_Transmit(buffer,BUFFER_SIZE);
+        _delay_ms(10);
+        /*
         if(Receive(buffer,BUFFER_SIZE) == 1){
             if((buffer[3] == 'l')){//}&&(buffer[31] == '}')){
                 led1_on();
@@ -152,12 +154,6 @@ int main (void)
                 Transmit(buffer,BUFFER_SIZE);
                 rx_powerup();
                 _delay_ms(1);
-                /*
-                // If maximum retries were reached, reset MAX_RT
-                if (mirf_max_rt_reached()) {
-                    mirf_config_register(STATUS, 1<<MAX_RT);
-                }
-                */
                 //led1_on();
                 //led2_off();
             }
@@ -172,6 +168,7 @@ int main (void)
             led1_off();
             led2_off();
         }
+        */
     }
 
 }

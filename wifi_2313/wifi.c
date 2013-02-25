@@ -97,7 +97,7 @@ int main (void)
 	mirf_config();
 	// Test transmitting
 	buffer[0] = 'h';
-    rx_powerup();
+    //rx_powerup();
 	
 	while (1)
 	{
@@ -105,16 +105,16 @@ int main (void)
         
         //Transmit(buffer,BUFFER_SIZE);
         //_delay_ms(5);
-        //rx_powerup();
-        //_delay_ms(5);
+        rx_powerup();
+        _delay_ms(1);
         //transmit_string("preSending\n");
-        //Receive(buffer,BUFFER_SIZE);
+        Receive(buffer,BUFFER_SIZE);
         //test_Transmit(buffer,BUFFER_SIZE);
        //Transmit(buffer,BUFFER_SIZE);
         //transmit_string("Did i send?\r\n");
         //_delay_ms(100);
 
-        test_protocol(buffer,BUFFER_SIZE);
+        //test_protocol(buffer,BUFFER_SIZE);
 	}
 	
 }
