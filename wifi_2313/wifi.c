@@ -39,12 +39,18 @@ void Transmit(uint8_t *buffer,uint8_t buffersize){
 
 int8_t Receive(uint8_t *buffer,uint8_t buffersize){
     uint64_t i = 0;
+    char test [7] = {'d','a','t','a',' ','i','s',' ','\n'};
     while (!mirf_data_ready()){
         if(i > 0x1FFFF){
             return -1;
         }
         i++;
     }
+    transmit_string("data is ready but i want to see\n");
+    for(i = 0; i < 7;i++){
+        USART_Transmit(test[i]);
+    }
+    //_delay_ms(50);
     mirf_get_data(buffer);
     for(i = 0; i < (buffersize); i++)
     {
@@ -65,10 +71,10 @@ void test_Transmit(uint8_t *buffer, uint8_t len){
 }
 
 void test_protocol(uint8_t *buffer, uint8_t len){
-    transmit_string("Transmitting\r\n");
+    //transmit_string("Transmitting\r\n");
     Transmit(buffer,len);
     _delay_ms(5);
-    transmit_string("Rx_Powerup\r\n");
+    //transmit_string("Rx_Powerup\r\n");
     rx_powerup();
     _delay_ms(1);
     transmit_string("Receiving\r\n");
@@ -97,7 +103,7 @@ int main (void)
 	mirf_config();
 	// Test transmitting
 	buffer[0] = 'h';
-    //rx_powerup();
+   // rx_powerup();
 	
 	while (1)
 	{
@@ -105,16 +111,16 @@ int main (void)
         
         //Transmit(buffer,BUFFER_SIZE);
         //_delay_ms(5);
-        rx_powerup();
-        _delay_ms(1);
+        //rx_powerup();
+        //_delay_ms(1);
         //transmit_string("preSending\n");
-        Receive(buffer,BUFFER_SIZE);
+        //Receive(buffer,BUFFER_SIZE);
         //test_Transmit(buffer,BUFFER_SIZE);
        //Transmit(buffer,BUFFER_SIZE);
         //transmit_string("Did i send?\r\n");
-        //_delay_ms(100);
+        _delay_ms(100);
 
-        //test_protocol(buffer,BUFFER_SIZE);
+        test_protocol(buffer,BUFFER_SIZE);
 	}
 	
 }

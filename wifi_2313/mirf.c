@@ -31,6 +31,8 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
+#define F_CPU 8000000UL	// 1Mhz clock
+
 // Defines for setting the MiRF registers for transmitting or receiving mode
 #define TX_POWERUP mirf_config_register(CONFIG, mirf_CONFIG | ( (1<<PWR_UP) | (0<<PRIM_RX) ) )
 #define RX_POWERUP mirf_config_register(CONFIG, mirf_CONFIG | ( (1<<PWR_UP) | (1<<PRIM_RX) ) )
@@ -45,6 +47,7 @@ void mirf_init()
 {
     // Define CSN and CE as Output and set them to default
     DDRB |= ((1<<CSN)|(1<<CE));
+    PORTB |= (1<<PB4); //Enable the interrupt pin as an input set to high since the IRQ is active low
     mirf_CE_lo;
     mirf_CSN_hi;
 
@@ -123,6 +126,7 @@ SIGNAL(SIG_PIN_CHANGE2)
 // Interrupt handler 
 ISR(PCINT_vect)
 {
+    transmit_string("interupted\n");
     uint8_t status;   
     // If still in transmitting mode then finish transmission
     if (PTX) {
