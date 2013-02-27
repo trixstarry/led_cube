@@ -3,9 +3,9 @@ Archive member included because of file (symbol)
 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
                               /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o (exit)
 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
-                              leddriver.o (__do_copy_data)
+                              ledcube.o (__do_copy_data)
 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
-                              leddriver.o (__do_clear_bss)
+                              ledcube.o (__do_clear_bss)
 
 Memory Configuration
 
@@ -22,7 +22,7 @@ Linker script and memory map
 
 Address of section .data set to 0x800100
 LOAD /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
-LOAD leddriver.o
+LOAD ledcube.o
 LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
 LOAD /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/libc.a
 LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
@@ -193,7 +193,7 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
                 0x0000008a                __vector_10
                 0x0000008a                __vector_16
                 0x0000008a                __vector_18
- .text          0x0000008e      0x440 leddriver.o
+ .text          0x0000008e      0x440 ledcube.o
                 0x0000008e                spi_init
                 0x000000a2                transmit1
                 0x00000100                level
@@ -242,7 +242,7 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800100        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
- .data          0x00800100        0x7 leddriver.o
+ .data          0x00800100        0x7 ledcube.o
  .data          0x00800107        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
  .data          0x00800107        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
  .data          0x00800107        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
@@ -259,7 +259,7 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
                 0x00800108                PROVIDE (__bss_start, .)
  *(.bss)
  .bss           0x00800108        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
- .bss           0x00800108        0x8 leddriver.o
+ .bss           0x00800108        0x8 ledcube.o
  .bss           0x00800110        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
  .bss           0x00800110        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
  .bss           0x00800110        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
@@ -295,12 +295,12 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
 .stab           0x00000000     0x11c4
  *(.stab)
  .stab          0x00000000      0x6cc /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
- .stab          0x000006cc      0xaf8 leddriver.o
+ .stab          0x000006cc      0xaf8 ledcube.o
                                 0xb04 (size before relaxing)
 
-.stabstr        0x00000000      0x8d5
+.stabstr        0x00000000      0x8d3
  *(.stabstr)
- .stabstr       0x00000000      0x8d5 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
+ .stabstr       0x00000000      0x8d3 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
 
 .stab.excl
  *(.stab.excl)
@@ -356,5 +356,5 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
 
 .debug_macinfo
  *(.debug_macinfo)
-OUTPUT(leddriver.elf elf32-avr)
+OUTPUT(ledcube.elf elf32-avr)
 LOAD linker stubs

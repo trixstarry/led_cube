@@ -1,4 +1,4 @@
-PRG            = leddriver
+PRG            = ledcube
 
 OBJ            = $(PRG).o
 
