@@ -65,6 +65,23 @@
 #define LAYER_5 PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6))  \
                 PORTB |= ((0<<PIN4)|(0<<PIN5)|(1<<PIN6))
 
+#define cp1     0x0001
+#define cp2     0x0002
+#define cp3     0x0004
+#define cp4     0x0008
+#define cp5     0x0010
+#define cp6     0x0020
+#define cp7     0x0040
+#define cp8     0x0080
+#define cp9     0x0100
+#define cp10    0x0200
+#define cp11    0x0400
+#define cp12    0x0800
+#define cp13    0x1000
+#define cp14    0x2000
+#define cp15    0x4000
+#define cp16    0x8000
+
 //global variables
 //uint16_t layer0 = 0x0000;
 //uint16_t layer1 = 0x0000;
@@ -221,6 +238,184 @@ void level(uint8_t layer){
 }
 
 void blue(uint8_t position){
+    switch(position){
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0008;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 2:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0007;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x000F;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0008;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0008;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0008;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0008;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0008;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0008;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0008;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0008;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0008;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0008;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0008;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0008;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0008;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0008;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0008;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0008;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0008;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0008;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0008;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0008;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0008;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0008;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+
+    }
 
 
 }
