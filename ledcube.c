@@ -50,20 +50,30 @@
 // LAYER DEFINITIONS
 // *********************************
 #define LAYER_1() \
-                PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6)) \
-                PORTB |= ((0<<PIN4)|(0<<PIN5)|(0<<PIN6))
+                PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6)); \
+                PORTB |= ((0<<PIN4)|(0<<PIN5)|(0<<PIN6));
 
-#define LAYER_2 PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6))  \
-                PORTB |= ((1<<PIN4)|(0<<PIN5)|(0<<PIN6))
+#define LAYER_2 PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6));  \
+                PORTB |= ((1<<PIN4)|(0<<PIN5)|(0<<PIN6));
 
-#define LAYER_3 PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6))  \
-                PORTB |= ((0<<PIN4)|(1<<PIN5)|(0<<PIN6))
+#define LAYER_3 PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6));  \
+                PORTB |= ((0<<PIN4)|(1<<PIN5)|(0<<PIN6));
 
-#define LAYER_4 PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6))  \
+#define LAYER_4 PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6));  \
                 PORTB |= ((1<<PIN4)|(j<<PIN5)|(0<<PIN6))
 
 #define LAYER_5 PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6))  \
                 PORTB |= ((0<<PIN4)|(0<<PIN5)|(1<<PIN6))
+
+//global variables
+//uint16_t layer0 = 0x0000;
+//uint16_t layer1 = 0x0000;
+//uint16_t layer2 = 0x0000;
+//uint16_t layer3 = 0x0000;
+//uint16_t layer4 = 0x0000;
+//uint8_t frame[5] = {layer0,layer1,layer2,layer3,layer4};
+uint16_t frame[10][5];
+
 // *********************************
 
 //#include "controllerTest.h"
@@ -208,6 +218,35 @@ void level(uint8_t layer){
         default:
             PORTB |= ((1<<PB4)|(1<<PB5)|(1<<PB6));
             }
+}
+
+void blue(uint8_t position){
+
+
+}
+
+// NOTE: Colors are
+//      0  Blue
+//      1  Red
+//      2  Green
+// Layers can be 0 - 4
+// positions can be 1 - 25
+void LED_test(uint8_t color, uint8_t position,uint8_t layer){
+        level(layer);
+        switch(color){
+            case 0:
+                blue(position);
+                break;
+            case 1:
+                red(position);
+                break;
+            case 2:
+                green(position);
+                break;
+            default:
+                break;
+        }
+
 }
 
 void patrick_test(void){
