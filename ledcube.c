@@ -65,22 +65,22 @@
 #define LAYER_5 PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6))  \
                 PORTB |= ((0<<PIN4)|(0<<PIN5)|(1<<PIN6))
 
-#define cp1     0x0001
-#define cp2     0x0002
-#define cp3     0x0004
-#define cp4     0x0008
-#define cp5     0x0010
-#define cp6     0x0020
-#define cp7     0x0040
-#define cp8     0x0080
-#define cp9     0x0100
-#define cp10    0x0200
-#define cp11    0x0400
-#define cp12    0x0800
-#define cp13    0x1000
-#define cp14    0x2000
-#define cp15    0x4000
-#define cp16    0x8000
+#define CP8     0x0001
+#define CP7     0x0002
+#define CP6     0x0004
+#define CP5     0x0008
+#define CP4     0x0010
+#define CP3     0x0020
+#define CP2     0x0040
+#define CP1     0x0080
+#define CP16    0x0100
+#define CP15    0x0200
+#define CP14    0x0400
+#define CP13    0x0800
+#define CP12    0x1000
+#define CP11    0x2000
+#define CP10    0x4000
+#define CP9     0x8000
 
 //global variables
 //uint16_t layer0 = 0x0000;
@@ -212,7 +212,7 @@ void transmit1(uint16_t data1,uint16_t data2,uint16_t data3,uint16_t data4,uint1
 
 void level(uint8_t layer){
     switch(layer){
-        case 0:
+        case 2:
             PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
             PORTB |= ((0<<PB4)|(0<<PB5)|(0<<PB6));
             return;
@@ -220,15 +220,15 @@ void level(uint8_t layer){
             PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
             PORTB |= ((1<<PB4)|(0<<PB5)|(0<<PB6));
             return;
-        case 2:
+        case 0:
             PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
             PORTB |= ((0<<PB4)|(1<<PB5)|(0<<PB6));
             return;
-        case 3:
+        case 4:
             PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
             PORTB |= ((1<<PB4)|(1<<PB5)|(0<<PB6));
             return;
-        case 4:
+        case 3:
             PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
             PORTB |= ((0<<PB4)|(0<<PB5)|(1<<PB6));
             return;
@@ -241,25 +241,47 @@ void blue(uint8_t position){
     switch(position){
         case 1:
             frame[0][0] = 0x0000;
-            frame[0][1] = 0x0008;
+            frame[0][1] = CP8;
             frame[0][2] = 0x0000;
             frame[0][3] = 0x0000;
             frame[0][4] = 0x0000;
             break;
         case 2:
             frame[0][0] = 0x0000;
-            frame[0][1] = 0x0007;
+            frame[0][1] = CP7;
             frame[0][2] = 0x0000;
             frame[0][3] = 0x0000;
             frame[0][4] = 0x0000;
             break;
-        case 1:
+        case 3:
             frame[0][0] = 0x0000;
             frame[0][1] = 0x0000;
-            frame[0][2] = 0x000F;
+            frame[0][2] = CP15;
             frame[0][3] = 0x0000;
             frame[0][4] = 0x0000;
             break;
+        case 4:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = CP14;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 5:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = CP9;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 6:
+            frame[0][0] = 0x0000;
+            frame[0][1] = CP11;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+            /*
         case 1:
             frame[0][0] = 0x0000;
             frame[0][1] = 0x0008;
@@ -393,23 +415,10 @@ void blue(uint8_t position){
             frame[0][3] = 0x0000;
             frame[0][4] = 0x0000;
             break;
-        case 1:
+            */
+        default:
             frame[0][0] = 0x0000;
-            frame[0][1] = 0x0008;
-            frame[0][2] = 0x0000;
-            frame[0][3] = 0x0000;
-            frame[0][4] = 0x0000;
-            break;
-        case 1:
-            frame[0][0] = 0x0000;
-            frame[0][1] = 0x0008;
-            frame[0][2] = 0x0000;
-            frame[0][3] = 0x0000;
-            frame[0][4] = 0x0000;
-            break;
-        case 1:
-            frame[0][0] = 0x0000;
-            frame[0][1] = 0x0008;
+            frame[0][1] = 0x0000;
             frame[0][2] = 0x0000;
             frame[0][3] = 0x0000;
             frame[0][4] = 0x0000;
@@ -418,6 +427,14 @@ void blue(uint8_t position){
     }
 
 
+}
+
+void red(uint8_t position){
+//
+}
+
+void green(uint8_t position){
+//
 }
 
 // NOTE: Colors are
@@ -441,6 +458,7 @@ void LED_test(uint8_t color, uint8_t position,uint8_t layer){
             default:
                 break;
         }
+        transmit1(frame[0][4],frame[0][3],frame[0][2],frame[0][1],frame[0][0]);
 
 }
 
@@ -468,30 +486,30 @@ void level_test(void){
         switch(i){
             case 0:
                 level(i);
-                transmit1(on,off,off,off,off);
+                transmit1(on,on,on,on,on);
                 break;
             case 1:
                 level(i);
-                transmit1(off,on,off,off,off);
+                transmit1(on,on,on,on,on);
                 break;
             case 2:
                 level(i);
-                transmit1(off,off,on,off,off);
+                transmit1(on,on,on,on,on);
                 break;
             case 3:
                 level(i);
-                transmit1(off,off,off,on,off);
+                transmit1(on,on,on,on,on);
                 break;
             case 4:
                 level(i);
-                transmit1(off,off,off,off,on);
+                transmit1(on,on,on,on,on);
                 break;
 
         }
     //transmit1(data1,data2,data3,data4,data5);
     //level(layer);
+    _delay_ms(3);
     //_delay_ms(500);
-    _delay_ms(500);
     }
     /*
     layer = 6;
@@ -537,7 +555,11 @@ void shift_LED(void){
     static uint8_t first4 = 1;
     static uint8_t first5 = 1;
 
-    level(3);
+    static uint8_t layer = 0;
+
+    level(layer);
+    //level(0);
+
 
     if(LED1 == 0)
     {
@@ -575,6 +597,8 @@ void shift_LED(void){
                     else{
                         LED1 = 0x0001;
                         first1 = first2 = first3 = first4 = first5 = 1;
+                        layer++;
+                        layer = layer % 5;
                     }
                 }
             }
@@ -592,9 +616,16 @@ void shift_LED(void){
 
     transmit1(LED5,LED4,LED3,LED2,LED1);
     //transmit1(LED1,LED2,LED3,LED4,LED5);
-    _delay_ms(100);
+    _delay_ms(50);
     //_delay_ms(500);
     }
+
+void hall_test(void){
+    while(1){
+        
+    }
+
+}
 
 
 /***********************************************************************/
@@ -608,8 +639,14 @@ int main(){
 	while(1){
        // patrick_test();
         //level_test();
+        level(2);
         //shift_LED();
-        transmit1(0,0,0,0,0x0001);
+        //transmit1(0,0,0,CP3,0);
+        //level(3);
+        transmit1(0,0,CP3,CP2,0);
+        //off();
+        //transmit1(on,on,on,on,on);
+        //LED_test(0,4,4);
 
     }     //empty main while loop
 } //main
