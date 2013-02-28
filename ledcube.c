@@ -65,22 +65,22 @@
 #define LAYER_5 PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6))  \
                 PORTB |= ((0<<PIN4)|(0<<PIN5)|(1<<PIN6))
 
-#define CP8     0x0001
-#define CP7     0x0002
-#define CP6     0x0004
-#define CP5     0x0008
-#define CP4     0x0010
-#define CP3     0x0020
-#define CP2     0x0040
-#define CP1     0x0080
-#define CP16    0x0100
-#define CP15    0x0200
-#define CP14    0x0400
-#define CP13    0x0800
-#define CP12    0x1000
-#define CP11    0x2000
-#define CP10    0x4000
-#define CP9     0x8000
+#define CP7     0x0001
+#define CP12     0x0002
+#define CP11     0x0004
+#define CP10     0x0008
+#define CP13     0x0010
+#define CP16     0x0020
+#define CP15     0x0040
+#define CP14     0x0080
+#define CP3    0x0100
+#define CP2    0x0200
+#define CP1    0x0400
+#define CP6    0x0800
+#define CP5    0x1000
+#define CP4    0x2000
+#define CP9    0x4000
+#define CP8    0x8000
 
 //global variables
 //uint16_t layer0 = 0x0000;
@@ -204,6 +204,8 @@ void transmit1(uint16_t data1,uint16_t data2,uint16_t data3,uint16_t data4,uint1
 	SPDR = temp;
 	//temp = 0x0F & display_count;
 	while(bit_is_clear(SPSR,SPIF)){};
+
+    _delay_us(100);
     
 	//Toggle latch
 	PORTA |= (1<<SS);
@@ -248,7 +250,7 @@ void blue(uint8_t position){
             break;
         case 2:
             frame[0][0] = 0x0000;
-            frame[0][1] = CP7;
+            frame[0][1] = CP5;
             frame[0][2] = 0x0000;
             frame[0][3] = 0x0000;
             frame[0][4] = 0x0000;
@@ -508,7 +510,7 @@ void level_test(void){
         }
     //transmit1(data1,data2,data3,data4,data5);
     //level(layer);
-    _delay_ms(3);
+    //_delay_ms(3);
     //_delay_ms(500);
     }
     /*
@@ -621,12 +623,107 @@ void shift_LED(void){
     }
 
 void hall_test(void){
+    uint8_t input = 0;
     while(1){
-        
+        input = (~PINB & ((1<<PB0)|(1<<PB1)|(1<<PB2)|(1<<PB3)));
+        //transmit1(CP3,0,0,0,0);
+        //level(1);
+        switch(input){
+            case 0:
+                level(0);
+                transmit1(0,0,CP3,CP2,0);
+                break;
+            case 1:
+                level(1);
+                transmit1(0,0,CP3,CP2,0);
+                break;
+            case 2:
+                level(2);
+                transmit1(0,0,CP3,CP2,0);
+                break;
+            case 4:
+                level(3);
+                transmit1(0,0,CP3,CP2,0);
+                break;
+            case 8:
+                level(4);
+                transmit1(0,0,CP3,CP2,0);
+                break;
+            default:
+                level(0);
+                transmit1(CP2,0,0,0,0);
+                
     }
 
 }
+}
 
+void PIN_Test(void){
+    static uint8_t pin = 0;
+    uint8_t input = (~PINB & (1<<PB0));
+
+    if(input == 1){
+        pin++;
+        pin = pin % 25;
+    }
+    
+
+    switch(pin){
+        case 1:
+            transmit1(CP1,CP1,CP1,CP1,CP1);
+            break;
+        case 2:
+            transmit1(CP2,CP2,CP2,CP2,CP2);
+            break;
+        case 3:
+            transmit1(CP3,CP3,CP3,CP3,CP3);
+            break;
+        case 4:
+            transmit1(CP4,CP4,CP4,CP4,CP4);
+            break;
+        case 5:
+            transmit1(CP5,CP5,CP5,CP5,CP5);
+            break;
+        case 6:
+            transmit1(CP6,CP6,CP6,CP6,CP6);
+            break;
+        case 7:
+            transmit1(CP7,CP7,CP7,CP7,CP7);
+            break;
+        case 8:
+            transmit1(CP8,CP8,CP8,CP8,CP8);
+            break;
+        case 9:
+            transmit1(CP9,CP9,CP9,CP9,CP9);
+            break;
+        case 10:
+            transmit1(CP10,CP10,CP10,CP10,CP10);
+            break;
+        case 11:
+            transmit1(CP11,CP11,CP11,CP11,CP11);
+            break;
+        case 12:
+            transmit1(CP12,CP12,CP12,CP12,CP12);
+            break;
+        case 13:
+            transmit1(CP13,CP13,CP13,CP13,CP13);
+            break;
+        case 14:
+            transmit1(CP14,CP14,CP14,CP14,CP14);
+            break;
+        case 15:
+            transmit1(CP15,CP15,CP15,CP15,CP15);
+            break;
+        case 16:
+            transmit1(CP16,CP16,CP16,CP16,CP16);
+            break;
+        default:
+            off();
+    }
+    _delay_ms(500);
+    _delay_ms(500);
+    
+}
 
 /***********************************************************************/
 //                                main                                 
@@ -634,19 +731,22 @@ void hall_test(void){
 int main(){
 
     DDRB |= (1<<PB4)|(1<<PB5)|(1<<PB6);
+    PORTB |= (1<<PB0)|(1<<PB1)|(1<<PB2)|(1<<PB3);
 	spi_init();    //initalize SPI port
     uint8_t input = 0;
 	while(1){
        // patrick_test();
         //level_test();
-        level(2);
-        //shift_LED();
+        //level(2);
+        shift_LED();
         //transmit1(0,0,0,CP3,0);
-        //level(3);
-        transmit1(0,0,CP3,CP2,0);
+        //level(4);
+        //transmit1(0,0,0,0,CP1);
         //off();
         //transmit1(on,on,on,on,on);
-        //LED_test(0,4,4);
+        //LED_test(0,2,4);
+        //hall_test();
+        //PIN_Test();
 
     }     //empty main while loop
 } //main
