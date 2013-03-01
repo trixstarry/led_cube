@@ -455,17 +455,17 @@ int main(){
     uint8_t i = 0;
    
     //initialize the pattern
-    leds(0,1,2,3);
-    leds(1,6,7,8);
-    leds(2,11,12,13);
-    leds(3,16,17,18);
-    leds(4,21,22,23);
+    //leds(0,1,2,3);
+    //leds(1,6,7,8);
+    //leds(2,11,12,13);
+    //leds(3,16,17,18);
+    //leds(4,21,22,23);
     
 	while(1){
 
-        test_frame();
+        //test_frame();
         //level_test();
-        //shift_LED();
+        shift_LED();
         //hall_test();
 
     }     //empty main while loop

@@ -3,15 +3,15 @@ ledcube.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .data         000002f6  00800100  00000724  000007b8  2**0
+  0 .data         000002f6  00800100  00000678  0000070c  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  1 .text         00000724  00000000  00000000  00000094  2**1
+  1 .text         00000678  00000000  00000000  00000094  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  2 .bss          0000003b  008003f6  008003f6  00000aae  2**0
+  2 .bss          0000003b  008003f6  008003f6  00000a02  2**0
                   ALLOC
-  3 .stab         000015f0  00000000  00000000  00000ab0  2**2
+  3 .stab         000015b4  00000000  00000000  00000a04  2**2
                   CONTENTS, READONLY, DEBUGGING
-  4 .stabstr      000009e5  00000000  00000000  000020a0  2**0
+  4 .stabstr      000009e5  00000000  00000000  00001fb8  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -50,8 +50,8 @@ Disassembly of section .text:
   5c:	13 e0       	ldi	r17, 0x03	; 3
   5e:	a0 e0       	ldi	r26, 0x00	; 0
   60:	b1 e0       	ldi	r27, 0x01	; 1
-  62:	e4 e2       	ldi	r30, 0x24	; 36
-  64:	f7 e0       	ldi	r31, 0x07	; 7
+  62:	e8 e7       	ldi	r30, 0x78	; 120
+  64:	f6 e0       	ldi	r31, 0x06	; 6
   66:	02 c0       	rjmp	.+4      	; 0x6c <__do_copy_data+0x10>
   68:	05 90       	lpm	r0, Z+
   6a:	0d 92       	st	X+, r0
@@ -73,7 +73,7 @@ Disassembly of section .text:
   7e:	b1 07       	cpc	r27, r17
   80:	e1 f7       	brne	.-8      	; 0x7a <.do_clear_bss_loop>
   82:	0e 94 1c 03 	call	0x638	; 0x638 <main>
-  86:	0c 94 90 03 	jmp	0x720	; 0x720 <_exit>
+  86:	0c 94 3a 03 	jmp	0x674	; 0x674 <_exit>
 
 0000008a <__bad_interrupt>:
   8a:	0c 94 00 00 	jmp	0	; 0x0 <__vectors>
@@ -739,7 +739,7 @@ void shift_LED(void){
  378:	8f 5f       	subi	r24, 0xFF	; 255
                         layer = layer % 5;
  37a:	65 e0       	ldi	r22, 0x05	; 5
- 37c:	0e 94 84 03 	call	0x708	; 0x708 <__udivmodqi4>
+ 37c:	0e 94 2e 03 	call	0x65c	; 0x65c <__udivmodqi4>
  380:	90 93 28 04 	sts	0x0428, r25
  384:	9f 01       	movw	r18, r30
  386:	af 01       	movw	r20, r30
@@ -1306,155 +1306,65 @@ void test_frame(){
  636:	08 95       	ret
 
 00000638 <main>:
-
 /***********************************************************************/
 //                                main                                 
 /***********************************************************************/
 int main(){
- 638:	cf 92       	push	r12
- 63a:	df 92       	push	r13
- 63c:	ef 92       	push	r14
- 63e:	ff 92       	push	r15
- 640:	0f 93       	push	r16
- 642:	1f 93       	push	r17
 
     DDRB |= (1<<PB4)|(1<<PB5)|(1<<PB6);
- 644:	84 b1       	in	r24, 0x04	; 4
- 646:	80 67       	ori	r24, 0x70	; 112
- 648:	84 b9       	out	0x04, r24	; 4
+ 638:	84 b1       	in	r24, 0x04	; 4
+ 63a:	80 67       	ori	r24, 0x70	; 112
+ 63c:	84 b9       	out	0x04, r24	; 4
     PORTB |= (1<<PB0)|(1<<PB1)|(1<<PB2)|(1<<PB3);
- 64a:	85 b1       	in	r24, 0x05	; 5
- 64c:	8f 60       	ori	r24, 0x0F	; 15
- 64e:	85 b9       	out	0x05, r24	; 5
+ 63e:	85 b1       	in	r24, 0x05	; 5
+ 640:	8f 60       	ori	r24, 0x0F	; 15
+ 642:	85 b9       	out	0x05, r24	; 5
 	//Bits 1, 0 = SPR1, SPR0 =  
 	//SPSR  |=   (1<<SPI2X);           // double speed operation
     */
 
     //ATtiny167 SPI INIT
 	DDRA |= (1<<SS)|(1<<MOSI)|(1<<SCK);
- 650:	81 b1       	in	r24, 0x01	; 1
- 652:	80 67       	ori	r24, 0x70	; 112
- 654:	81 b9       	out	0x01, r24	; 1
+ 644:	81 b1       	in	r24, 0x01	; 1
+ 646:	80 67       	ori	r24, 0x70	; 112
+ 648:	81 b9       	out	0x01, r24	; 1
 	SPCR |= (1<<SPE)|(1<<MSTR)|(1<<SPR0);
- 656:	8c b5       	in	r24, 0x2c	; 44
- 658:	81 65       	ori	r24, 0x51	; 81
- 65a:	8c bd       	out	0x2c, r24	; 44
+ 64a:	8c b5       	in	r24, 0x2c	; 44
+ 64c:	81 65       	ori	r24, 0x51	; 81
+ 64e:	8c bd       	out	0x2c, r24	; 44
 	SPSR |= (1<<SPI2X);
- 65c:	8d b5       	in	r24, 0x2d	; 45
- 65e:	81 60       	ori	r24, 0x01	; 1
- 660:	8d bd       	out	0x2d, r24	; 45
-	spi_init();    //initalize SPI port
-    uint8_t input = 0;
-    uint8_t i = 0;
-   
-    //initialize the pattern
-    leds(0,1,2,3);
- 662:	80 e0       	ldi	r24, 0x00	; 0
- 664:	41 e0       	ldi	r20, 0x01	; 1
- 666:	50 e0       	ldi	r21, 0x00	; 0
- 668:	60 e0       	ldi	r22, 0x00	; 0
- 66a:	70 e0       	ldi	r23, 0x00	; 0
- 66c:	02 e0       	ldi	r16, 0x02	; 2
- 66e:	10 e0       	ldi	r17, 0x00	; 0
- 670:	20 e0       	ldi	r18, 0x00	; 0
- 672:	30 e0       	ldi	r19, 0x00	; 0
- 674:	93 e0       	ldi	r25, 0x03	; 3
- 676:	c9 2e       	mov	r12, r25
- 678:	d1 2c       	mov	r13, r1
- 67a:	e1 2c       	mov	r14, r1
- 67c:	f1 2c       	mov	r15, r1
- 67e:	0e 94 e6 02 	call	0x5cc	; 0x5cc <leds>
-    leds(1,6,7,8);
- 682:	81 e0       	ldi	r24, 0x01	; 1
- 684:	46 e0       	ldi	r20, 0x06	; 6
- 686:	50 e0       	ldi	r21, 0x00	; 0
- 688:	60 e0       	ldi	r22, 0x00	; 0
- 68a:	70 e0       	ldi	r23, 0x00	; 0
- 68c:	07 e0       	ldi	r16, 0x07	; 7
- 68e:	10 e0       	ldi	r17, 0x00	; 0
- 690:	20 e0       	ldi	r18, 0x00	; 0
- 692:	30 e0       	ldi	r19, 0x00	; 0
- 694:	b8 e0       	ldi	r27, 0x08	; 8
- 696:	cb 2e       	mov	r12, r27
- 698:	d1 2c       	mov	r13, r1
- 69a:	e1 2c       	mov	r14, r1
- 69c:	f1 2c       	mov	r15, r1
- 69e:	0e 94 e6 02 	call	0x5cc	; 0x5cc <leds>
-    leds(2,11,12,13);
- 6a2:	82 e0       	ldi	r24, 0x02	; 2
- 6a4:	4b e0       	ldi	r20, 0x0B	; 11
- 6a6:	50 e0       	ldi	r21, 0x00	; 0
- 6a8:	60 e0       	ldi	r22, 0x00	; 0
- 6aa:	70 e0       	ldi	r23, 0x00	; 0
- 6ac:	0c e0       	ldi	r16, 0x0C	; 12
- 6ae:	10 e0       	ldi	r17, 0x00	; 0
- 6b0:	20 e0       	ldi	r18, 0x00	; 0
- 6b2:	30 e0       	ldi	r19, 0x00	; 0
- 6b4:	ad e0       	ldi	r26, 0x0D	; 13
- 6b6:	ca 2e       	mov	r12, r26
- 6b8:	d1 2c       	mov	r13, r1
- 6ba:	e1 2c       	mov	r14, r1
- 6bc:	f1 2c       	mov	r15, r1
- 6be:	0e 94 e6 02 	call	0x5cc	; 0x5cc <leds>
-    leds(3,16,17,18);
- 6c2:	83 e0       	ldi	r24, 0x03	; 3
- 6c4:	40 e1       	ldi	r20, 0x10	; 16
- 6c6:	50 e0       	ldi	r21, 0x00	; 0
- 6c8:	60 e0       	ldi	r22, 0x00	; 0
- 6ca:	70 e0       	ldi	r23, 0x00	; 0
- 6cc:	01 e1       	ldi	r16, 0x11	; 17
- 6ce:	10 e0       	ldi	r17, 0x00	; 0
- 6d0:	20 e0       	ldi	r18, 0x00	; 0
- 6d2:	30 e0       	ldi	r19, 0x00	; 0
- 6d4:	f2 e1       	ldi	r31, 0x12	; 18
- 6d6:	cf 2e       	mov	r12, r31
- 6d8:	d1 2c       	mov	r13, r1
- 6da:	e1 2c       	mov	r14, r1
- 6dc:	f1 2c       	mov	r15, r1
- 6de:	0e 94 e6 02 	call	0x5cc	; 0x5cc <leds>
-    leds(4,21,22,23);
- 6e2:	84 e0       	ldi	r24, 0x04	; 4
- 6e4:	45 e1       	ldi	r20, 0x15	; 21
- 6e6:	50 e0       	ldi	r21, 0x00	; 0
- 6e8:	60 e0       	ldi	r22, 0x00	; 0
- 6ea:	70 e0       	ldi	r23, 0x00	; 0
- 6ec:	06 e1       	ldi	r16, 0x16	; 22
- 6ee:	10 e0       	ldi	r17, 0x00	; 0
- 6f0:	20 e0       	ldi	r18, 0x00	; 0
- 6f2:	30 e0       	ldi	r19, 0x00	; 0
- 6f4:	e7 e1       	ldi	r30, 0x17	; 23
- 6f6:	ce 2e       	mov	r12, r30
- 6f8:	d1 2c       	mov	r13, r1
- 6fa:	e1 2c       	mov	r14, r1
- 6fc:	f1 2c       	mov	r15, r1
- 6fe:	0e 94 e6 02 	call	0x5cc	; 0x5cc <leds>
+ 650:	8d b5       	in	r24, 0x2d	; 45
+ 652:	81 60       	ori	r24, 0x01	; 1
+ 654:	8d bd       	out	0x2d, r24	; 45
     
 	while(1){
 
-        test_frame();
- 702:	0e 94 0c 03 	call	0x618	; 0x618 <test_frame>
- 706:	fd cf       	rjmp	.-6      	; 0x702 <main+0xca>
+        //test_frame();
+        //level_test();
+        shift_LED();
+ 656:	0e 94 1d 01 	call	0x23a	; 0x23a <shift_LED>
+ 65a:	fd cf       	rjmp	.-6      	; 0x656 <main+0x1e>
 
-00000708 <__udivmodqi4>:
- 708:	99 1b       	sub	r25, r25
- 70a:	79 e0       	ldi	r23, 0x09	; 9
- 70c:	04 c0       	rjmp	.+8      	; 0x716 <__udivmodqi4_ep>
+0000065c <__udivmodqi4>:
+ 65c:	99 1b       	sub	r25, r25
+ 65e:	79 e0       	ldi	r23, 0x09	; 9
+ 660:	04 c0       	rjmp	.+8      	; 0x66a <__udivmodqi4_ep>
 
-0000070e <__udivmodqi4_loop>:
- 70e:	99 1f       	adc	r25, r25
- 710:	96 17       	cp	r25, r22
- 712:	08 f0       	brcs	.+2      	; 0x716 <__udivmodqi4_ep>
- 714:	96 1b       	sub	r25, r22
+00000662 <__udivmodqi4_loop>:
+ 662:	99 1f       	adc	r25, r25
+ 664:	96 17       	cp	r25, r22
+ 666:	08 f0       	brcs	.+2      	; 0x66a <__udivmodqi4_ep>
+ 668:	96 1b       	sub	r25, r22
 
-00000716 <__udivmodqi4_ep>:
- 716:	88 1f       	adc	r24, r24
- 718:	7a 95       	dec	r23
- 71a:	c9 f7       	brne	.-14     	; 0x70e <__udivmodqi4_loop>
- 71c:	80 95       	com	r24
- 71e:	08 95       	ret
+0000066a <__udivmodqi4_ep>:
+ 66a:	88 1f       	adc	r24, r24
+ 66c:	7a 95       	dec	r23
+ 66e:	c9 f7       	brne	.-14     	; 0x662 <__udivmodqi4_loop>
+ 670:	80 95       	com	r24
+ 672:	08 95       	ret
 
-00000720 <_exit>:
- 720:	f8 94       	cli
+00000674 <_exit>:
+ 674:	f8 94       	cli
 
-00000722 <__stop_program>:
- 722:	ff cf       	rjmp	.-2      	; 0x722 <__stop_program>
+00000676 <__stop_program>:
+ 676:	ff cf       	rjmp	.-2      	; 0x676 <__stop_program>
