@@ -40,56 +40,11 @@
 
 #include <avr/io.h>
 #include <util/delay.h>
-
+#include "ledcube.h"
 
 #define SS PA6
 #define MOSI PA4
 #define SCK PA5
-
-// *********************************
-// LAYER DEFINITIONS
-// *********************************
-#define LAYER_1() \
-                PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6)); \
-                PORTB |= ((0<<PIN4)|(0<<PIN5)|(0<<PIN6));
-
-#define LAYER_2 PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6));  \
-                PORTB |= ((1<<PIN4)|(0<<PIN5)|(0<<PIN6));
-
-#define LAYER_3 PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6));  \
-                PORTB |= ((0<<PIN4)|(1<<PIN5)|(0<<PIN6));
-
-#define LAYER_4 PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6));  \
-                PORTB |= ((1<<PIN4)|(j<<PIN5)|(0<<PIN6))
-
-#define LAYER_5 PORTB &= ~((1<<PIN4)|(1<<PIN5)|(1<<PIN6))  \
-                PORTB |= ((0<<PIN4)|(0<<PIN5)|(1<<PIN6))
-
-#define CP7     0x0001
-#define CP12     0x0002
-#define CP11     0x0004
-#define CP10     0x0008
-#define CP13     0x0010
-#define CP16     0x0020
-#define CP15     0x0040
-#define CP14     0x0080
-#define CP3    0x0100
-#define CP2    0x0200
-#define CP1    0x0400
-#define CP6    0x0800
-#define CP5    0x1000
-#define CP4    0x2000
-#define CP9    0x4000
-#define CP8    0x8000
-
-//global variables
-//uint16_t layer0 = 0x0000;
-//uint16_t layer1 = 0x0000;
-//uint16_t layer2 = 0x0000;
-//uint16_t layer3 = 0x0000;
-//uint16_t layer4 = 0x0000;
-//uint8_t frame[5] = {layer0,layer1,layer2,layer3,layer4};
-uint16_t frame[10][5];
 
 // *********************************
 
@@ -112,8 +67,8 @@ void spi_init(void){
 	//Bit 6 = SPE Enable, 
 	//Bit 5 = DORD = Data Order, 0 = MSB transmitted first
 	//Bit 4 = MSTR = Master/Slave Select = Master/slave select
-	//Bit 3 = CPOL = Clock polarity (0 means low polarity)
-	//Bit 2 = CPHA = Clock phase
+	//Bit 3 = C1POL = Clock polarity (0 means low polarity)
+	//Bit 2 = C1PHA = Clock phase
 	//Bits 1, 0 = SPR1, SPR0 =  
 	//SPSR  |=   (1<<SPI2X);           // double speed operation
     */
@@ -239,18 +194,18 @@ void level(uint8_t layer){
             }
 }
 
-void blue(uint8_t position){
+void red(uint8_t position){
     switch(position){
         case 1:
             frame[0][0] = 0x0000;
-            frame[0][1] = CP8;
+            frame[0][1] = C2P8;
             frame[0][2] = 0x0000;
             frame[0][3] = 0x0000;
             frame[0][4] = 0x0000;
             break;
         case 2:
             frame[0][0] = 0x0000;
-            frame[0][1] = CP5;
+            frame[0][1] = C2P7;
             frame[0][2] = 0x0000;
             frame[0][3] = 0x0000;
             frame[0][4] = 0x0000;
@@ -258,166 +213,164 @@ void blue(uint8_t position){
         case 3:
             frame[0][0] = 0x0000;
             frame[0][1] = 0x0000;
-            frame[0][2] = CP15;
+            frame[0][2] = C3P15;
             frame[0][3] = 0x0000;
             frame[0][4] = 0x0000;
             break;
         case 4:
             frame[0][0] = 0x0000;
             frame[0][1] = 0x0000;
-            frame[0][2] = CP14;
+            frame[0][2] = C3P14;
             frame[0][3] = 0x0000;
             frame[0][4] = 0x0000;
             break;
         case 5:
             frame[0][0] = 0x0000;
             frame[0][1] = 0x0000;
-            frame[0][2] = CP9;
+            frame[0][2] = C3P9;
             frame[0][3] = 0x0000;
             frame[0][4] = 0x0000;
             break;
         case 6:
             frame[0][0] = 0x0000;
-            frame[0][1] = CP11;
+            frame[0][1] = C2P11;
             frame[0][2] = 0x0000;
             frame[0][3] = 0x0000;
             frame[0][4] = 0x0000;
             break;
-            /*
-        case 1:
+        case 7:
             frame[0][0] = 0x0000;
-            frame[0][1] = 0x0008;
+            frame[0][1] = C2P3;
             frame[0][2] = 0x0000;
             frame[0][3] = 0x0000;
             frame[0][4] = 0x0000;
             break;
-        case 1:
+        case 8:
             frame[0][0] = 0x0000;
-            frame[0][1] = 0x0008;
-            frame[0][2] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P3;
             frame[0][3] = 0x0000;
             frame[0][4] = 0x0000;
             break;
-        case 1:
+        case 9:
             frame[0][0] = 0x0000;
-            frame[0][1] = 0x0008;
-            frame[0][2] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P8;
             frame[0][3] = 0x0000;
             frame[0][4] = 0x0000;
             break;
-        case 1:
+        case 10:
             frame[0][0] = 0x0000;
-            frame[0][1] = 0x0008;
+            frame[0][1] = 0x0000;
             frame[0][2] = 0x0000;
-            frame[0][3] = 0x0000;
+            frame[0][3] = C4P7;
             frame[0][4] = 0x0000;
             break;
-        case 1:
+        case 11:
             frame[0][0] = 0x0000;
-            frame[0][1] = 0x0008;
+            frame[0][1] = C2P14;
             frame[0][2] = 0x0000;
             frame[0][3] = 0x0000;
             frame[0][4] = 0x0000;
             break;
-        case 1:
+        case 12:
+            frame[0][0] = C1P6;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 13:
             frame[0][0] = 0x0000;
-            frame[0][1] = 0x0008;
+            frame[0][1] = 0x0000;
             frame[0][2] = 0x0000;
-            frame[0][3] = 0x0000;
+            frame[0][3] = C4P11;
             frame[0][4] = 0x0000;
             break;
-        case 1:
+        case 14:
             frame[0][0] = 0x0000;
-            frame[0][1] = 0x0008;
+            frame[0][1] = 0x0000;
             frame[0][2] = 0x0000;
-            frame[0][3] = 0x0000;
+            frame[0][3] = C4P6;
             frame[0][4] = 0x0000;
             break;
-        case 1:
+        case 15:
             frame[0][0] = 0x0000;
-            frame[0][1] = 0x0008;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P3;
+            frame[0][4] = 0x0000;
+            break;
+        case 16:
+            frame[0][0] = C1P7;
+            frame[0][1] = 0x0000;
             frame[0][2] = 0x0000;
             frame[0][3] = 0x0000;
             frame[0][4] = 0x0000;
             break;
-        case 1:
+        case 17:
+            frame[0][0] = C1P3;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 18:
             frame[0][0] = 0x0000;
-            frame[0][1] = 0x0008;
+            frame[0][1] = 0x0000;
             frame[0][2] = 0x0000;
-            frame[0][3] = 0x0000;
+            frame[0][3] = C4P14;
             frame[0][4] = 0x0000;
             break;
-        case 1:
+        case 19:
             frame[0][0] = 0x0000;
-            frame[0][1] = 0x0008;
+            frame[0][1] = 0x0000;
             frame[0][2] = 0x0000;
             frame[0][3] = 0x0000;
-            frame[0][4] = 0x0000;
+            frame[0][4] = C5P13;
             break;
-        case 1:
+        case 20:
             frame[0][0] = 0x0000;
-            frame[0][1] = 0x0008;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P12;
+            break;
+        case 21:
+            frame[0][0] = C1P10;
+            frame[0][1] = 0x0000;
             frame[0][2] = 0x0000;
             frame[0][3] = 0x0000;
             frame[0][4] = 0x0000;
             break;
-        case 1:
+        case 22:
+            frame[0][0] = C1P16;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 23:
             frame[0][0] = 0x0000;
-            frame[0][1] = 0x0008;
+            frame[0][1] = 0x0000;
             frame[0][2] = 0x0000;
             frame[0][3] = 0x0000;
-            frame[0][4] = 0x0000;
+            frame[0][4] = C5P3;
             break;
-        case 1:
+        case 24:
             frame[0][0] = 0x0000;
-            frame[0][1] = 0x0008;
+            frame[0][1] = 0x0000;
             frame[0][2] = 0x0000;
             frame[0][3] = 0x0000;
-            frame[0][4] = 0x0000;
+            frame[0][4] = C5P4;
             break;
-        case 1:
+        case 25:
             frame[0][0] = 0x0000;
-            frame[0][1] = 0x0008;
+            frame[0][1] = 0x0000;
             frame[0][2] = 0x0000;
             frame[0][3] = 0x0000;
-            frame[0][4] = 0x0000;
+            frame[0][4] = C5P9;
             break;
-        case 1:
-            frame[0][0] = 0x0000;
-            frame[0][1] = 0x0008;
-            frame[0][2] = 0x0000;
-            frame[0][3] = 0x0000;
-            frame[0][4] = 0x0000;
-            break;
-        case 1:
-            frame[0][0] = 0x0000;
-            frame[0][1] = 0x0008;
-            frame[0][2] = 0x0000;
-            frame[0][3] = 0x0000;
-            frame[0][4] = 0x0000;
-            break;
-        case 1:
-            frame[0][0] = 0x0000;
-            frame[0][1] = 0x0008;
-            frame[0][2] = 0x0000;
-            frame[0][3] = 0x0000;
-            frame[0][4] = 0x0000;
-            break;
-        case 1:
-            frame[0][0] = 0x0000;
-            frame[0][1] = 0x0008;
-            frame[0][2] = 0x0000;
-            frame[0][3] = 0x0000;
-            frame[0][4] = 0x0000;
-            break;
-        case 1:
-            frame[0][0] = 0x0000;
-            frame[0][1] = 0x0008;
-            frame[0][2] = 0x0000;
-            frame[0][3] = 0x0000;
-            frame[0][4] = 0x0000;
-            break;
-            */
         default:
             frame[0][0] = 0x0000;
             frame[0][1] = 0x0000;
@@ -431,31 +384,400 @@ void blue(uint8_t position){
 
 }
 
-void red(uint8_t position){
-//
+void green(uint8_t position){
+    switch(position){
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P9;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 2:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P6;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 3:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P16;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 4:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P13;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 5:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P10;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 6:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P12;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 7:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P2;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 8:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P4;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 9:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P7;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 10:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P8;
+            frame[0][4] = 0x0000;
+            break;
+        case 11:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P15;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 12:
+            frame[0][0] = C1P5;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 13:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P12;
+            frame[0][4] = 0x0000;
+            break;
+        case 14:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P5;
+            frame[0][4] = 0x0000;
+            break;
+        case 15:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P2;
+            frame[0][4] = 0x0000;
+            break;
+        case 16:
+            frame[0][0] = C1P8;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 17:
+            frame[0][0] = C1P2;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 18:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P15;
+            frame[0][4] = 0x0000;
+            break;
+        case 19:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P14;
+            break;
+        case 20:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P11;
+            break;
+        case 21:
+            frame[0][0] = C1P11;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 22:
+            frame[0][0] = C1P15;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 23:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P2;
+            break;
+        case 24:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P5;
+            break;
+        case 25:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P8;
+            break;
+        default:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+
+    }
+
 }
 
-void green(uint8_t position){
-//
+void blue(uint8_t position){
+    switch(position){
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P10;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 2:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P5;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 3:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P1;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 4:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P12;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 5:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P11;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 6:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P13;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 7:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P1;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 8:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P5;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 9:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P6;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 10:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P9;
+            frame[0][4] = 0x0000;
+            break;
+        case 11:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P16;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 12:
+            frame[0][0] = C1P4;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 13:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P13;
+            frame[0][4] = 0x0000;
+            break;
+        case 14:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P4;
+            frame[0][4] = 0x0000;
+            break;
+        case 15:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P1;
+            frame[0][4] = 0x0000;
+            break;
+        case 16:
+            frame[0][0] = C1P9;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 17:
+            frame[0][0] = C1P1;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 18:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P16;
+            frame[0][4] = 0x0000;
+            break;
+        case 19:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P15;
+            break;
+        case 20:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P10;
+            break;
+        case 21:
+            frame[0][0] = C1P12;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 22:
+            frame[0][0] = C1P14;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 23:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P1;
+            break;
+        case 24:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P6;
+            break;
+        case 25:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P7;
+            break;
+        default:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+
+    }
 }
 
 // NOTE: Colors are
-//      0  Blue
-//      1  Red
-//      2  Green
+//      0  Red
+//      1  Green
+//      2  Blue
 // Layers can be 0 - 4
 // positions can be 1 - 25
 void LED_test(uint8_t color, uint8_t position,uint8_t layer){
         level(layer);
         switch(color){
             case 0:
-                blue(position);
-                break;
-            case 1:
                 red(position);
                 break;
-            case 2:
+            case 1:
                 green(position);
+                break;
+            case 2:
+                blue(position);
                 break;
             default:
                 break;
@@ -619,39 +941,39 @@ void shift_LED(void){
     transmit1(LED5,LED4,LED3,LED2,LED1);
     //transmit1(LED1,LED2,LED3,LED4,LED5);
     _delay_ms(50);
-    //_delay_ms(500);
+    _delay_ms(500);
     }
 
 void hall_test(void){
     uint8_t input = 0;
     while(1){
         input = (~PINB & ((1<<PB0)|(1<<PB1)|(1<<PB2)|(1<<PB3)));
-        //transmit1(CP3,0,0,0,0);
+        //transmit1(C1P3,0,0,0,0);
         //level(1);
         switch(input){
             case 0:
                 level(0);
-                transmit1(0,0,CP3,CP2,0);
+                transmit1(0,0,C1P3,C1P2,0);
                 break;
             case 1:
                 level(1);
-                transmit1(0,0,CP3,CP2,0);
+                transmit1(0,0,C1P3,C1P2,0);
                 break;
             case 2:
                 level(2);
-                transmit1(0,0,CP3,CP2,0);
+                transmit1(0,0,C1P3,C1P2,0);
                 break;
             case 4:
                 level(3);
-                transmit1(0,0,CP3,CP2,0);
+                transmit1(0,0,C1P3,C1P2,0);
                 break;
             case 8:
                 level(4);
-                transmit1(0,0,CP3,CP2,0);
+                transmit1(0,0,C1P3,C1P2,0);
                 break;
             default:
                 level(0);
-                transmit1(CP2,0,0,0,0);
+                transmit1(C1P2,0,0,0,0);
                 
     }
 
@@ -664,58 +986,58 @@ void PIN_Test(void){
 
     if(input == 1){
         pin++;
-        pin = pin % 25;
+        pin = pin % 17;
     }
     
 
     switch(pin){
         case 1:
-            transmit1(CP1,CP1,CP1,CP1,CP1);
+            transmit1(C5P1,C4P1,C3P1,C2P1,C1P1);
             break;
         case 2:
-            transmit1(CP2,CP2,CP2,CP2,CP2);
+            transmit1(C5P2,C4P2,C3P2,C2P2,C1P2);
             break;
         case 3:
-            transmit1(CP3,CP3,CP3,CP3,CP3);
+            transmit1(C5P3,C4P3,C3P3,C2P3,C1P3);
             break;
         case 4:
-            transmit1(CP4,CP4,CP4,CP4,CP4);
+            transmit1(C5P4,C4P4,C3P4,C2P4,C1P4);
             break;
         case 5:
-            transmit1(CP5,CP5,CP5,CP5,CP5);
+            transmit1(C5P5,C4P5,C3P5,C2P5,C1P5);
             break;
         case 6:
-            transmit1(CP6,CP6,CP6,CP6,CP6);
+            transmit1(C5P6,C4P6,C3P6,C2P6,C1P6);
             break;
         case 7:
-            transmit1(CP7,CP7,CP7,CP7,CP7);
+            transmit1(C5P7,C4P7,C3P7,C2P7,C1P7);
             break;
         case 8:
-            transmit1(CP8,CP8,CP8,CP8,CP8);
+            transmit1(C5P8,C4P8,C3P8,C2P8,C1P8);
             break;
         case 9:
-            transmit1(CP9,CP9,CP9,CP9,CP9);
+            transmit1(C5P9,C4P9,C3P9,C2P9,C1P9);
             break;
         case 10:
-            transmit1(CP10,CP10,CP10,CP10,CP10);
+            transmit1(C5P10,C4P10,C3P10,C2P10,C1P10);
             break;
         case 11:
-            transmit1(CP11,CP11,CP11,CP11,CP11);
+            transmit1(C5P11,C4P11,C3P11,C2P11,C1P11);
             break;
         case 12:
-            transmit1(CP12,CP12,CP12,CP12,CP12);
+            transmit1(C5P12,C4P12,C3P12,C2P12,C1P12);
             break;
         case 13:
-            transmit1(CP13,CP13,CP13,CP13,CP13);
+            transmit1(C5P13,C4P13,C3P13,C2P13,C1P13);
             break;
         case 14:
-            transmit1(CP14,CP14,CP14,CP14,CP14);
+            transmit1(C5P14,C4P14,C3P14,C2P14,C1P14);
             break;
         case 15:
-            transmit1(CP15,CP15,CP15,CP15,CP15);
+            transmit1(C5P15,C4P15,C3P15,C2P15,C1P15);
             break;
         case 16:
-            transmit1(CP16,CP16,CP16,CP16,CP16);
+            transmit1(C5P16,C4P16,C3P16,C2P16,C1P16);
             break;
         default:
             off();
@@ -723,6 +1045,24 @@ void PIN_Test(void){
     _delay_ms(500);
     _delay_ms(500);
     
+}
+
+void test_led(){
+    static uint8_t i = 0;
+    static uint8_t j = 0;
+    static uint8_t layer = 0;
+    for(i=0;i<3;i++){
+        LED_test(i,j,layer);
+        if(i == 2){
+            j++;
+            if(j == 26){
+                j = 1;
+                layer++;
+                layer = layer % 5;
+            }
+        }
+        _delay_ms(500);
+    }
 }
 
 /***********************************************************************/
@@ -734,17 +1074,23 @@ int main(){
     PORTB |= (1<<PB0)|(1<<PB1)|(1<<PB2)|(1<<PB3);
 	spi_init();    //initalize SPI port
     uint8_t input = 0;
+    uint8_t i = 0;
 	while(1){
        // patrick_test();
         //level_test();
         //level(2);
-        shift_LED();
-        //transmit1(0,0,0,CP3,0);
+        //shift_LED();
+        //transmit1(0,0,0,C1P3,0);
         //level(4);
-        //transmit1(0,0,0,0,CP1);
+        //transmit1(0,0,0,0,C1P1);
         //off();
-        //transmit1(on,on,on,on,on);
-        //LED_test(0,2,4);
+        for(i = 0;i < 5;i++){
+            frame[0][i] = R1[i]|R2[i]|B22[i];
+        }
+        transmit1(frame[0][4],frame[0][3],frame[0][2],frame[0][1],frame[0][0]);
+        //transmit1(R1[4],R1[3],R1[2],R1[1],R1[0]);
+        //test_led();
+        //LED_test(0,5,4);
         //hall_test();
         //PIN_Test();
 
