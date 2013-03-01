@@ -1,15 +1,11 @@
-// bar_graph_demo_skel.c 
-// R. Traylor
-// 10.20.09
-// demos interrups, counter timer and SPI
+// ledcube.c 
+// Doug Dziggel
+// 2.10.13
+// Code for LED Cube microcontroller - controls LEDs, Radio board and reads hall effect sensors.
 
-// This code implements a timer interrupt to update the bar graph display
-// at 0.5 second intervals. Every half second, a new data value to the
-// bargraph vis SPI.  The value displayed is a single led on in a climbing
-// pattern.
 
 // Expected Connections:
-// LED Driver Pinout    LED board or mega128
+// LED Driver Pinout     atTiny167
 // -----------------    ----------------------    
 // P1		GND			GND
 // P3		CLK         PORTB bit 1 (sclk)
@@ -22,6 +18,27 @@
 // P16		BLANK		GND
 // P17-24	LED16-9
 //
+// Expected Connections:
+// Radio Board Pinout    atTiny167
+// -----------------    ----------------------    
+// P1		GND			GND
+// P3		CLK         PORTB bit 1 (sclk)
+// P2		SIN         PORTB bit 2 (mosi)
+// P4		LATCH		PORTB bit 7 
+// P5-12	LED1-8
+// P13		VDD			VCC
+// P14		RSET		22K Ohm to GND
+// P15		SOUT		FLOAT
+// P16		BLANK		GND
+// P17-24	LED16-9
+//
+// Expected Connections:
+// Hall Effect Sensors    LED board or mega128
+// -------------------    ----------------------    
+// Sensor1				      PORTB Bit 0
+// Sensor2	                  PORTB bit 1 
+// Sensor3		              PORTB bit 2
+// Sensor4		    		  PORTB bit 3 
 
 /*
 #define MISO PB3 // Master in, Slave out: configure as input (with pullup)
@@ -36,17 +53,18 @@
 #define LEVELS 5			// the LED array has 5 levels
 #define PIN_NUM 5*5*3		// each level has 5x5 LEDs with 3 pins per LED
 #define HALL_NUM 4			// there are 4 hall effect sensors per cube
+
+#define SS PA6
+#define MOSI PA4
+#define SCK PA5
 //#define CUBE_ID 1			// an ID to identify this cube
 
 #include <avr/io.h>
 #include <util/delay.h>
 #include "ledcube.h"
 
-#define SS PA6
-#define MOSI PA4
-#define SCK PA5
 
-uint16_t frame[5][5] = {{0},{0},{0},{0},{0}}; //5 layers and 5 led drivers
+uint16_t frame[5][5] = {{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0}}; //5 layers and 5 led drivers
 
 /***********************************************************************/
 //                            spi_init                               
@@ -156,8 +174,30 @@ void transmit1(uint16_t data1,uint16_t data2,uint16_t data3,uint16_t data4,uint1
 	//temp = 0x0F & display_count;
 	while(bit_is_clear(SPSR,SPIF)){};
 
-    _delay_us(100);
-    
+	//Toggle latch
+	PORTA |= (1<<SS);
+	PORTA &= ~(1<<SS);
+}
+
+void transmit2(uint8_t layer){
+	//break the data up into 4 bytes
+	
+	uint8_t temp = 0;
+    uint8_t i = 0;
+    for(i=0;i<5;i++){
+        temp = (frame[layer][i]);
+        //load first byte
+        SPDR = temp;
+        //temp = 0x0F & display_count;
+        while(bit_is_clear(SPSR,SPIF)){};
+
+        temp = (frame[layer][i]>>8);
+        //load second byte
+        SPDR = temp;
+        //temp = 0x0F & display_count;
+        while(bit_is_clear(SPSR,SPIF)){};
+    }
+
 	//Toggle latch
 	PORTA |= (1<<SS);
 	PORTA &= ~(1<<SS);
@@ -1061,7 +1101,7 @@ void test_led(){
     }
 }
 
-void red_led(uint32_t red){
+void red_led(uint8_t layer,uint32_t red){
     uint8_t index = 0;
     uint8_t i = 0;
     uint8_t state = 0;
@@ -1077,19 +1117,48 @@ void red_led(uint32_t red){
 //
 }
 
-void blue_led(uint32_t green){
+void blue_led(uint8_t layer,uint32_t blue){
+    uint8_t index = 0;
+    uint8_t i = 0;
+    uint8_t state = 0;
+    for(index = 0; index<25;index++){
+        state = ((blue>>index)&(1));
+        if(state){
+            for(i=0;i<5;i++){
+                frame[0][i] |= B[index][i];
+            }
+        }
+    }
 //
 }
 
-void green_led(uint32_t green){
+void green_led(uint8_t layer,uint32_t green){
+    uint8_t index = 0;
+    uint8_t i = 0;
+    uint8_t state = 0;
+    for(index = 0; index<25;index++){
+        state = ((green>>index)&(1));
+        if(state){
+            for(i=0;i<5;i++){
+                frame[0][i] |= G[index][i];
+            }
+        }
+    }
 //
 }
 
 
-void leds(uint32_t red, uint32_t blue, uint32_t green){
-    red_led(red);
-    blue_led(blue);
-    green_led(green);
+void leds(uint8_t layer,uint32_t red, uint32_t blue, uint32_t green){
+    red_led(layer,red);
+    blue_led(layer,blue);
+    green_led(layer,green);
+}
+
+void test_frame(){
+    uint8_t i = 0;
+    for(i=0;i<5;i++){
+        transmit2(i);
+    }
 }
 
 /***********************************************************************/
@@ -1103,6 +1172,8 @@ int main(){
     uint8_t input = 0;
     uint8_t i = 0;
 	while(1){
+
+        test_frame();
        // patrick_test();
         //level_test();
         //level(2);
