@@ -773,22 +773,8 @@ int main(){
 
         test_pattern();
         //test_frame();
-        //level(i);
-        //transmit1(frame[i][4],frame[i][3],frame[i][2],frame[i][1],frame[i][0]);
-        //level(4);
-        //transmit1(pgm_read_word(&(G[i][4])),pgm_read_word(&(G[i][3])),pgm_read_word(&(G[i][2])),pgm_read_word(&(G[i][1])),pgm_read_word(&(G[i][0])));
-        //i = (i+1) % 25;
-        //_delay_ms(500);
         //level_test();
         //shift_LED();
-        //level(0);
-        //transmit1(0xFF00,0xFF00,0xFF00,0xFF00,0xFF00);
-        /*
-        SPDR = 0x00;
-        while(bit_is_clear(SPSR,SPIF)){};
-        SPDR = 0x88;
-        while(bit_is_clear(SPSR,SPIF)){};
-        */
         //hall_test();
 
     }     //empty main while loop
