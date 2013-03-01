@@ -424,90 +424,6 @@ void hall_test(void){
 }
 }
 
-void PIN_Test(void){
-    static uint8_t pin = 0;
-    uint8_t input = (~PINB & (1<<PB0));
-
-    if(input == 1){
-        pin++;
-        pin = pin % 17;
-    }
-    
-
-    switch(pin){
-        case 1:
-            transmit1(C5P1,C4P1,C3P1,C2P1,C1P1);
-            break;
-        case 2:
-            transmit1(C5P2,C4P2,C3P2,C2P2,C1P2);
-            break;
-        case 3:
-            transmit1(C5P3,C4P3,C3P3,C2P3,C1P3);
-            break;
-        case 4:
-            transmit1(C5P4,C4P4,C3P4,C2P4,C1P4);
-            break;
-        case 5:
-            transmit1(C5P5,C4P5,C3P5,C2P5,C1P5);
-            break;
-        case 6:
-            transmit1(C5P6,C4P6,C3P6,C2P6,C1P6);
-            break;
-        case 7:
-            transmit1(C5P7,C4P7,C3P7,C2P7,C1P7);
-            break;
-        case 8:
-            transmit1(C5P8,C4P8,C3P8,C2P8,C1P8);
-            break;
-        case 9:
-            transmit1(C5P9,C4P9,C3P9,C2P9,C1P9);
-            break;
-        case 10:
-            transmit1(C5P10,C4P10,C3P10,C2P10,C1P10);
-            break;
-        case 11:
-            transmit1(C5P11,C4P11,C3P11,C2P11,C1P11);
-            break;
-        case 12:
-            transmit1(C5P12,C4P12,C3P12,C2P12,C1P12);
-            break;
-        case 13:
-            transmit1(C5P13,C4P13,C3P13,C2P13,C1P13);
-            break;
-        case 14:
-            transmit1(C5P14,C4P14,C3P14,C2P14,C1P14);
-            break;
-        case 15:
-            transmit1(C5P15,C4P15,C3P15,C2P15,C1P15);
-            break;
-        case 16:
-            transmit1(C5P16,C4P16,C3P16,C2P16,C1P16);
-            break;
-        default:
-            off();
-    }
-    _delay_ms(500);
-    _delay_ms(500);
-    
-}
-
-void test_led(){
-    static uint8_t i = 0;
-    static uint8_t j = 0;
-    static uint8_t layer = 0;
-    for(i=0;i<3;i++){
-        LED_test(i,j,layer);
-        if(i == 2){
-            j++;
-            if(j == 26){
-                j = 1;
-                layer++;
-                layer = layer % 5;
-            }
-        }
-        _delay_ms(500);
-    }
-}
 
 void red_led(uint8_t layer,uint32_t red){
     uint8_t index = 0;
@@ -579,6 +495,14 @@ int main(){
 	spi_init();    //initalize SPI port
     uint8_t input = 0;
     uint8_t i = 0;
+   
+    //initialize the pattern
+    leds(0,1,2,3);
+    leds(1,6,7,8);
+    leds(2,11,12,13);
+    leds(3,16,17,18);
+    leds(4,21,22,23);
+    
 	while(1){
 
         test_frame();
