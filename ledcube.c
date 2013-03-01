@@ -46,11 +46,7 @@
 #define MOSI PA4
 #define SCK PA5
 
-// *********************************
-
-//#include "controllerTest.h"
-
-
+uint16_t frame[5][5] = {{0},{0},{0},{0},{0}}; //5 layers and 5 led drivers
 
 /***********************************************************************/
 //                            spi_init                               
@@ -1065,6 +1061,37 @@ void test_led(){
     }
 }
 
+void red_led(uint32_t red){
+    uint8_t index = 0;
+    uint8_t i = 0;
+    uint8_t state = 0;
+    for(index = 0; index<25;index++){
+        state = ((red>>index)&(1));
+        if(state){
+            for(i=0;i<5;i++){
+                frame[0][i] |= R[index][i];
+            }
+        }
+    }
+    
+//
+}
+
+void blue_led(uint32_t green){
+//
+}
+
+void green_led(uint32_t green){
+//
+}
+
+
+void leds(uint32_t red, uint32_t blue, uint32_t green){
+    red_led(red);
+    blue_led(blue);
+    green_led(green);
+}
+
 /***********************************************************************/
 //                                main                                 
 /***********************************************************************/
@@ -1084,10 +1111,6 @@ int main(){
         //level(4);
         //transmit1(0,0,0,0,C1P1);
         //off();
-        for(i = 0;i < 5;i++){
-            frame[0][i] = R1[i]|R2[i]|B22[i];
-        }
-        transmit1(frame[0][4],frame[0][3],frame[0][2],frame[0][1],frame[0][0]);
         //transmit1(R1[4],R1[3],R1[2],R1[1],R1[0]);
         //test_led();
         //LED_test(0,5,4);
