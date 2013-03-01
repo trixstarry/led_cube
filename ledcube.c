@@ -271,7 +271,7 @@ void spi_init(void){
 
     //ATtiny167 SPI INIT
 	DDRA |= (1<<SS)|(1<<MOSI)|(1<<SCK);
-	SPCR |= (1<<SPE)|(1<<MSTR)|(1<<SPR0);
+	SPCR |= (1<<SPE)|(1<<MSTR)|(0<<SPR0);
 	SPSR |= (1<<SPI2X);
 
 }//spi_init
@@ -362,11 +362,10 @@ void transmit1(uint16_t data1,uint16_t data2,uint16_t data3,uint16_t data4,uint1
 }
 
 void transmit2(uint8_t layer){
-	//break the data up into 4 bytes
-	
 	uint8_t temp = 0;
     uint8_t i = 0;
-    for(i=0;i<5;i++){
+    level(layer);
+    for(i=5;i-- > 0; ){
         temp = (frame[layer][i]);
         //load first byte
         SPDR = temp;
@@ -378,11 +377,14 @@ void transmit2(uint8_t layer){
         SPDR = temp;
         //temp = 0x0F & display_count;
         while(bit_is_clear(SPSR,SPIF)){};
+        frame[layer][i] = 0;
     }
 
 	//Toggle latch
 	PORTA |= (1<<SS);
 	PORTA &= ~(1<<SS);
+    _delay_ms(3);
+    //_delay_us(300);
 }
 
 void level(uint8_t layer){
@@ -604,7 +606,7 @@ void green_led(uint8_t layer,uint32_t green){
         state = ((green>>index)&(1));
         if(state){
             for(i=0;i<5;i++){
-                frame[layer][i] |= pgm_read_byte(&(G[index][i]));
+                frame[layer][i] |= pgm_read_word(&(G[index][i]));
             }
         }
     }
@@ -621,14 +623,129 @@ void leds(uint8_t layer,uint32_t red, uint32_t blue, uint32_t green){
 void test_frame(){
     uint8_t i = 0;
     for(i=0;i<5;i++){
-        transmit1(frame[i][4],frame[i][3],frame[i][2],frame[i][1],frame[i][0]);
-        level(i);
-        _delay_ms(500);
-        _delay_ms(500);
-        _delay_ms(500);
-        _delay_ms(500);
-        _delay_ms(3);
-        _delay_us(300);
+        //transmit1(frame[i][4],frame[i][3],frame[i][2],frame[i][1],frame[i][0]);
+        //level(i);
+        transmit2(i);
+        //_delay_ms(500);
+        //_delay_ms(500);
+        //_delay_ms(500);
+        //_delay_ms(500);
+        //_delay_ms(3);
+        //_delay_us(300);
+    }
+}
+
+void clear_frame(){
+    uint8_t i = 0;
+    uint8_t j = 0;
+    for(i=0;i<5;i++){
+        for(j=0;j<5;j++){
+            frame[i][j] = 0;
+        }
+    } 
+    }
+
+void test_pattern(){
+    uint32_t row4 = 0x1F00000;
+    uint32_t row3 = 0xF8000;
+    uint32_t row2 = 0x7C00;
+    uint32_t row1 = 0x3E0;
+    uint32_t row0 = 0x1F;
+    uint16_t counter = 0;
+    while(1){
+        while(counter <0x0018){
+            leds(0,row0,0,0);
+            leds(1,0,row0,0);
+            leds(2,0,0,row0);
+            leds(3,0,0,row0);
+            leds(4,0,row0,0);
+            test_frame();
+            if(counter >= 0x00F0){
+             break;}
+            counter++;
+        }
+        counter = 0;
+        while(counter <0x0018){
+            leds(0,row1,0,0);
+            leds(1,0,row1,0);
+            leds(2,0,0,row1);
+            leds(3,0,0,row1);
+            leds(4,0,row1,0);
+            test_frame();
+            counter++;
+        }
+        counter = 0;
+        while(counter <0x0018){
+            leds(0,row2,0,0);
+            leds(1,0,row2,0);
+            leds(2,0,0,row2);
+            leds(3,0,0,row2);
+            leds(4,0,row2,0);
+            test_frame();
+            counter++;
+        }
+        counter = 0;
+        while(counter< 0x0018){
+            leds(0,row3,0,0);
+            leds(1,0,row3,0);
+            leds(2,0,0,row3);
+            leds(3,0,0,row3);
+            leds(4,0,row3,0);
+            test_frame();
+            counter++;
+        }
+        counter = 0;
+        while(counter < 0x0018){
+            leds(0,row4,0,0);
+            leds(1,0,row4,0);
+            leds(2,0,0,row4);
+            leds(3,0,0,row4);
+            leds(4,0,row4,0);
+            test_frame();
+            counter++;
+        }
+        counter = 0;
+        while(counter< 0x0018){
+            leds(0,row3,0,0);
+            leds(1,0,row3,0);
+            leds(2,0,0,row3);
+            leds(3,0,0,row3);
+            leds(4,0,row3,0);
+            test_frame();
+            counter++;
+        }
+        counter = 0;
+        while(counter <0x0018){
+            leds(0,row2,0,0);
+            leds(1,0,row2,0);
+            leds(2,0,0,row2);
+            leds(3,0,0,row2);
+            leds(4,0,row2,0);
+            test_frame();
+            counter++;
+        }
+        counter = 0;
+        while(counter <0x0018){
+            leds(0,row1,0,0);
+            leds(1,0,row1,0);
+            leds(2,0,0,row1);
+            leds(3,0,0,row1);
+            leds(4,0,row1,0);
+            test_frame();
+            counter++;
+        }
+        counter = 0;
+        while(counter <0x0018){
+            leds(0,row0,0,0);
+            leds(1,0,row0,0);
+            leds(2,0,0,row0);
+            leds(3,0,0,row0);
+            leds(4,0,row0,0);
+            test_frame();
+            if(counter >= 0x00F0){
+             break;}
+            counter++;
+        }
     }
 }
 
@@ -645,21 +762,23 @@ int main(){
     uint32_t color_on = 0x1FFFFFF;
    
     //initialize the pattern
-    leds(0,0,color_on,0);
-    leds(1,0,color_on,0);
-    leds(2,0,0,color_on);
-    leds(3,color_on,0,0);
-    leds(4,0,color_on,0);
+    leds(0,0x1F00000,0,0);
+    leds(1,0,0x1F00000,0);
+    leds(2,0,0,0x1F00000);
+    leds(3,0,0,0x1F00000);
+    leds(4,0,0x1F00000,0);
+    
 
 	while(1){
 
+        test_pattern();
         //test_frame();
         //level(i);
         //transmit1(frame[i][4],frame[i][3],frame[i][2],frame[i][1],frame[i][0]);
-        level(4);
-        transmit1(pgm_read_word(&(G[i][4])),pgm_read_word(&(G[i][3])),pgm_read_word(&(G[i][2])),pgm_read_word(&(G[i][1])),pgm_read_word(&(G[i][0])));
-        i = (i+1) % 25;
-        _delay_ms(500);
+        //level(4);
+        //transmit1(pgm_read_word(&(G[i][4])),pgm_read_word(&(G[i][3])),pgm_read_word(&(G[i][2])),pgm_read_word(&(G[i][1])),pgm_read_word(&(G[i][0])));
+        //i = (i+1) % 25;
+        //_delay_ms(500);
         //level_test();
         //shift_LED();
         //level(0);
