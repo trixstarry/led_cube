@@ -60,6 +60,7 @@
 //#define CUBE_ID 1			// an ID to identify this cube
 
 #include <avr/io.h>
+#include <avr/pgmspace.h>
 #include <util/delay.h>
 //#include "ledcube.h"
 
@@ -156,7 +157,8 @@
 
 //#define R1 {0,C2P8,0,0,0}
 
-const uint16_t R[25][5] = {   {0    ,C2P8 ,0    ,0    ,0    }, //1
+
+uint16_t R[25][5] PROGMEM = {   {0    ,C2P8 ,0    ,0    ,0    }, //1
                         {0    ,C2P7 ,0    ,0    ,0    }, //2
                         {0    ,0    ,C3P15,0    ,0    }, //3
                         {0    ,0    ,C3P14,0    ,0    }, //4
@@ -182,7 +184,7 @@ const uint16_t R[25][5] = {   {0    ,C2P8 ,0    ,0    ,0    }, //1
                         {0    ,0    ,0    ,0    ,C5P4},
                         {0    ,0    ,0    ,0    ,C5P9} //25
 };
-const uint16_t G[25][5] = {   {0    ,C2P9 ,0    ,0    ,0    }, //1
+uint16_t G[25][5] PROGMEM = {   {0    ,C2P9 ,0    ,0    ,0    }, //1
                         {0    ,C2P6 ,0    ,0    ,0    }, //2
                         {0    ,0    ,C3P16,0    ,0    }, //3
                         {0    ,0    ,C3P13,0    ,0    }, //4
@@ -208,12 +210,12 @@ const uint16_t G[25][5] = {   {0    ,C2P9 ,0    ,0    ,0    }, //1
                         {0    ,0    ,0    ,0    ,C5P5 },
                         {0    ,0    ,0    ,0    ,C5P8 } //25
 };
-const uint16_t B[25][5] = {   {0    ,C2P10,0    ,0    ,0    }, //1
+uint16_t B[25][5] PROGMEM = {   {0    ,C2P10,0    ,0    ,0    }, //1
                         {0    ,C2P5 ,0    ,0    ,0    }, //2
                         {0    ,0    ,C3P1 ,0    ,0    }, //3
                         {0    ,0    ,C3P12,0    ,0    }, //4
                         {0    ,0    ,C3P11,0    ,0    }, //5
-                        {0    ,C2P16,0    ,0    ,0    }, //6
+                        {0    ,C2P13,0    ,0    ,0    }, //6
                         {0    ,C2P1 ,0    ,0    ,0    }, //7
                         {0    ,0    ,C3P5 ,0    ,0    }, //8
                         {0    ,0    ,C3P6 ,0    ,0    }, //9
@@ -234,7 +236,6 @@ const uint16_t B[25][5] = {   {0    ,C2P10,0    ,0    ,0    }, //1
                         {0    ,0    ,0    ,0    ,C5P6 },
                         {0    ,0    ,0    ,0    ,C5P7 } //25
 };
-
 
 //global variables
 //uint16_t layer0 = 0x0000;
@@ -569,10 +570,10 @@ void red_led(uint8_t layer,uint32_t red){
     uint8_t i = 0;
     uint8_t state = 0;
     for(index = 0; index<25;index++){
-        state = ((red>>index)&(1));
+        state = ((red>>index)&(0x01));
         if(state){
             for(i=0;i<5;i++){
-                frame[0][i] |= R[index][i];
+                frame[layer][i] |= pgm_read_word(&(R[index][i]));
             }
         }
     }
@@ -588,7 +589,7 @@ void blue_led(uint8_t layer,uint32_t blue){
         state = ((blue>>index)&(1));
         if(state){
             for(i=0;i<5;i++){
-                frame[0][i] |= B[index][i];
+                frame[layer][i] |= pgm_read_word(&(B[index][i]));
             }
         }
     }
@@ -603,7 +604,7 @@ void green_led(uint8_t layer,uint32_t green){
         state = ((green>>index)&(1));
         if(state){
             for(i=0;i<5;i++){
-                frame[0][i] |= G[index][i];
+                frame[layer][i] |= pgm_read_byte(&(G[index][i]));
             }
         }
     }
@@ -620,7 +621,14 @@ void leds(uint8_t layer,uint32_t red, uint32_t blue, uint32_t green){
 void test_frame(){
     uint8_t i = 0;
     for(i=0;i<5;i++){
-        transmit2(i);
+        transmit1(frame[i][4],frame[i][3],frame[i][2],frame[i][1],frame[i][0]);
+        level(i);
+        _delay_ms(500);
+        _delay_ms(500);
+        _delay_ms(500);
+        _delay_ms(500);
+        _delay_ms(3);
+        _delay_us(300);
     }
 }
 
@@ -634,19 +642,27 @@ int main(){
 	spi_init();    //initalize SPI port
     uint8_t input = 0;
     uint8_t i = 0;
+    uint32_t color_on = 0x1FFFFFF;
    
     //initialize the pattern
-    //leds(0,1,2,3);
-    //leds(1,6,7,8);
-    //leds(2,11,12,13);
-    //leds(3,16,17,18);
-    //leds(4,21,22,23);
-    
+    leds(0,0,color_on,0);
+    leds(1,0,color_on,0);
+    leds(2,0,0,color_on);
+    leds(3,color_on,0,0);
+    leds(4,0,color_on,0);
+
 	while(1){
 
         //test_frame();
+        //level(i);
+        //transmit1(frame[i][4],frame[i][3],frame[i][2],frame[i][1],frame[i][0]);
+        level(4);
+        transmit1(pgm_read_word(&(G[i][4])),pgm_read_word(&(G[i][3])),pgm_read_word(&(G[i][2])),pgm_read_word(&(G[i][1])),pgm_read_word(&(G[i][0])));
+        i = (i+1) % 25;
+        _delay_ms(500);
         //level_test();
-        shift_LED();
+        //shift_LED();
+        //level(0);
         //transmit1(0xFF00,0xFF00,0xFF00,0xFF00,0xFF00);
         /*
         SPDR = 0x00;
