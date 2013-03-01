@@ -163,7 +163,7 @@ void transmit1(uint16_t data1,uint16_t data2,uint16_t data3,uint16_t data4,uint1
 }
 
 void patrick_test(void){
-    uint16_t data1 = 0x00FF;
+    uint16_t data1 = 0xFFFF;
     uint16_t data2 = 0x00FF;
     uint16_t data3 = 0x00FF;
     uint16_t data4 = 0x00FF;
