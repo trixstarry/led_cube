@@ -230,15 +230,6 @@ void level(uint8_t layer){
             }
 }
 
-void patrick_test(void){
-    uint16_t data1 = 0x00FF;
-    uint16_t data2 = 0x00FF;
-    uint16_t data3 = 0x00FF;
-    uint16_t data4 = 0x00FF;
-    uint16_t data5 = 0x00FF;
-
-    transmit1(data1,data2,data3,data4,data5);
-}
 
 void level_test(void){
     uint16_t data1 = 0x00FF;
@@ -272,43 +263,10 @@ void level_test(void){
                 level(i);
                 transmit1(on,on,on,on,on);
                 break;
-
         }
-    //transmit1(data1,data2,data3,data4,data5);
-    //level(layer);
-    //_delay_ms(3);
-    //_delay_ms(500);
     }
-    /*
-    layer = 6;
-
-    data1 = ~0x00FF;
-    data2 = ~0x00FF;
-    data3 = ~0x00FF;
-    data4 = ~0x00FF;
-    data5 = ~0x00FF;
-    transmit1(data1,data2,data3,data4,data5);
-    level(layer);
-    _delay_ms(500);
-    _delay_ms(500);
-    */
 }
 
-void on(void){
-    uint16_t output5 = -1;
-
-    transmit1(-1,-1,-1,-1,-1);
-	}
-
-void off(void){
-    uint16_t output = 0; //All on
-    uint16_t output2 = 0;
-    uint16_t output3 = 0;
-    uint16_t output4 = 0;
-    uint16_t output5 = 0;
-
-    transmit1(output,output2,output3,output4,output5);
-}
 
 void shift_LED(void){
     static uint16_t LED1 = 0x0001;
@@ -506,19 +464,9 @@ int main(){
 	while(1){
 
         test_frame();
-       // patrick_test();
         //level_test();
-        //level(2);
         //shift_LED();
-        //transmit1(0,0,0,C1P3,0);
-        //level(4);
-        //transmit1(0,0,0,0,C1P1);
-        //off();
-        //transmit1(R1[4],R1[3],R1[2],R1[1],R1[0]);
-        //test_led();
-        //LED_test(0,5,4);
         //hall_test();
-        //PIN_Test();
 
     }     //empty main while loop
 } //main
