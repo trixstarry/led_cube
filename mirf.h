@@ -35,14 +35,14 @@
 #define mirf_CONFIG     ( (1<<MASK_RX_DR) | (1<<EN_CRC) | (0<<CRCO) )
 
 // Pin definitions for chip select and chip enabled of the MiRF module
-#define CE  PB3
-#define CSN PB2
+#define CE  PA3
+#define CSN PA2
 
 // Definitions for selecting and enabling MiRF module
-#define mirf_CSN_hi     PORTB |=  (1<<CSN);
-#define mirf_CSN_lo     PORTB &= ~(1<<CSN);
-#define mirf_CE_hi      PORTB |=  (1<<CE);
-#define mirf_CE_lo      PORTB &= ~(1<<CE);
+#define mirf_CSN_hi     PORTA |=  (1<<CSN);
+#define mirf_CSN_lo     PORTA &= ~(1<<CSN);
+#define mirf_CE_hi      PORTA |=  (1<<CE);
+#define mirf_CE_lo      PORTA &= ~(1<<CE);
 
 // Public standard functions
 extern void mirf_init();

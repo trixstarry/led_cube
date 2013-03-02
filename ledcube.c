@@ -1314,6 +1314,18 @@ void test_pattern1(){
     }
 }
 
+void Transmit(){
+        //PORTB = (1<<PB0);
+		transmit_buffer[31]++;
+		if (transmit_buffer[31] < ' ' || transmit_buffer[31] > 'z')
+		{
+			transmit_buffer[31] = ' ';
+		}
+    	mirf_send(transmit_buffer,32);
+        //mirf_send(testbuffer,testbuffersize);
+        //
+		_delay_ms(10);
+}
 
 ISR(TIMER1_OVF_vect){
 //
@@ -1322,6 +1334,10 @@ ISR(TIMER1_OVF_vect){
         next = 1;
         counter = 0;
     }
+
+}
+
+ISR(PCINT){
 
 }
 
@@ -1344,8 +1360,8 @@ int main(){
 	mirf_config();
    
 	while(1){
-
-        //test_pattern();
+        Transmit();
+        test_pattern();
         //test_pattern1();
         //test_frame();
         //level_test();
