@@ -572,6 +572,615 @@ void hall_test(void){
 }
 }
 
+void red(uint8_t position){
+    switch(position){
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P8;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 2:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P7;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 3:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P15;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 4:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P14;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 5:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P9;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 6:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P11;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 7:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P3;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 8:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P3;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 9:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P8;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 10:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P7;
+            frame[0][4] = 0x0000;
+            break;
+        case 11:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P14;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 12:
+            frame[0][0] = C1P6;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 13:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P11;
+            frame[0][4] = 0x0000;
+            break;
+        case 14:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P6;
+            frame[0][4] = 0x0000;
+            break;
+        case 15:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P3;
+            frame[0][4] = 0x0000;
+            break;
+        case 16:
+            frame[0][0] = C1P7;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 17:
+            frame[0][0] = C1P3;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 18:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P14;
+            frame[0][4] = 0x0000;
+            break;
+        case 19:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P13;
+            break;
+        case 20:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P12;
+            break;
+        case 21:
+            frame[0][0] = C1P10;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 22:
+            frame[0][0] = C1P16;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 23:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P3;
+            break;
+        case 24:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P4;
+            break;
+        case 25:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P9;
+            break;
+        default:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+
+    }
+
+
+}
+
+void green(uint8_t position){
+    switch(position){
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P9;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 2:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P6;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 3:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P16;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 4:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P13;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 5:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P10;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 6:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P12;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 7:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P2;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 8:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P4;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 9:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P7;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 10:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P8;
+            frame[0][4] = 0x0000;
+            break;
+        case 11:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P15;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 12:
+            frame[0][0] = C1P5;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 13:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P12;
+            frame[0][4] = 0x0000;
+            break;
+        case 14:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P5;
+            frame[0][4] = 0x0000;
+            break;
+        case 15:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P2;
+            frame[0][4] = 0x0000;
+            break;
+        case 16:
+            frame[0][0] = C1P8;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 17:
+            frame[0][0] = C1P2;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 18:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P15;
+            frame[0][4] = 0x0000;
+            break;
+        case 19:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P14;
+            break;
+        case 20:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P11;
+            break;
+        case 21:
+            frame[0][0] = C1P11;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 22:
+            frame[0][0] = C1P15;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 23:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P2;
+            break;
+        case 24:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P5;
+            break;
+        case 25:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P8;
+            break;
+        default:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+
+    }
+
+}
+
+void blue(uint8_t position){
+    switch(position){
+        case 1:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P10;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 2:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P5;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 3:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P1;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 4:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P12;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 5:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P11;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 6:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P13;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 7:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P1;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 8:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P5;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 9:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = C3P6;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 10:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P9;
+            frame[0][4] = 0x0000;
+            break;
+        case 11:
+            frame[0][0] = 0x0000;
+            frame[0][1] = C2P16;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 12:
+            frame[0][0] = C1P4;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 13:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P13;
+            frame[0][4] = 0x0000;
+            break;
+        case 14:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P4;
+            frame[0][4] = 0x0000;
+            break;
+        case 15:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P1;
+            frame[0][4] = 0x0000;
+            break;
+        case 16:
+            frame[0][0] = C1P9;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 17:
+            frame[0][0] = C1P1;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 18:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = C4P16;
+            frame[0][4] = 0x0000;
+            break;
+        case 19:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P15;
+            break;
+        case 20:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P10;
+            break;
+        case 21:
+            frame[0][0] = C1P12;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 22:
+            frame[0][0] = C1P14;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+        case 23:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P1;
+            break;
+        case 24:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P6;
+            break;
+        case 25:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = C5P7;
+            break;
+        default:
+            frame[0][0] = 0x0000;
+            frame[0][1] = 0x0000;
+            frame[0][2] = 0x0000;
+            frame[0][3] = 0x0000;
+            frame[0][4] = 0x0000;
+            break;
+
+    }
+}
+
+// NOTE: Colors are
+//      0  Red
+//      1  Green
+//      2  Blue
+// Layers can be 0 - 4
+// positions can be 1 - 25
+void LED_test(uint8_t color, uint8_t position,uint8_t layer){
+        level(layer);
+        switch(color){
+            case 0:
+                red(position);
+                break;
+            case 1:
+                green(position);
+                break;
+            case 2:
+                blue(position);
+                break;
+            default:
+                break;
+        }
+        transmit1(frame[0][4],frame[0][3],frame[0][2],frame[0][1],frame[0][0]);
+
+}
+
+void test_led(){
+    static uint8_t i = 0;
+    static uint8_t j = 0;
+    static uint8_t layer = 0;
+    for(i=0;i<3;i++){
+        LED_test(i,j,layer);
+        if(i == 2){
+            j++;
+            if(j == 26){
+                j = 1;
+                layer++;
+                layer = layer % 5;
+            }
+        }
+        _delay_ms(500);
+    }
+}
 
 void red_led(uint8_t layer,uint32_t red){
     uint8_t index = 0;
@@ -758,6 +1367,7 @@ void test_pattern(){
             leds(4,0,row0,0);
             test_frame();
             counter++;
+            
         }
     }
 }
@@ -904,9 +1514,10 @@ int main(){
    
 	while(1){
 
-        test_pattern();
+        //test_pattern();
         //test_frame();
         //level_test();
+        test_led();
         //shift_LED();
         //hall_test();
 
