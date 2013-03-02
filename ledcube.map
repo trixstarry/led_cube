@@ -192,13 +192,13 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
                 0x0000040e                __vector_12
                 0x0000040e                __bad_interrupt
                 0x0000040e                __vector_6
-                0x0000040e                __vector_3
                 0x0000040e                __vector_11
                 0x0000040e                __vector_13
                 0x0000040e                __vector_17
                 0x0000040e                __vector_19
                 0x0000040e                __vector_7
                 0x0000040e                __vector_5
+                0x0000040e                __vector_4
                 0x0000040e                __vector_2
                 0x0000040e                __vector_15
                 0x0000040e                __vector_8
@@ -235,7 +235,7 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
                 0x00001f20                mirf_data_ready
                 0x00001f38                mirf_config_register
                 0x00001f60                mirf_get_data
-                0x00001f88                __vector_4
+                0x00001f88                __vector_3
                 0x00001ff4                mirf_config
                 0x00002014                mirf_read_register
                 0x00002046                mirf_write_register

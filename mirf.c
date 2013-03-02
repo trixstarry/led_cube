@@ -66,8 +66,8 @@ void mirf_init()
 //	PCMSK |= (1<<PCINT4);
 
 // Initialize PCINT12 for ATtiny167
-    PCICR |= (1<<PCIE1);
-    PCMSK1 |= (1<<PCINT12);
+    PCICR |= (1<<PCIE0);
+    PCMSK0 |= (1<<PCINT3);
 
     // Initialize spi module
     spi_init();
@@ -112,7 +112,7 @@ SIGNAL(SIG_PIN_CHANGE2)
 #endif // __AVR_ATmega168__  */
 
 // Interrupt handler 
-ISR(PCINT1_vect)
+ISR(PCINT0_vect)
 {
     uint8_t status;   
     // If still in transmitting mode then finish transmission
