@@ -49,7 +49,13 @@
 
 #define TRUE 1
 #define FALSE 0
-#define F_CPU 8000000		// 8 MHz cpu speed
+#define F_CPU 8000000UL	// 8Mhz clock
+#define BAUD 250000
+
+#define SET_U2X 0
+#define MY_UBBR 12 // BAUD = 38400
+
+
 #define LEVELS 5			// the LED array has 5 levels
 #define PIN_NUM 5*5*3		// each level has 5x5 LEDs with 3 pins per LED
 #define HALL_NUM 4			// there are 4 hall effect sensors per cube
@@ -62,192 +68,16 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <util/delay.h>
+#include "mirf.h"
+#include "nRF24L01.h"
 #include <avr/interrupt.h>
-//#include "ledcube.h"
+#include "ledcube.h"
 
-// ************************************************************
-//                      ledcube.h
-//  This contains most of the led cube defines including all
-//  the LED color positions and layer defines
-//
-
-#define C1P1     0x0400
-#define C1P2     0x0200
-#define C1P3     0x0100
-#define C1P4     0x2000
-#define C1P5     0x1000
-#define C1P6     0x0800
-#define C1P7     0x0001
-#define C1P8     0x8000
-#define C1P9     0x4000
-#define C1P10    0x0018
-#define C1P11    0x0018
-#define C1P12    0x0002
-#define C1P13    0x0010
-#define C1P14    0x0080
-#define C1P15    0x0040
-#define C1P16    0x0020
-
-#define C2P1     C1P1
-#define C2P2     C1P2
-#define C2P3     C1P3
-#define C2P4     C1P6
-#define C2P5     C1P9
-#define C2P6     C1P4
-#define C2P7     C1P5  //pin 7
-#define C2P8     C1P12 //pin 8
-#define C2P9     C1P7  //pin 9
-#define C2P10    C1P8  //pin 10
-#define C2P11    C1P13 
-#define C2P12    C1P10
-#define C2P13    C1P11 
-#define C2P14    C1P14 
-#define C2P15    C1P15
-#define C2P16    C1P16
-
-#define C3P1     C1P15   // 1 = 5
-#define C3P2     C1P2   // 2 = 2
-#define C3P3     C1P5   // 3 = 15
-#define C3P4     C1P6   // 4 = 8
-#define C3P5     C1P1   // 5 = 3
-#define C3P6     C1P8   // 6 = 4
-#define C3P7     C1P9   // 7 = 11
-#define C3P8     C1P4  // 8 = 6
-#define C3P9     C1P11   // 9 = 7
-#define C3P10    C1P12  //10 = 14
-#define C3P11    C1P7  //11 = 9
-#define C3P12    C1P16 //12 = 10
-#define C3P13    C1P13  //13 = 13
-#define C3P14    C1P10  //14 = 16
-#define C3P15    C1P3  //15 = 1
-#define C3P16    C1P14  //16 = 12
-
-#define C4P1     C1P1   // 1 = 1
-#define C4P2     C1P2   // 2 = 2
-#define C4P3     C1P3   // 3 = 3
-#define C4P4     C1P4   // 4 = 4
-#define C4P5     C1P5   // 5 = 5
-#define C4P6     C1P6   // 6 = 6
-#define C4P7     C1P7   // 7 = 7
-#define C4P8     C1P8  // 8 = 8
-#define C4P9     C1P9   // 9 = 9
-#define C4P10    C1P12  //10 = 11 blue 11
-#define C4P11    C1P13  //11 = 12 nc 12
-#define C4P12    C1P10 //12 = 10  Green 10
-#define C4P13    C1P11  //13 = 14 red 13
-#define C4P14    C1P14  //14 = 14
-#define C4P15    C1P15  //15 = 15
-#define C4P16    C1P16  //16 = 16
-
-#define C5P1     C1P1  // 1 = 1
-#define C5P2     C1P2   // 2 = 2
-#define C5P3     C1P3   // 3 = 3
-#define C5P4     C1P4   // 4 = 4
-#define C5P5     C1P5   // 5 = 5
-#define C5P6     C1P6   // 6 = 6
-#define C5P7     C1P7   // 7 = 7
-#define C5P8     C1P8   // 8 = 8
-#define C5P9     C1P9  // 9 = 9
-#define C5P10    C1P10  //10 = 10
-#define C5P11    C1P11  //11 = 11
-#define C5P12    C1P12  //12 = 12
-#define C5P13    C1P15  //13 = 15
-#define C5P14    C1P16  //14 = 16
-#define C5P15    C1P13   //15 = 13
-#define C5P16    C1P14  //16 = 14
-
-//#define R1 {0,C2P8,0,0,0}
-
-
-uint16_t R[25][5] PROGMEM = {   {0    ,C2P8 ,0    ,0    ,0    }, //1
-                        {0    ,C2P7 ,0    ,0    ,0    }, //2
-                        {0    ,0    ,C3P15,0    ,0    }, //3
-                        {0    ,0    ,C3P14,0    ,0    }, //4
-                        {0    ,0    ,C3P9 ,0    ,0    }, //5
-                        {0    ,C2P11,0    ,0    ,0    }, //6
-                        {0    ,C2P3 ,0    ,0    ,0    }, //7
-                        {0    ,0    ,C3P3 ,0    ,0    }, //8
-                        {0    ,0    ,C3P8 ,0    ,0    }, //9
-                        {0    ,0    ,0    ,C4P7 ,0    }, //10
-                        {0    ,C2P14,0    ,0    ,0    },
-                        {C1P6 ,0    ,0    ,0    ,0    },
-                        {0    ,0    ,0    ,C4P11,0    },
-                        {0    ,0    ,0    ,C4P6 ,0    },
-                        {0    ,0    ,0    ,C4P3 ,0    }, //15
-                        {C1P7 ,0    ,0    ,0    ,0    },
-                        {C1P3 ,0    ,0    ,0    ,0    },
-                        {0    ,0    ,0    ,C4P14,0    },
-                        {0    ,0    ,0    ,0    ,C5P13},
-                        {0    ,0    ,0    ,0    ,C5P12}, //20
-                        {C1P10,0    ,0    ,0    ,0    },
-                        {C1P16,0    ,0    ,0    ,0    },
-                        {0    ,0    ,0    ,0    ,C5P3},
-                        {0    ,0    ,0    ,0    ,C5P4},
-                        {0    ,0    ,0    ,0    ,C5P9} //25
-};
-uint16_t G[25][5] PROGMEM = {   {0    ,C2P9 ,0    ,0    ,0    }, //1
-                        {0    ,C2P6 ,0    ,0    ,0    }, //2
-                        {0    ,0    ,C3P16,0    ,0    }, //3
-                        {0    ,0    ,C3P13,0    ,0    }, //4
-                        {0    ,0    ,C3P10,0    ,0    }, //5
-                        {0    ,C2P12,0    ,0    ,0    }, //6
-                        {0    ,C2P2 ,0    ,0    ,0    }, //7
-                        {0    ,0    ,C3P4 ,0    ,0    }, //8
-                        {0    ,0    ,C3P7 ,0    ,0    }, //9
-                        {0    ,0    ,0    ,C4P8 ,0    }, //10
-                        {0    ,C2P15,0    ,0    ,0    },
-                        {C1P5 ,0    ,0    ,0    ,0    },
-                        {0    ,0    ,0    ,C4P12,0    },
-                        {0    ,0    ,0    ,C4P5 ,0    },
-                        {0    ,0    ,0    ,C4P2 ,0    }, //15
-                        {C1P8 ,0    ,0    ,0    ,0    },
-                        {C1P2 ,0    ,0    ,0    ,0    },
-                        {0    ,0    ,0    ,C4P15,0    },
-                        {0    ,0    ,0    ,0    ,C5P14},
-                        {0    ,0    ,0    ,0    ,C5P11}, //20
-                        {C1P11,0    ,0    ,0    ,0    },
-                        {C1P15,0    ,0    ,0    ,0    },
-                        {0    ,0    ,0    ,0    ,C5P2 },
-                        {0    ,0    ,0    ,0    ,C5P5 },
-                        {0    ,0    ,0    ,0    ,C5P8 } //25
-};
-uint16_t B[25][5] PROGMEM = {   {0    ,C2P10,0    ,0    ,0    }, //1
-                        {0    ,C2P5 ,0    ,0    ,0    }, //2
-                        {0    ,0    ,C3P1 ,0    ,0    }, //3
-                        {0    ,0    ,C3P12,0    ,0    }, //4
-                        {0    ,0    ,C3P11,0    ,0    }, //5
-                        {0    ,C2P13,0    ,0    ,0    }, //6
-                        {0    ,C2P1 ,0    ,0    ,0    }, //7
-                        {0    ,0    ,C3P5 ,0    ,0    }, //8
-                        {0    ,0    ,C3P6 ,0    ,0    }, //9
-                        {0    ,0    ,0    ,C4P9 ,0    }, //10
-                        {0    ,C2P16,0    ,0    ,0    },
-                        {C1P4 ,0    ,0    ,0    ,0    },
-                        {0    ,0    ,0    ,C4P13,0    },
-                        {0    ,0    ,0    ,C4P4 ,0    },
-                        {0    ,0    ,0    ,C4P1 ,0    }, //15
-                        {C1P9 ,0    ,0    ,0    ,0    },
-                        {C1P1 ,0    ,0    ,0    ,0    },
-                        {0    ,0    ,0    ,C4P16,0    },
-                        {0    ,0    ,0    ,0    ,C5P15},
-                        {0    ,0    ,0    ,0    ,C5P10}, //20
-                        {C1P12,0    ,0    ,0    ,0    },
-                        {C1P14,0    ,0    ,0    ,0    },
-                        {0    ,0    ,0    ,0    ,C5P1 },
-                        {0    ,0    ,0    ,0    ,C5P6 },
-                        {0    ,0    ,0    ,0    ,C5P7 } //25
-};
-
-//global variables
-//uint16_t layer0 = 0x0000;
-//uint16_t layer1 = 0x0000;
-//uint16_t layer2 = 0x0000;
-//uint16_t layer3 = 0x0000;
-//uint16_t layer4 = 0x0000;
-//uint8_t frame[5] = {layer0,layer1,layer2,layer3,layer4};
 
 
 uint16_t frame[5][5] = {{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0}}; //5 layers and 5 led drivers
+uint8_t transmit_buffer[32] = {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',};
+uint8_t receive_buffer[32] = {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',};
 uint8_t next = 0;
 
 void initialize_interrupts(void){
@@ -261,8 +91,9 @@ void initialize_interrupts(void){
 //master mode, clock=clk/2, cycle half phase, low polarity, MSB first
 //interrupts disabled, poll SPIF bit in SPSR to check xmit completion
 /***********************************************************************/
+/*
 void spi_init(void){
-    /*
+    //
 	DDRB  |=   (1<<SS_N)|(1<<MOSI)|(1<<SCK);          //Turn on SS, MOSI, SCLK, MISO
 	SPCR  |=   (1<<SPE)|(1<<MSTR);           //set up SPI mode
 	//Bit 7 = SPIE = SPI interrupt enable   
@@ -273,7 +104,7 @@ void spi_init(void){
 	//Bit 2 = C1PHA = Clock phase
 	//Bits 1, 0 = SPR1, SPR0 =  
 	//SPSR  |=   (1<<SPI2X);           // double speed operation
-    */
+    //
 
     //ATtiny167 SPI INIT
 	DDRA |= (1<<SS)|(1<<MOSI)|(1<<SCK);
@@ -281,6 +112,7 @@ void spi_init(void){
 	SPSR |= (1<<SPI2X);
 
 }//spi_init
+*/
 
 
 /***********************************************************************/
@@ -296,6 +128,33 @@ void tcnt0_init(void){
 	TCCR0  |=  (1<<CS00);   //normal mode, no prescale
 }
 */
+
+void level(uint8_t layer){
+    switch(layer){
+        case 0:
+            PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+            PORTB |= ((0<<PB4)|(0<<PB5)|(0<<PB6));
+            return;
+        case 1:
+            PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+            PORTB |= ((1<<PB4)|(0<<PB5)|(0<<PB6));
+            return;
+        case 2:
+            PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+            PORTB |= ((0<<PB4)|(1<<PB5)|(0<<PB6));
+            return;
+        case 3:
+            PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+            PORTB |= ((1<<PB4)|(1<<PB5)|(0<<PB6));
+            return;
+        case 4:
+            PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+            PORTB |= ((0<<PB4)|(0<<PB5)|(1<<PB6));
+            return;
+        default:
+            PORTB |= ((1<<PB4)|(1<<PB5)|(1<<PB6));
+            }
+}
 
 void transmit1(uint16_t data1,uint16_t data2,uint16_t data3,uint16_t data4,uint16_t data5){
 	//break the data up into 4 bytes
@@ -393,40 +252,8 @@ void transmit2(uint8_t layer){
     //_delay_us(300);
 }
 
-void level(uint8_t layer){
-    switch(layer){
-        case 2:
-            PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
-            PORTB |= ((0<<PB4)|(0<<PB5)|(0<<PB6));
-            return;
-        case 1:
-            PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
-            PORTB |= ((1<<PB4)|(0<<PB5)|(0<<PB6));
-            return;
-        case 0:
-            PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
-            PORTB |= ((0<<PB4)|(1<<PB5)|(0<<PB6));
-            return;
-        case 4:
-            PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
-            PORTB |= ((1<<PB4)|(1<<PB5)|(0<<PB6));
-            return;
-        case 3:
-            PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
-            PORTB |= ((0<<PB4)|(0<<PB5)|(1<<PB6));
-            return;
-        default:
-            PORTB |= ((1<<PB4)|(1<<PB5)|(1<<PB6));
-            }
-}
-
 
 void level_test(void){
-    uint16_t data1 = 0x00FF;
-    uint16_t data2 = 0x00FF;
-    uint16_t data3 = 0x00FF;
-    uint16_t data4 = 0x00FF;
-    uint16_t data5 = 0x00FF;
     uint16_t on = 0xFFFF;
     uint16_t off = 0x0000;
     uint8_t i = 0;
@@ -1372,8 +1199,6 @@ void test_pattern(){
     }
 }
 
-
-/*
 void test_pattern1(){
     uint32_t plane = 0x1FFFFFF;
     uint32_t row4 = 0x1F00000;
@@ -1489,15 +1314,16 @@ void test_pattern1(){
     }
 }
 
-ISR(TIMER_OVF_vect){
+
+ISR(TIMER1_OVF_vect){
 //
-static uint16_t counter = 0;
-if(counter){
- //do sutff
- }
+    static uint16_t counter = 0;
+    if(counter >= 0x08){
+        next = 1;
+        counter = 0;
+    }
 
 }
-*/
 
 /***********************************************************************/
 //                                main                                 
@@ -1507,17 +1333,23 @@ int main(){
     DDRB |= (1<<PB4)|(1<<PB5)|(1<<PB6);
     PORTB |= (1<<PB0)|(1<<PB1)|(1<<PB2)|(1<<PB3);
 	spi_init();    //initalize SPI port
-    //initialize_interrupts();
-    //sei();
-    uint8_t input = 0;
-    uint8_t i = 0;
+    initialize_interrupts();
+	// Initialize AVR for use with mirf
+	mirf_init();
+	// Wait for mirf to come up
+	_delay_ms(50);
+	// Activate interrupts
+    sei();
+	mirf_read_register(STATUS, receive_buffer, 1);
+	mirf_config();
    
 	while(1){
 
         //test_pattern();
+        //test_pattern1();
         //test_frame();
         //level_test();
-        test_led();
+        //test_led();
         //shift_LED();
         //hall_test();
 

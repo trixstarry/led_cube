@@ -1,6 +1,6 @@
 PRG            = ledcube
 
-OBJ            = $(PRG).o
+OBJ            = $(PRG).o mirf.o spi.o
 
 MCU_TARGET     = attiny167
 #OPTIMIZE       = -O0    # options are 1, 2, 3, s
