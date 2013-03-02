@@ -1,0 +1,331 @@
+
+test.elf:     file format elf32-avr
+
+Sections:
+Idx Name          Size      VMA       LMA       File off  Algn
+  0 .text         000000fe  00000000  00000000  00000054  2**1
+                  CONTENTS, ALLOC, LOAD, READONLY, CODE
+  1 .stab         00000ed0  00000000  00000000  00000154  2**2
+                  CONTENTS, READONLY, DEBUGGING
+  2 .stabstr      0000083b  00000000  00000000  00001024  2**0
+                  CONTENTS, READONLY, DEBUGGING
+
+Disassembly of section .text:
+
+00000000 <__vectors>:
+   0:	12 c0       	rjmp	.+36     	; 0x26 <__ctors_end>
+   2:	2a c0       	rjmp	.+84     	; 0x58 <__bad_interrupt>
+   4:	29 c0       	rjmp	.+82     	; 0x58 <__bad_interrupt>
+   6:	28 c0       	rjmp	.+80     	; 0x58 <__bad_interrupt>
+   8:	27 c0       	rjmp	.+78     	; 0x58 <__bad_interrupt>
+   a:	26 c0       	rjmp	.+76     	; 0x58 <__bad_interrupt>
+   c:	25 c0       	rjmp	.+74     	; 0x58 <__bad_interrupt>
+   e:	24 c0       	rjmp	.+72     	; 0x58 <__bad_interrupt>
+  10:	23 c0       	rjmp	.+70     	; 0x58 <__bad_interrupt>
+  12:	22 c0       	rjmp	.+68     	; 0x58 <__bad_interrupt>
+  14:	21 c0       	rjmp	.+66     	; 0x58 <__bad_interrupt>
+  16:	20 c0       	rjmp	.+64     	; 0x58 <__bad_interrupt>
+  18:	1f c0       	rjmp	.+62     	; 0x58 <__bad_interrupt>
+  1a:	1e c0       	rjmp	.+60     	; 0x58 <__bad_interrupt>
+  1c:	1d c0       	rjmp	.+58     	; 0x58 <__bad_interrupt>
+  1e:	1c c0       	rjmp	.+56     	; 0x58 <__bad_interrupt>
+  20:	1b c0       	rjmp	.+54     	; 0x58 <__bad_interrupt>
+  22:	1a c0       	rjmp	.+52     	; 0x58 <__bad_interrupt>
+  24:	19 c0       	rjmp	.+50     	; 0x58 <__bad_interrupt>
+
+00000026 <__ctors_end>:
+  26:	11 24       	eor	r1, r1
+  28:	1f be       	out	0x3f, r1	; 63
+  2a:	cf ed       	ldi	r28, 0xDF	; 223
+  2c:	cd bf       	out	0x3d, r28	; 61
+
+0000002e <__do_copy_data>:
+  2e:	10 e0       	ldi	r17, 0x00	; 0
+  30:	a0 e6       	ldi	r26, 0x60	; 96
+  32:	b0 e0       	ldi	r27, 0x00	; 0
+  34:	ee ef       	ldi	r30, 0xFE	; 254
+  36:	f0 e0       	ldi	r31, 0x00	; 0
+  38:	02 c0       	rjmp	.+4      	; 0x3e <.do_copy_data_start>
+
+0000003a <.do_copy_data_loop>:
+  3a:	05 90       	lpm	r0, Z+
+  3c:	0d 92       	st	X+, r0
+
+0000003e <.do_copy_data_start>:
+  3e:	a0 36       	cpi	r26, 0x60	; 96
+  40:	b1 07       	cpc	r27, r17
+  42:	d9 f7       	brne	.-10     	; 0x3a <.do_copy_data_loop>
+
+00000044 <__do_clear_bss>:
+  44:	10 e0       	ldi	r17, 0x00	; 0
+  46:	a0 e6       	ldi	r26, 0x60	; 96
+  48:	b0 e0       	ldi	r27, 0x00	; 0
+  4a:	01 c0       	rjmp	.+2      	; 0x4e <.do_clear_bss_start>
+
+0000004c <.do_clear_bss_loop>:
+  4c:	1d 92       	st	X+, r1
+
+0000004e <.do_clear_bss_start>:
+  4e:	a0 36       	cpi	r26, 0x60	; 96
+  50:	b1 07       	cpc	r27, r17
+  52:	e1 f7       	brne	.-8      	; 0x4c <.do_clear_bss_loop>
+  54:	08 d0       	rcall	.+16     	; 0x66 <main>
+  56:	51 c0       	rjmp	.+162    	; 0xfa <_exit>
+
+00000058 <__bad_interrupt>:
+  58:	d3 cf       	rjmp	.-90     	; 0x0 <__vectors>
+
+0000005a <usart_test>:
+
+// USART test
+void usart_test ()
+{
+	
+}
+  5a:	08 95       	ret
+
+0000005c <spi_test>:
+#include "spi.h"
+
+// SPI test
+void spi_test ()
+{
+	spi_init();
+  5c:	06 d0       	rcall	.+12     	; 0x6a <spi_init>
+    spi(0x45);
+  5e:	85 e4       	ldi	r24, 0x45	; 69
+  60:	90 e0       	ldi	r25, 0x00	; 0
+  62:	0b d0       	rcall	.+22     	; 0x7a <spi>
+}
+  64:	08 95       	ret
+
+00000066 <main>:
+
+int main (void)
+{
+    while(1)
+    {
+        spi_test();
+  66:	fa df       	rcall	.-12     	; 0x5c <spi_test>
+  68:	fe cf       	rjmp	.-4      	; 0x66 <main>
+
+0000006a <spi_init>:
+#define USCK		PB7
+
+void spi_init()
+// Initialize pins for spi communication
+{
+    DDR_SPI &= ~(1<<DI);
+  6a:	bd 98       	cbi	0x17, 5	; 23
+	PORT_SPI |= (1<<DI); 
+  6c:	c5 9a       	sbi	0x18, 5	; 24
+	DDR_SPI |= (1<<USCK)|(1<<DO); 
+  6e:	87 b3       	in	r24, 0x17	; 23
+  70:	80 6c       	ori	r24, 0xC0	; 192
+  72:	87 bb       	out	0x17, r24	; 23
+	USICR = (1<<USIWM0)|(1<<USICS1)|(1<<USICLK); 
+  74:	8a e1       	ldi	r24, 0x1A	; 26
+  76:	8d b9       	out	0x0d, r24	; 13
+	
+	// For disabling SPI
+	//DDRB &= ~((1<<USCK)|(1<<DI)|(1<<DO)); 
+	//USICR = 0; 
+}
+  78:	08 95       	ret
+
+0000007a <spi>:
+
+unsigned char spi(unsigned char val) 
+{ 
+	USIDR = val; 
+  7a:	8f b9       	out	0x0f, r24	; 15
+	USISR = (1<<USIOIF); 
+  7c:	80 e4       	ldi	r24, 0x40	; 64
+  7e:	8e b9       	out	0x0e, r24	; 14
+	do
+	{ 
+		USICR = (1<<USIWM0)|(1<<USICS1)|(1<<USICLK)|(1<<USITC); 
+  80:	8b e1       	ldi	r24, 0x1B	; 27
+  82:	8d b9       	out	0x0d, r24	; 13
+	}
+	while ((USISR & (1<<USIOIF)) == 0); 
+  84:	76 9b       	sbis	0x0e, 6	; 14
+  86:	fd cf       	rjmp	.-6      	; 0x82 <spi+0x8>
+	return USIDR; 
+  88:	8f b1       	in	r24, 0x0f	; 15
+} 
+  8a:	08 95       	ret
+
+0000008c <spi_transfer_sync>:
+
+void spi_transfer_sync (uint8_t * dataout, uint8_t * datain, uint8_t len)
+// Shift full array through target device
+{
+  8c:	dc 01       	movw	r26, r24
+	uint8_t i;      
+	for (i = 0; i < len; i++)
+  8e:	44 23       	and	r20, r20
+  90:	b1 f0       	breq	.+44     	; 0xbe <spi_transfer_sync+0x32>
+  92:	20 e0       	ldi	r18, 0x00	; 0
+  94:	30 e0       	ldi	r19, 0x00	; 0
+}
+
+unsigned char spi(unsigned char val) 
+{ 
+	USIDR = val; 
+	USISR = (1<<USIOIF); 
+  96:	90 e4       	ldi	r25, 0x40	; 64
+	do
+	{ 
+		USICR = (1<<USIWM0)|(1<<USICS1)|(1<<USICLK)|(1<<USITC); 
+  98:	5b e1       	ldi	r21, 0x1B	; 27
+// Shift full array through target device
+{
+	uint8_t i;      
+	for (i = 0; i < len; i++)
+	{
+		datain[i] = spi(dataout[i]);
+  9a:	fd 01       	movw	r30, r26
+  9c:	e2 0f       	add	r30, r18
+  9e:	f3 1f       	adc	r31, r19
+  a0:	80 81       	ld	r24, Z
+	//USICR = 0; 
+}
+
+unsigned char spi(unsigned char val) 
+{ 
+	USIDR = val; 
+  a2:	8f b9       	out	0x0f, r24	; 15
+	USISR = (1<<USIOIF); 
+  a4:	9e b9       	out	0x0e, r25	; 14
+	do
+	{ 
+		USICR = (1<<USIWM0)|(1<<USICS1)|(1<<USICLK)|(1<<USITC); 
+  a6:	5d b9       	out	0x0d, r21	; 13
+	}
+	while ((USISR & (1<<USIOIF)) == 0); 
+  a8:	76 9b       	sbis	0x0e, 6	; 14
+  aa:	fd cf       	rjmp	.-6      	; 0xa6 <spi_transfer_sync+0x1a>
+	return USIDR; 
+  ac:	8f b1       	in	r24, 0x0f	; 15
+// Shift full array through target device
+{
+	uint8_t i;      
+	for (i = 0; i < len; i++)
+	{
+		datain[i] = spi(dataout[i]);
+  ae:	fb 01       	movw	r30, r22
+  b0:	e2 0f       	add	r30, r18
+  b2:	f3 1f       	adc	r31, r19
+  b4:	80 83       	st	Z, r24
+  b6:	2f 5f       	subi	r18, 0xFF	; 255
+  b8:	3f 4f       	sbci	r19, 0xFF	; 255
+
+void spi_transfer_sync (uint8_t * dataout, uint8_t * datain, uint8_t len)
+// Shift full array through target device
+{
+	uint8_t i;      
+	for (i = 0; i < len; i++)
+  ba:	24 17       	cp	r18, r20
+  bc:	70 f3       	brcs	.-36     	; 0x9a <spi_transfer_sync+0xe>
+  be:	08 95       	ret
+
+000000c0 <spi_transmit_sync>:
+	}
+}
+
+void spi_transmit_sync (uint8_t * dataout, uint8_t len)
+// Shift full array to target device without receiving any byte
+{
+  c0:	48 2f       	mov	r20, r24
+	uint8_t i;      
+	for (i = 0; i < len; i++)
+  c2:	66 23       	and	r22, r22
+  c4:	81 f0       	breq	.+32     	; 0xe6 <__stack+0x7>
+  c6:	9c 01       	movw	r18, r24
+  c8:	f9 01       	movw	r30, r18
+}
+
+unsigned char spi(unsigned char val) 
+{ 
+	USIDR = val; 
+	USISR = (1<<USIOIF); 
+  ca:	20 e4       	ldi	r18, 0x40	; 64
+	do
+	{ 
+		USICR = (1<<USIWM0)|(1<<USICS1)|(1<<USICLK)|(1<<USITC); 
+  cc:	9b e1       	ldi	r25, 0x1B	; 27
+// Shift full array to target device without receiving any byte
+{
+	uint8_t i;      
+	for (i = 0; i < len; i++)
+	{
+		spi(dataout[i]);
+  ce:	80 81       	ld	r24, Z
+	//USICR = 0; 
+}
+
+unsigned char spi(unsigned char val) 
+{ 
+	USIDR = val; 
+  d0:	8f b9       	out	0x0f, r24	; 15
+	USISR = (1<<USIOIF); 
+  d2:	2e b9       	out	0x0e, r18	; 14
+	do
+	{ 
+		USICR = (1<<USIWM0)|(1<<USICS1)|(1<<USICLK)|(1<<USITC); 
+  d4:	9d b9       	out	0x0d, r25	; 13
+	}
+	while ((USISR & (1<<USIOIF)) == 0); 
+  d6:	76 9b       	sbis	0x0e, 6	; 14
+  d8:	fd cf       	rjmp	.-6      	; 0xd4 <spi_transmit_sync+0x14>
+	return USIDR; 
+  da:	8f b1       	in	r24, 0x0f	; 15
+  dc:	31 96       	adiw	r30, 0x01	; 1
+
+void spi_transmit_sync (uint8_t * dataout, uint8_t len)
+// Shift full array to target device without receiving any byte
+{
+	uint8_t i;      
+	for (i = 0; i < len; i++)
+  de:	8e 2f       	mov	r24, r30
+  e0:	84 1b       	sub	r24, r20
+  e2:	86 17       	cp	r24, r22
+  e4:	a0 f3       	brcs	.-24     	; 0xce <spi_transmit_sync+0xe>
+  e6:	08 95       	ret
+
+000000e8 <spi_fast_shift>:
+	//USICR = 0; 
+}
+
+unsigned char spi(unsigned char val) 
+{ 
+	USIDR = val; 
+  e8:	8f b9       	out	0x0f, r24	; 15
+	USISR = (1<<USIOIF); 
+  ea:	80 e4       	ldi	r24, 0x40	; 64
+  ec:	8e b9       	out	0x0e, r24	; 14
+	do
+	{ 
+		USICR = (1<<USIWM0)|(1<<USICS1)|(1<<USICLK)|(1<<USITC); 
+  ee:	8b e1       	ldi	r24, 0x1B	; 27
+  f0:	8d b9       	out	0x0d, r24	; 13
+	}
+	while ((USISR & (1<<USIOIF)) == 0); 
+  f2:	76 9b       	sbis	0x0e, 6	; 14
+  f4:	fd cf       	rjmp	.-6      	; 0xf0 <spi_fast_shift+0x8>
+	return USIDR; 
+  f6:	8f b1       	in	r24, 0x0f	; 15
+
+uint8_t spi_fast_shift (uint8_t data)
+// Clocks only one byte to target device and returns the received one
+{
+	return spi(data);
+}
+  f8:	08 95       	ret
+
+000000fa <_exit>:
+  fa:	f8 94       	cli
+
+000000fc <__stop_program>:
+  fc:	ff cf       	rjmp	.-2      	; 0xfc <__stop_program>
