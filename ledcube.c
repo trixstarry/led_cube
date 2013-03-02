@@ -62,6 +62,7 @@
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <util/delay.h>
+#include <avr/interrupt.h>
 //#include "ledcube.h"
 
 // ************************************************************
@@ -79,8 +80,8 @@
 #define C1P7     0x0001
 #define C1P8     0x8000
 #define C1P9     0x4000
-#define C1P10    0x0008
-#define C1P11    0x0004
+#define C1P10    0x0018
+#define C1P11    0x0018
 #define C1P12    0x0002
 #define C1P13    0x0010
 #define C1P14    0x0080
@@ -247,6 +248,11 @@ uint16_t B[25][5] PROGMEM = {   {0    ,C2P10,0    ,0    ,0    }, //1
 
 
 uint16_t frame[5][5] = {{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0}}; //5 layers and 5 led drivers
+uint8_t next = 0;
+
+void initialize_interrupts(void){
+    TIMSK1 = (1<<TOIE1);
+    }
 
 /***********************************************************************/
 //                            spi_init                               
@@ -646,6 +652,7 @@ void clear_frame(){
     }
 
 void test_pattern(){
+    uint32_t plane = 0x1FFFFFF;
     uint32_t row4 = 0x1F00000;
     uint32_t row3 = 0xF8000;
     uint32_t row2 = 0x7C00;
@@ -660,8 +667,6 @@ void test_pattern(){
             leds(3,0,0,row0);
             leds(4,0,row0,0);
             test_frame();
-            if(counter >= 0x00F0){
-             break;}
             counter++;
         }
         counter = 0;
@@ -736,6 +741,131 @@ void test_pattern(){
         }
         counter = 0;
         while(counter <0x0018){
+            leds(0,plane,0,0);
+            leds(1,0,plane,0);
+            leds(2,0,0,plane);
+            leds(3,0,0,plane);
+            leds(4,0,plane,0);
+            test_frame();
+            counter++;
+        }
+        counter = 0;
+        while(counter <0x0018){
+            leds(0,row0,0,0);
+            leds(1,0,row0,0);
+            leds(2,0,0,row0);
+            leds(3,0,0,row0);
+            leds(4,0,row0,0);
+            test_frame();
+            counter++;
+        }
+    }
+}
+
+
+/*
+void test_pattern1(){
+    uint32_t plane = 0x1FFFFFF;
+    uint32_t row4 = 0x1F00000;
+    uint32_t row3 = 0xF8000;
+    uint32_t row2 = 0x7C00;
+    uint32_t row1 = 0x3E0;
+    uint32_t row0 = 0x1F;
+    uint16_t counter = 0;
+    while(1){
+        while(next == 0){
+            leds(0,row0,0,0);
+            leds(1,0,row0,0);
+            leds(2,0,0,row0);
+            leds(3,0,0,row0);
+            leds(4,0,row0,0);
+            test_frame();
+            //counter++;
+        }
+        next = 1;
+        //counter = 0;
+        while(next == 0){
+            leds(0,row1,0,0);
+            leds(1,0,row1,0);
+            leds(2,0,0,row1);
+            leds(3,0,0,row1);
+            leds(4,0,row1,0);
+            test_frame();
+            //counter++;
+        }
+        //counter = 0;
+        next = 1;
+        while(counter <0x0018){
+            leds(0,row2,0,0);
+            leds(1,0,row2,0);
+            leds(2,0,0,row2);
+            leds(3,0,0,row2);
+            leds(4,0,row2,0);
+            test_frame();
+            //counter++;
+        }
+        counter = 0;
+        while(counter< 0x0018){
+            leds(0,row3,0,0);
+            leds(1,0,row3,0);
+            leds(2,0,0,row3);
+            leds(3,0,0,row3);
+            leds(4,0,row3,0);
+            test_frame();
+            counter++;
+        }
+        counter = 0;
+        while(counter < 0x0018){
+            leds(0,row4,0,0);
+            leds(1,0,row4,0);
+            leds(2,0,0,row4);
+            leds(3,0,0,row4);
+            leds(4,0,row4,0);
+            test_frame();
+            counter++;
+        }
+        counter = 0;
+        while(counter< 0x0018){
+            leds(0,row3,0,0);
+            leds(1,0,row3,0);
+            leds(2,0,0,row3);
+            leds(3,0,0,row3);
+            leds(4,0,row3,0);
+            test_frame();
+            counter++;
+        }
+        counter = 0;
+        while(counter <0x0018){
+            leds(0,row2,0,0);
+            leds(1,0,row2,0);
+            leds(2,0,0,row2);
+            leds(3,0,0,row2);
+            leds(4,0,row2,0);
+            test_frame();
+            counter++;
+        }
+        counter = 0;
+        while(counter <0x0018){
+            leds(0,row1,0,0);
+            leds(1,0,row1,0);
+            leds(2,0,0,row1);
+            leds(3,0,0,row1);
+            leds(4,0,row1,0);
+            test_frame();
+            counter++;
+        }
+        counter = 0;
+        while(counter <0x0018){
+            leds(0,plane,0,0);
+            leds(1,0,plane,0);
+            leds(2,0,0,plane);
+            leds(3,0,0,plane);
+            leds(4,0,plane,0);
+            test_frame();
+            counter++;
+        }
+        counter = 0;
+        while(counter <0x0018){
             leds(0,row0,0,0);
             leds(1,0,row0,0);
             leds(2,0,0,row0);
@@ -749,6 +879,16 @@ void test_pattern(){
     }
 }
 
+ISR(TIMER_OVF_vect){
+//
+static uint16_t counter = 0;
+if(counter){
+ //do sutff
+ }
+
+}
+*/
+
 /***********************************************************************/
 //                                main                                 
 /***********************************************************************/
@@ -757,18 +897,11 @@ int main(){
     DDRB |= (1<<PB4)|(1<<PB5)|(1<<PB6);
     PORTB |= (1<<PB0)|(1<<PB1)|(1<<PB2)|(1<<PB3);
 	spi_init();    //initalize SPI port
+    //initialize_interrupts();
+    //sei();
     uint8_t input = 0;
     uint8_t i = 0;
-    uint32_t color_on = 0x1FFFFFF;
    
-    //initialize the pattern
-    leds(0,0x1F00000,0,0);
-    leds(1,0,0x1F00000,0);
-    leds(2,0,0,0x1F00000);
-    leds(3,0,0,0x1F00000);
-    leds(4,0,0x1F00000,0);
-    
-
 	while(1){
 
         test_pattern();
