@@ -34,15 +34,36 @@
 #define mirf_PAYLOAD    32
 #define mirf_CONFIG     ( (1<<MASK_RX_DR) | (1<<EN_CRC) | (0<<CRCO) )
 
+#if defined(__AVR_ATtiny2313__)
+
 // Pin definitions for chip select and chip enabled of the MiRF module
 #define CE  PB3
 #define CSN PB2
+#define IRQ PB4
 
 // Definitions for selecting and enabling MiRF module
 #define mirf_CSN_hi     PORTB |=  (1<<CSN);
 #define mirf_CSN_lo     PORTB &= ~(1<<CSN);
 #define mirf_CE_hi      PORTB |=  (1<<CE);
 #define mirf_CE_lo      PORTB &= ~(1<<CE);
+
+#endif // __AVR_ATtiny2313__
+
+#if defined(__AVR_ATtiny167__)
+
+// Pin definitions for chip select and chip enabled of the MiRF module
+#define CE  PA1
+#define CSN PA0
+#define IRQ PA4
+
+// Definitions for selecting and enabling MiRF module
+#define mirf_CSN_hi     PORTA |=  (1<<CSN);
+#define mirf_CSN_lo     PORTA &= ~(1<<CSN);
+#define mirf_CE_hi      PORTA |=  (1<<CE);
+#define mirf_CE_lo      PORTA &= ~(1<<CE);
+
+#endif // __AVR_ATtiny167__  
+
 
 // Public standard functions
 extern void mirf_init();
@@ -52,7 +73,7 @@ extern void mirf_set_RADDR(uint8_t * adr);
 extern void mirf_set_TADDR(uint8_t * adr);
 extern uint8_t mirf_data_ready();
 extern void mirf_get_data(uint8_t * data);
-extern void rx_powerup();
+extern void tx_complete();
 
 
 // Public extended functions

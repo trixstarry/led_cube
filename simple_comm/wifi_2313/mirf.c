@@ -51,22 +51,23 @@ void mirf_init()
     mirf_CE_lo;
     mirf_CSN_hi;
 
-/*#if defined(__AVR_ATmega8__)
-    // Initialize external interrupt 0 (PD2)
-    MCUCR = ((1<<ISC11)|(0<<ISC10)|(1<<ISC01)|(0<<ISC00)); // Set external interupt on falling edge
-    GICR  = ((0<<INT1)|(1<<INT0));                         // Activate INT0
+#if defined(__AVR_ATtiny167__)
+    // Initialize PCINT3 for ATtiny167
+    PCICR |= (1<<PCIE0);
+    PCMSK0 |= (1<<PCINT3);
 #endif // __AVR_ATmega8__
 
-#if defined(__AVR_ATmega168__)
-    // Initialize external interrupt on port PD6 (PCINT22)
-    DDRB &= ~(1<<PD6);
-    PCMSK2 = (1<<PCINT22);
-    PCICR  = (1<<PCIE2);
+#if defined(__AVR_ATtiny2313__)
+    // Initialize PCINT4
+    GIMSK |= (1<<PCIE);
+	PCMSK |= (1<<PCINT4);
 #endif // __AVR_ATmega168__    */
 
+    /*
 // Initialize PCINT4
 	GIMSK |= (1<<PCIE);
 	PCMSK |= (1<<PCINT4);
+    */
 
     // Initialize spi module
     spi_init();
@@ -116,15 +117,14 @@ void mirf_set_TADDR(uint8_t * adr)
     mirf_write_register(TX_ADDR, adr,5);
 }
 
-/*#if defined(__AVR_ATmega8__)
-SIGNAL(SIG_INTERRUPT0) 
+#if defined(__AVR_ATtiny2313__)
+    ISR(PCINT_vect)
 #endif // __AVR_ATmega8__
-#if defined(__AVR_ATmega168__)
-SIGNAL(SIG_PIN_CHANGE2) 
-#endif // __AVR_ATmega168__  */
-
+#if defined(__AVR_ATtiny167__)
+    ISR(PCINT0_vect)
+#endif // __AVR_ATmega168__  
 // Interrupt handler 
-ISR(PCINT_vect)
+//ISR(PCINT_vect)
 {
     //DDRD |= (1<<6);
     //PORTD |= (1<<6);
@@ -147,10 +147,16 @@ ISR(PCINT_vect)
         mirf_config_register(STATUS,(1<<TX_DS)|(1<<MAX_RT)); // Reset status register
     }
 //PORTD &= (~(1<<6));
+#if defined(__AVR_ATtiny2313__)
     EIFR |= (1<<PCIF);
+#endif // __AVR_ATmega8__
+#if defined(__AVR_ATtiny167__)
+    PCIFR |= (1<<PCIF0);
+#endif // __AVR_ATmega168__  
+//    EIFR |= (1<<PCIF);
 }
 
-void rx_powerup(void){
+void tx_complete(void){
     uint8_t status;
     if (PTX) {
         // Read MiRF status 
@@ -166,7 +172,12 @@ void rx_powerup(void){
         // Reset status register for further interaction
         mirf_config_register(STATUS,(1<<TX_DS)|(1<<MAX_RT)); // Reset status register
     }
+#if defined(__AVR_ATtiny2313__)
     EIFR |= (1<<PCIF);
+#endif // __AVR_ATmega8__
+#if defined(__AVR_ATtiny167__)
+    PCIFR |= (1<<PCIF0);
+#endif // __AVR_ATmega168__  
 }
 
 extern uint8_t mirf_data_ready() 
@@ -234,12 +245,23 @@ char mirf_send(uint8_t * value, uint8_t len)
     uint8_t status = 0;
     mirf_read_register (STATUS, &status, 1);
 
+    
+    #if defined(__AVR_ATtiny2313__)
     // If PTX == 1 and TX_DS == 1, or if the interrupt line is low, data was sent but the interrupt never happened.
     //   In this case, the interrupt was missed for some reason 
     if ((PINB & (1<<PB4)) || ((status & (1<<MASK_TX_DS)) && PTX))
     {
-        rx_powerup();
+        tx_complete();
     }
+    #endif // __AVR_ATmega8__
+    #if defined(__AVR_ATtiny167__)
+    // If PTX == 1 and TX_DS == 1, or if the interrupt line is low, data was sent but the interrupt never happened.
+    //   In this case, the interrupt was missed for some reason 
+    if ((PINB & (1<<PA3)) || ((status & (1<<MASK_TX_DS)) && PTX))
+    {
+        tx_complete();
+    }
+    #endif // __AVR_ATmega168__  
 
     // Restore interrupt state
     SREG = sreg_original;

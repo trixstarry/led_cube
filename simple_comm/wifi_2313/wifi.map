@@ -210,7 +210,7 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr25/libgcc.a
                 0x000002a4                mirf_data_ready
                 0x000002bc                mirf_config_register
                 0x000002e0                mirf_get_data
-                0x0000030a                rx_powerup
+                0x0000030a                tx_complete
                 0x00000336                __vector_11
                 0x000003a4                mirf_config
                 0x000003be                mirf_read_register
@@ -332,9 +332,9 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr25/libgcc.a
  .stab          0x00001d1c      0x318 usart.o
                                 0x4ec (size before relaxing)
 
-.stabstr        0x00000000      0xb78
+.stabstr        0x00000000      0xb79
  *(.stabstr)
- .stabstr       0x00000000      0xb78 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr25/crttn2313.o
+ .stabstr       0x00000000      0xb79 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr25/crttn2313.o
 
 .stab.excl
  *(.stab.excl)
