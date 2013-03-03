@@ -53,11 +53,12 @@ int8_t Receive(uint8_t *buffer,uint8_t buffersize){
     //}
     //_delay_ms(50);
     mirf_get_data(buffer);
-    //for(i = 0; i < (buffersize); i++)
-    //{
-        //USART_Transmit(buffer[i]);
-    //}
-    //USART_Transmit('\n');
+    transmit_string("\r\n");
+    for(i = 0; i < (buffersize); i++)
+    {
+        USART_Transmit(buffer[i]);
+    }
+    transmit_string("\r\n");
     return 1;
 }
 
@@ -98,7 +99,7 @@ int main (void)
 //        //transmit_string ("Device Started!\r\n");
 //    }
 	
-	char buffer [32] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
+	char buffer [32] = {'7','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
                         'q','r','s','t','u','v','w','x','y','z','1','2','3','4','5','6'};
 	//uint8_t buffersize = BUFFER_SIZE;
 	// Initialize AVR for use with mirf
@@ -112,7 +113,7 @@ int main (void)
 	// Configure mirf
 	mirf_config();
 	// Test transmitting
-	buffer[0] = 'a';
+	buffer[0] = '7';
     //rx_powerup();
     _delay_ms(100);
     mirf_config_register(STATUS,(1<<TX_DS)|(1<<MAX_RT)); // Reset status register

@@ -91,9 +91,6 @@ void init2(uint8_t *buffer){
 
 void transmit_led(uint8_t data){
     SPI_Transmit(data);
-	//Toggle latch
-	PORTA |= (1<<SS);
-	PORTA &= ~(1<<SS);
 }
 
 
@@ -102,7 +99,15 @@ void led1_on(){
     transmit_led(0x00);
     transmit_led(0x00);
     transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
     transmit_led(0x01);
+	//Toggle latch
+	PORTA |= (1<<SS);
+	PORTA &= ~(1<<SS);
 }
 void led_off(){
     transmit_led(0x00);
@@ -110,21 +115,45 @@ void led_off(){
     transmit_led(0x00);
     transmit_led(0x00);
     transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+	//Toggle latch
+	PORTA |= (1<<SS);
+	PORTA &= ~(1<<SS);
     
 }
 void led2_on(){
     transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
     transmit_led(0x02);
     transmit_led(0x00);
     transmit_led(0x00);
     transmit_led(0x02);
+	//Toggle latch
+	PORTA |= (1<<SS);
+	PORTA &= ~(1<<SS);
 }
 void led3_on(){
     transmit_led(0x00);
     transmit_led(0x00);
     transmit_led(0x00);
     transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
     transmit_led(0x03);
+	//Toggle latch
+	PORTA |= (1<<SS);
+	PORTA &= ~(1<<SS);
 }
 
 void test_xbee_pins(){
@@ -147,7 +176,7 @@ int main (void)
         'q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F',};
 	sei();
     init2(buffer);
-    buffer[0] = 'h';
+    buffer[0] = 'a';
     //LED2_ON;
     //LED1_ON;
     //PORTB |= (1<<PB1);

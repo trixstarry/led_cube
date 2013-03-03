@@ -225,9 +225,6 @@ void transmit2(uint8_t layer){
         SPDR = temp;
         //temp = 0x0F & display_count;
         while(bit_is_clear(SPSR,SPIF)){};
-	//Toggle latch
-	PORTA |= (1<<SS);
-	PORTA &= ~(1<<SS);
 
         temp = (frame[layer][i]>>8);
         //load second byte
@@ -235,14 +232,11 @@ void transmit2(uint8_t layer){
         //temp = 0x0F & display_count;
         while(bit_is_clear(SPSR,SPIF)){};
         frame[layer][i] = 0;
-	//Toggle latch
-	PORTA |= (1<<SS);
-	PORTA &= ~(1<<SS);
     }
 
 	//Toggle latch
-	//PORTA |= (1<<SS);
-	//PORTA &= ~(1<<SS);
+	PORTA |= (1<<SS);
+	PORTA &= ~(1<<SS);
     _delay_ms(3);
     //_delay_us(300);
 }
