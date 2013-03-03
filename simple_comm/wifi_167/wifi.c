@@ -20,12 +20,9 @@
 #define SET_U2X 0
 #define MY_UBBR 12 // BAUD = 38400
 
-#define LED1_ON     PORTB |=  (1<<PB0);
-#define LED1_OFF    PORTB &= ~(1<<PB0);
-#define LED2_ON     PORTB |=  (1<<PB1);
-#define LED2_OFF    PORTB &= ~(1<<PB1);
-
-
+#define SS PA6
+#define MOSI PA4
+#define SCK PA5
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -36,19 +33,19 @@
 
 void Transmit(uint8_t *buffer, uint8_t buffersize){
     	mirf_send(buffer,buffersize);
-		_delay_ms(10);
+		//_delay_ms(10);
 }
 
 
 int8_t Receive(uint8_t *buffer,uint8_t buffersize){
-        uint64_t i = 0;
+        //uint64_t i = 0;
 		while (!mirf_data_ready()){
-            if(i > 0x1FFFF){
+            //if(i > 0x1FFFF){
                 //LED1_ON;
-                return -1;
-            }
+            //    return -1;
+           // }
             //led1_on();
-            i++;
+            //i++;
         }
 		mirf_get_data(buffer);
         //SPI_Transmit_All(buffer,buffersize);
@@ -69,12 +66,12 @@ void test_protocol(uint8_t *buffer, uint8_t len){
     }
     //Transmit(buffer,len);
     else{
-      LED1_ON;
+      //LED1_ON;
     }
 }
 
 void init(){
-    DDRA |= (1<<PB0)|(1<<PB1);
+    //DDRA |= (1<<PB0)|(1<<PB1);
     //PORTB |= (1<<PB0)|(1<<PB1);
 	// Initialize AVR for use with mirf
 	mirf_init();
@@ -89,21 +86,55 @@ void init2(uint8_t *buffer){
 	// Configure mirf
 	mirf_config();
 	// Test transmitting
-    PORTA |= (0<<PA0)|(1<<PA1);
+    //PORTA |= (0<<PA0)|(1<<PA1);
+}
+
+void transmit_led(uint8_t data){
+    SPI_Transmit(data);
+	//Toggle latch
+	PORTA |= (1<<SS);
+	PORTA &= ~(1<<SS);
 }
 
 
 void led1_on(){
-    PORTA |= (1<<PA0);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x01);
 }
-void led1_off(){
-    PORTA &= ~(1<<PA0);
+void led_off(){
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    
 }
 void led2_on(){
-    PORTA |= (1<<PA1);
+    transmit_led(0x00);
+    transmit_led(0x02);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x02);
 }
-void led2_off(){
-    PORTA &= ~(1<<PA1);
+void led3_on(){
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x03);
+}
+
+void test_xbee_pins(){
+
+    PORTA |= ((1<<PA0));
+    //PORTA |= ((1<<PA1));
+    //PORTA |= ((1<<PA0)|(1<<PA1));
+    _delay_ms(500);
+    PORTA &= ~((1<<PA0)|(1<<PA1));
+
 }
 
 int main (void)
@@ -123,11 +154,33 @@ int main (void)
     //_delay_ms(500);
     //LED1_OFF;
    // while(1){};
-   led1_off();
-   led2_off();
+   //led1_off();
+   //led2_off();
+   //rx_powerup();
+   //_delay_ms(1);
+   led1_on();
+   _delay_ms(50);
+   led_off();
+   _delay_ms(50);
+   led1_on();
+   _delay_ms(50);
+   led_off();
+   _delay_ms(50);
+   led1_on();
+   _delay_ms(50);
+   led_off();
+   _delay_ms(50);
+   led1_on();
+   _delay_ms(50);
+   led_off();
+   _delay_ms(50);
+   led1_on();
+   _delay_ms(50);
+   led_off();
 	
 	while (1)
 	{
+        //test_xbee_pins();
         //_delay_ms(100);
         //PORTB |= (1<<PB1);
         /*
@@ -144,29 +197,40 @@ int main (void)
         //_delay_ms(500);
         //LED1_OFF;
         */
+        //led1_on();
+        //rx_powerup();
+        //_delay_ms(1);
         //test_Transmit(buffer,BUFFER_SIZE);
+        //test_Transmit(buffer,BUFFER_SIZE);
+        //test_Transmit(buffer,BUFFER_SIZE);
+        //test_Transmit(buffer,BUFFER_SIZE);
+        //test_Transmit(buffer,BUFFER_SIZE);
+        //_delay_ms(500);
+        //led_off();
+        //_delay_ms(500);
         //_delay_ms(50);
         if(Receive(buffer,BUFFER_SIZE) == 1){
-            if((buffer[3] == 'l')){//}&&(buffer[31] == '}')){
+            //if((buffer[3] == 'l')){//}&&(buffer[31] == '}')){
                 led1_on();
                 _delay_ms(50);
+                led_off();
                 Transmit(buffer,BUFFER_SIZE);
-                rx_powerup();
-                _delay_ms(1);
-                //led1_on();
-                //led2_off();
-            }
-            else{
-            led2_on();
-            led1_off();
-            }
+//                //rx_powerup();
+//                //_delay_ms(1);
+//                //led1_on();
+//                //led2_off();
+////            }
+//            else{
+//            led2_on();
+//            led_off();
+//            }
         }
         else{
             led2_on();
             _delay_ms(50);
-            led1_off();
-            led2_off();
+            led_off();
         }
+        //led_off();
         _delay_ms(50);
     }
 

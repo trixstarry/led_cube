@@ -47,7 +47,7 @@
 // Public standard functions
 extern void mirf_init();
 extern void mirf_config();
-extern void mirf_send(uint8_t * value, uint8_t len);
+extern char mirf_send(uint8_t * value, uint8_t len);
 extern void mirf_set_RADDR(uint8_t * adr);
 extern void mirf_set_TADDR(uint8_t * adr);
 extern uint8_t mirf_data_ready();

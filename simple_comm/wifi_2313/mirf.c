@@ -39,7 +39,7 @@
 
 
 // Flag which denotes transmitting mode
-volatile uint8_t PTX;
+volatile uint8_t PTX = 0;
 
 void mirf_init() 
 // Initializes pins ans interrupt to communicate with the MiRF module
@@ -126,7 +126,9 @@ SIGNAL(SIG_PIN_CHANGE2)
 // Interrupt handler 
 ISR(PCINT_vect)
 {
-    transmit_string("interupted\n");
+    //DDRD |= (1<<6);
+    //PORTD |= (1<<6);
+    //transmit_string("interupted\n");
     uint8_t status;   
     // If still in transmitting mode then finish transmission
     if (PTX) {
@@ -144,6 +146,8 @@ ISR(PCINT_vect)
         // Reset status register for further interaction
         mirf_config_register(STATUS,(1<<TX_DS)|(1<<MAX_RT)); // Reset status register
     }
+//PORTD &= (~(1<<6));
+    EIFR |= (1<<PCIF);
 }
 
 void rx_powerup(void){
@@ -162,6 +166,7 @@ void rx_powerup(void){
         // Reset status register for further interaction
         mirf_config_register(STATUS,(1<<TX_DS)|(1<<MAX_RT)); // Reset status register
     }
+    EIFR |= (1<<PCIF);
 }
 
 extern uint8_t mirf_data_ready() 
@@ -217,26 +222,55 @@ void mirf_write_register(uint8_t reg, uint8_t * value, uint8_t len)
 }
 
 
-void mirf_send(uint8_t * value, uint8_t len) 
+char mirf_send(uint8_t * value, uint8_t len) 
 // Sends a data package to the default address. Be sure to send the correct
 // amount of bytes as configured as payload on the receiver.
 {
-    //uint8_t testbuffer[16] = {0x60,0x61,0x62,0x63,0x64,0x65,0x66,0x67,0x68,0x69,0x6A,0x6B,0x6C,0x6D,0x6E,0x6F};
-    while (PTX) {}                  // Wait until last paket is send
 
+    // Save interrupt state and turn off interrupts
+    uint8_t sreg_original = SREG;
+    cli ();
+
+    uint8_t status = 0;
+    mirf_read_register (STATUS, &status, 1);
+
+    // If PTX == 1 and TX_DS == 1, or if the interrupt line is low, data was sent but the interrupt never happened.
+    //   In this case, the interrupt was missed for some reason 
+    if ((PINB & (1<<PB4)) || ((status & (1<<MASK_TX_DS)) && PTX))
+    {
+        rx_powerup();
+    }
+
+    // Restore interrupt state
+    SREG = sreg_original;
+
+    //uint8_t testbuffer[16] = {0x60,0x61,0x62,0x63,0x64,0x65,0x66,0x67,0x68,0x69,0x6A,0x6B,0x6C,0x6D,0x6E,0x6F};
+    //USART_Transmit(PTX);
+    if (PTX)
+    {
+        return -1; 
+    }
+//    while (PTX) {}                  // Wait until last paket is send
+
+    USART_Transmit('h');
     mirf_CE_lo;
 
     PTX = 1;                        // Set to transmitter mode
     TX_POWERUP;                     // Power up
     
+    //USART_Transmit('h');
     mirf_CSN_lo;                    // Pull down chip select
     spi_fast_shift( FLUSH_TX );     // Write cmd to flush tx fifo
     mirf_CSN_hi;                    // Pull up chip select
     mirf_CSN_lo;                    // Pull down chip select
     spi_fast_shift( W_TX_PAYLOAD ); // Write cmd to write payload
+    //USART_Transmit('h');
     //spi_transmit_sync(testbuffer,16);
     spi_transmit_sync(value,len);   // Write payload
     mirf_CSN_hi;                    // Pull up chip select
+    USART_Transmit('h');
     
     mirf_CE_hi;                     // Start transmission
+    USART_Transmit('q');
+    return 0;
 }

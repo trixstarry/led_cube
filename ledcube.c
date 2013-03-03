@@ -40,12 +40,6 @@
 // Sensor3		              PORTB bit 2
 // Sensor4		    		  PORTB bit 3 
 
-/*
-#define MISO PB3 // Master in, Slave out: configure as input (with pullup)
-#define MOSI PB2 // Master out, Slave in: configure as output
-#define SCK  PB1 // SPI clock: configure as output
-#define SS_N PB0 // Slave Select: Configure to output
-*/
 
 #define TRUE 1
 #define FALSE 0
@@ -55,21 +49,16 @@
 #define SET_U2X 0
 #define MY_UBBR 12 // BAUD = 38400
 
-
-#define LEVELS 5			// the LED array has 5 levels
-#define PIN_NUM 5*5*3		// each level has 5x5 LEDs with 3 pins per LED
-#define HALL_NUM 4			// there are 4 hall effect sensors per cube
-
 #define SS PA6
 #define MOSI PA4
 #define SCK PA5
-//#define CUBE_ID 1			// an ID to identify this cube
 
 #include <avr/io.h>
 #include <avr/pgmspace.h>
 #include <util/delay.h>
 #include "mirf.h"
 #include "nRF24L01.h"
+#include "spi.h"
 #include <avr/interrupt.h>
 #include "ledcube.h"
 
@@ -236,6 +225,9 @@ void transmit2(uint8_t layer){
         SPDR = temp;
         //temp = 0x0F & display_count;
         while(bit_is_clear(SPSR,SPIF)){};
+	//Toggle latch
+	PORTA |= (1<<SS);
+	PORTA &= ~(1<<SS);
 
         temp = (frame[layer][i]>>8);
         //load second byte
@@ -243,11 +235,14 @@ void transmit2(uint8_t layer){
         //temp = 0x0F & display_count;
         while(bit_is_clear(SPSR,SPIF)){};
         frame[layer][i] = 0;
-    }
-
 	//Toggle latch
 	PORTA |= (1<<SS);
 	PORTA &= ~(1<<SS);
+    }
+
+	//Toggle latch
+	//PORTA |= (1<<SS);
+	//PORTA &= ~(1<<SS);
     _delay_ms(3);
     //_delay_us(300);
 }
@@ -1101,7 +1096,7 @@ void test_pattern(){
             leds(1,0,row0,0);
             leds(2,0,0,row0);
             leds(3,0,0,row0);
-            leds(4,0,row0,0);
+            leds(4,row0,0,0);
             test_frame();
             counter++;
         }
@@ -1111,7 +1106,7 @@ void test_pattern(){
             leds(1,0,row1,0);
             leds(2,0,0,row1);
             leds(3,0,0,row1);
-            leds(4,0,row1,0);
+            leds(4,row1,0,0);
             test_frame();
             counter++;
         }
@@ -1121,7 +1116,7 @@ void test_pattern(){
             leds(1,0,row2,0);
             leds(2,0,0,row2);
             leds(3,0,0,row2);
-            leds(4,0,row2,0);
+            leds(4,row2,0,0);
             test_frame();
             counter++;
         }
@@ -1131,7 +1126,7 @@ void test_pattern(){
             leds(1,0,row3,0);
             leds(2,0,0,row3);
             leds(3,0,0,row3);
-            leds(4,0,row3,0);
+            leds(4,row3,0,0);
             test_frame();
             counter++;
         }
@@ -1141,7 +1136,7 @@ void test_pattern(){
             leds(1,0,row4,0);
             leds(2,0,0,row4);
             leds(3,0,0,row4);
-            leds(4,0,row4,0);
+            leds(4,row4,0,0);
             test_frame();
             counter++;
         }
@@ -1151,7 +1146,7 @@ void test_pattern(){
             leds(1,0,row3,0);
             leds(2,0,0,row3);
             leds(3,0,0,row3);
-            leds(4,0,row3,0);
+            leds(4,row3,0,0);
             test_frame();
             counter++;
         }
@@ -1161,7 +1156,7 @@ void test_pattern(){
             leds(1,0,row2,0);
             leds(2,0,0,row2);
             leds(3,0,0,row2);
-            leds(4,0,row2,0);
+            leds(4,row2,0,0);
             test_frame();
             counter++;
         }
@@ -1171,7 +1166,7 @@ void test_pattern(){
             leds(1,0,row1,0);
             leds(2,0,0,row1);
             leds(3,0,0,row1);
-            leds(4,0,row1,0);
+            leds(4,row1,0,0);
             test_frame();
             counter++;
         }
@@ -1181,7 +1176,7 @@ void test_pattern(){
             leds(1,0,plane,0);
             leds(2,0,0,plane);
             leds(3,0,0,plane);
-            leds(4,0,plane,0);
+            leds(4,plane,0,0);
             test_frame();
             counter++;
         }
@@ -1191,7 +1186,7 @@ void test_pattern(){
             leds(1,0,row0,0);
             leds(2,0,0,row0);
             leds(3,0,0,row0);
-            leds(4,0,row0,0);
+            leds(4,row0,0,0);
             test_frame();
             counter++;
             
@@ -1337,6 +1332,21 @@ ISR(TIMER1_OVF_vect){
 
 }
 
+void test_xbee_pins(){
+
+    PORTA |= ((1<<PA0)|(1<<PA1));
+    _delay_ms(500);
+    PORTA |= ((0<<PA0)|(0<<PA1));
+
+}
+
+void probe_test(){
+        LED_test(0,4,0);
+        //_delay_ms(500);
+        //_delay_ms(500);
+        //_delay_ms(500);
+        //_delay_ms(500);
+}
 
 /***********************************************************************/
 //                                main                                 
@@ -1346,7 +1356,7 @@ int main(){
     DDRB |= (1<<PB4)|(1<<PB5)|(1<<PB6);
     PORTB |= (1<<PB0)|(1<<PB1)|(1<<PB2)|(1<<PB3);
 	spi_init();    //initalize SPI port
-    initialize_interrupts();
+    //initialize_interrupts();
 	// Initialize AVR for use with mirf
 	mirf_init();
 	// Wait for mirf to come up
@@ -1357,12 +1367,14 @@ int main(){
 	mirf_config();
    
 	while(1){
-        Transmit();
+        //test_xbee_pins();
+        //Transmit();
         test_pattern();
         //test_pattern1();
         //test_frame();
         //level_test();
         //test_led();
+        //probe_test();
         //shift_LED();
         //hall_test();
 

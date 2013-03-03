@@ -38,25 +38,26 @@ void Transmit(uint8_t *buffer,uint8_t buffersize){
 }
 
 int8_t Receive(uint8_t *buffer,uint8_t buffersize){
-    uint64_t i = 0;
-    char test [7] = {'d','a','t','a',' ','i','s',' ','\n'};
+    uint32_t i = 0;
+//char test [7] = {'d','a','t','a',' ','i','s',' ','\n'};
     while (!mirf_data_ready()){
-        if(i > 0x1FFFF){
+        _delay_us (100);
+        if(i > 5000){
             return -1;
         }
         i++;
     }
-    transmit_string("data is ready but i want to see\n");
-    for(i = 0; i < 7;i++){
-        USART_Transmit(test[i]);
-    }
+    //transmit_string("data is ready but i want to see\n");
+    //for(i = 0; i < 7;i++){
+    //    USART_Transmit(test[i]);
+    //}
     //_delay_ms(50);
     mirf_get_data(buffer);
-    for(i = 0; i < (buffersize); i++)
-    {
-        USART_Transmit(buffer[i]);
-    }
-    USART_Transmit('\n');
+    //for(i = 0; i < (buffersize); i++)
+    //{
+        //USART_Transmit(buffer[i]);
+    //}
+    //USART_Transmit('\n');
     return 1;
 }
 
@@ -71,56 +72,94 @@ void test_Transmit(uint8_t *buffer, uint8_t len){
 }
 
 void test_protocol(uint8_t *buffer, uint8_t len){
-    //transmit_string("Transmitting\r\n");
-    Transmit(buffer,len);
+    //transmit_string("txing\r\n");
+
+    //Transmit(buffer,len);
     _delay_ms(5);
-    //transmit_string("Rx_Powerup\r\n");
-    rx_powerup();
-    _delay_ms(1);
-    transmit_string("Receiving\r\n");
+    ////transmit_string("Rx_Powerup\r\n");
+    //rx_powerup();
+    //_delay_ms(1);
+    //transmit_string("rxing\r\n");
     if(Receive(buffer,len)==1){
-        transmit_string("received\r\n");
+        //transmit_string("rx ok\r\n");
     }
     else{
-        transmit_string("nothing received\r\n");
+        //transmit_string("rx bad\r\n");
     }
+    //transmit_string ("test_protocol_done\r\n");
 }
 
 int main (void)
 {
 	USART_Init(MY_UBBR);
+//    while (1)
+//    {
+//        _delay_ms(100);
+//        //transmit_string ("Device Started!\r\n");
+//    }
 	
-	char buffer [32] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}',
-                        'l','r','b','l','v',' ','n','o','o','d','l','e','!','.','.','\n'};
-	uint8_t buffersize = BUFFER_SIZE;
+	char buffer [32] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
+                        'q','r','s','t','u','v','w','x','y','z','1','2','3','4','5','6'};
+	//uint8_t buffersize = BUFFER_SIZE;
 	// Initialize AVR for use with mirf
+
 	mirf_init();
 	// Wait for mirf to come up
 	_delay_ms(50);
-	// Activate interrupts sei(); 
+	// Activate interrupts
+    sei();
 	mirf_read_register (STATUS, buffer, 1);
 	// Configure mirf
 	mirf_config();
 	// Test transmitting
-	buffer[0] = 'h';
-   // rx_powerup();
+	buffer[0] = 'a';
+    //rx_powerup();
+    _delay_ms(100);
+    mirf_config_register(STATUS,(1<<TX_DS)|(1<<MAX_RT)); // Reset status register
+    _delay_ms(50);
 	
+    transmit_string ("\r\ns");
 	while (1)
 	{
+        transmit_string ("l");
+        //transmit_string ("Device Started!\r\n");
         //test_Transmit(buffer,BUFFER_SIZE);
         
-        //Transmit(buffer,BUFFER_SIZE);
-        //_delay_ms(5);
+        //Transmit(buffer,BUFFER_SIZE); //_delay_ms(5);
         //rx_powerup();
         //_delay_ms(1);
-        //transmit_string("preSending\n");
+        ////transmit_string("preSending\n");
         //Receive(buffer,BUFFER_SIZE);
         //test_Transmit(buffer,BUFFER_SIZE);
        //Transmit(buffer,BUFFER_SIZE);
-        //transmit_string("Did i send?\r\n");
-        _delay_ms(100);
+        ////transmit_string("Did i send?\r\n");
+        //_delay_ms(100);
+    transmit_string("t");
 
-        test_protocol(buffer,BUFFER_SIZE);
+    uint16_t counter = 0;
+    while (mirf_send (buffer, BUFFER_SIZE) && counter < 1000)
+    {
+        _delay_us(10);
+    }
+    if (counter >= 1000)
+    {
+        transmit_string("e");
+    }
+
+    //_delay_ms(50);
+    ////transmit_string("Rx_Powerup\r\n");
+    //rx_powerup();
+    //_delay_ms(50);
+    transmit_string("r");
+    if(Receive(buffer,BUFFER_SIZE)==1){
+        transmit_string("k");
+    }
+    else{
+        transmit_string("b");
+    }
+
+ 
+//        test_protocol(buffer,BUFFER_SIZE);
 	}
 	
 }

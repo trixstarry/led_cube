@@ -2,6 +2,8 @@ PRG            = wifi
 
 OBJ            = $(PRG).o	spi.o	mirf.o
 
+PROGRAMMER     = osuisp2
+
 MCU_TARGET     = attiny167
 #OPTIMIZE       = -O0    # options are 1, 2, 3, s
 #OPTIMIZE       = -O1    # options are 1, 2, 3, s
@@ -31,8 +33,7 @@ clean:
 	rm -rf *.lst *.map $(EXTRA_CLEAN_FILES) *~
 
 program: $(PRG).hex
-#	avrdude -p m128 -c usbasp  -e -U flash:w:$(PRG).hex 
-	avrdude -p t167 -c osuisp2 -e -U flash:w:$(PRG).hex 
+	avrdude -p $(MCU_TARGET) -c $(PROGRAMMER) -e -U flash:w:$(PRG).hex 
 
 lst:  $(PRG).lst
 

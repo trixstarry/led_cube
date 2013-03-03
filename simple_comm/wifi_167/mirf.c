@@ -44,9 +44,14 @@ void mirf_init()
 // Should be called in the early initializing phase at startup.
 {
     // Define CSN and CE as Output and set them to default
-    DDRB |= ((1<<CSN)|(1<<CE));
+    DDRA |= ((1<<CSN)|(1<<CE));
     mirf_CE_lo;
     mirf_CSN_hi;
+
+#if defined (__AVR_ATtiny167__)
+#endif
+#if defined (__AVR_ATtiny2313__)
+#endif
 
 /*#if defined(__AVR_ATmega8__)
     // Initialize external interrupt 0 (PD2)
@@ -65,9 +70,9 @@ void mirf_init()
 //	GIMSK |= (1<<PCIE);
 //	PCMSK |= (1<<PCINT4);
 
-// Initialize PCINT12 for ATtiny167
-    PCICR |= (1<<PCIE1);
-    PCMSK1 |= (1<<PCINT12);
+// Initialize PCINT3 for ATtiny167
+    PCICR |= (1<<PCIE0);
+    PCMSK0 |= (1<<PCINT3);
 
     // Initialize spi module
     spi_init();
@@ -117,7 +122,7 @@ SIGNAL(SIG_PIN_CHANGE2)
 #endif // __AVR_ATmega168__  */
 
 // Interrupt handler 
-ISR(PCINT1_vect)
+ISR(PCINT0_vect)
 {
     uint8_t status;   
     // If still in transmitting mode then finish transmission
