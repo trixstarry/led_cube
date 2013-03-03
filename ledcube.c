@@ -2,6 +2,17 @@
 // Doug Dziggel
 // 2.10.13
 // Code for LED Cube microcontroller - controls LEDs, Radio board and reads hall effect sensors.
+//
+//
+// TODO:
+//  1.Get radio to work with cube
+//  2.prevent SPI race conditions
+//  3.create commands protocol
+//  4.create function to output data received (50 bytes - 2 32 byte packets - this leaves 14 bytes to do commands and such) NOTE: may have data rate issue with such a large throughput
+//  5.create startup/idle pattern
+//  6.create connection made pattern
+//  7.improve mirf files (add data pipes)
+//  8.add in a method of resetting the radio chip in the mirf_init()
 
 
 // Expected Connections:
@@ -52,6 +63,9 @@
 #define SS PA6
 #define MOSI PA4
 #define SCK PA5
+
+#define TOGGLE_LATCH PORTA |= (1<<SS);\
+	                 PORTA &= ~(1<<SS);
 
 #include <avr/io.h>
 #include <avr/pgmspace.h>
@@ -211,8 +225,7 @@ void transmit1(uint16_t data1,uint16_t data2,uint16_t data3,uint16_t data4,uint1
 	while(bit_is_clear(SPSR,SPIF)){};
 
 	//Toggle latch
-	PORTA |= (1<<SS);
-	PORTA &= ~(1<<SS);
+	TOGGLE_LATCH
 }
 
 void transmit2(uint8_t layer){
@@ -235,9 +248,8 @@ void transmit2(uint8_t layer){
     }
 
 	//Toggle latch
-	PORTA |= (1<<SS);
-	PORTA &= ~(1<<SS);
-    _delay_ms(3);
+	TOGGLE_LATCH
+   // _delay_ms(3);
     //_delay_us(300);
 }
 
