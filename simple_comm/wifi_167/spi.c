@@ -36,7 +36,7 @@
 void spi_init(){
 
 	DDRA |= (1<<SS)|(1<<MOSI)|(1<<SCK);
-	SPCR |= (1<<SPE)|(1<<MSTR)|(1<<SPR0);
+	SPCR |= (1<<SPE)|(1<<MSTR)|(0<<SPR0);
 	SPSR |= (1<<SPI2X);
 
 

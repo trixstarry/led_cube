@@ -56,6 +56,7 @@
 #define FALSE 0
 #define F_CPU 8000000UL	// 8Mhz clock
 #define BAUD 250000
+#define BUFFER_SIZE 32
 
 #define SET_U2X 0
 #define MY_UBBR 12 // BAUD = 38400
@@ -79,8 +80,7 @@
 
 
 uint16_t frame[5][5] = {{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0}}; //5 layers and 5 led drivers
-uint8_t transmit_buffer[32] = {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',};
-uint8_t receive_buffer[32] = {' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',};
+uint8_t buffer[32] = {0x01,0x02,0x04,' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',' ',};
 uint8_t next = 0;
 
 void initialize_interrupts(void){
@@ -131,6 +131,47 @@ void tcnt0_init(void){
 	TCCR0  |=  (1<<CS00);   //normal mode, no prescale
 }
 */
+
+void init(){
+    //DDRA |= (1<<PB0)|(1<<PB1);
+    //PORTB |= (1<<PB0)|(1<<PB1);
+	// Initialize AVR for use with mirf
+	mirf_init();
+	// Wait for mirf to come up
+	_delay_ms(50);
+	// Activate interrupts
+    //PORTB |= (1<<PB0)|(1<<PB1);
+}
+void init2(){
+	//mirf_read_register (STATUS, buffer, 1);
+	
+	// Configure mirf
+	mirf_config();
+	// Test transmitting
+    //PORTA |= (0<<PA0)|(1<<PA1);
+}
+
+
+void Transmit(uint8_t *buffer, uint8_t buffersize){
+    	mirf_send(buffer,buffersize);
+		//_delay_ms(10);
+}
+
+
+int8_t Receive(uint8_t *buffer,uint8_t buffersize){
+        //uint64_t i = 0;
+		while (!mirf_data_ready()){
+            //if(i > 0x1FFFF){
+                //LED1_ON;
+            //    return -1;
+           // }
+            //led1_on();
+            //i++;
+        }
+		mirf_get_data(buffer);
+        //SPI_Transmit_All(buffer,buffersize);
+        return 1;
+}
 
 void level(uint8_t layer){
     switch(layer){
@@ -249,7 +290,7 @@ void transmit2(uint8_t layer){
 
 	//Toggle latch
 	TOGGLE_LATCH
-   // _delay_ms(3);
+    _delay_ms(1);
     //_delay_us(300);
 }
 
@@ -1315,18 +1356,20 @@ void test_pattern1(){
     }
 }
 
+/*
 void Transmit(){
         //PORTB = (1<<PB0);
-		transmit_buffer[31]++;
-		if (transmit_buffer[31] < ' ' || transmit_buffer[31] > 'z')
+		buffer[31]++;
+		if (buffer[31] < ' ' || buffer[31] > 'z')
 		{
-			transmit_buffer[31] = ' ';
+			buffer[31] = ' ';
 		}
-    	mirf_send(transmit_buffer,32);
+    	mirf_send(buffer,32);
         //mirf_send(testbuffer,testbuffersize);
         //
 		_delay_ms(10);
 }
+*/
 
 ISR(TIMER1_OVF_vect){
 //
@@ -1354,6 +1397,73 @@ void probe_test(){
         //_delay_ms(500);
 }
 
+void transmit_led(uint8_t data){
+    SPI_Transmit(data);
+}
+
+
+void led1_on(){
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x01);
+	//Toggle latch
+	PORTA |= (1<<SS);
+	PORTA &= ~(1<<SS);
+}
+void led_off(){
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+    transmit_led(0x00);
+	//Toggle latch
+	PORTA |= (1<<SS);
+	PORTA &= ~(1<<SS);
+    
+}
+
+void test_protocol(){
+    if(Receive(buffer,BUFFER_SIZE) == 1){
+        //if((buffer[3] == 'l')){//}&&(buffer[31] == '}')){
+        led1_on();
+        _delay_ms(50);
+        led_off();
+        Transmit(buffer,BUFFER_SIZE);
+        //rx_powerup();
+        //_delay_ms(1);
+        //led1_on();
+        //led2_off();
+        //}
+        //else{
+        //led2_on();
+        //led_off();
+        //}
+    }
+    else{
+        //led2_on();
+        _delay_ms(50);
+        //led_off();
+    }
+    //led_off();
+    led1_on();
+    _delay_ms(50);
+    led_off();
+    leds(4,buffer[0],buffer[1],buffer[2]);
+    test_frame();
+}
+
 /***********************************************************************/
 //                                main                                 
 /***********************************************************************/
@@ -1364,18 +1474,39 @@ int main(){
 	spi_init();    //initalize SPI port
     //initialize_interrupts();
 	// Initialize AVR for use with mirf
-	mirf_init();
+	//mirf_init();
+    init();
 	// Wait for mirf to come up
 	_delay_ms(50);
 	// Activate interrupts
     sei();
-	mirf_read_register(STATUS, receive_buffer, 1);
-	mirf_config();
+    init2();
+	//mirf_read_register(STATUS, receive_buffer, 1);
+	//mirf_config();
    
+   led1_on();
+   _delay_ms(50);
+   led_off();
+   _delay_ms(50);
+   led1_on();
+   _delay_ms(50);
+   led_off();
+   _delay_ms(50);
+   led1_on();
+   _delay_ms(50);
+   led_off();
+   _delay_ms(50);
+   led1_on();
+   _delay_ms(50);
+   led_off();
+   _delay_ms(50);
+   led1_on();
+   _delay_ms(50);
+   led_off();
 	while(1){
         //test_xbee_pins();
         //Transmit();
-        test_pattern();
+        //test_pattern();
         //test_pattern1();
         //test_frame();
         //level_test();
@@ -1383,6 +1514,11 @@ int main(){
         //probe_test();
         //shift_LED();
         //hall_test();
+        test_protocol;
+       // buffer[0] = 0x01;
+        //uint8_t test = buffer[0];
+        //leds(4,buffer[0],buffer[1],buffer[2]);
+        //test_frame();
 
     }     //empty main while loop
 } //main

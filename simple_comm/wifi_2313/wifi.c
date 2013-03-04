@@ -95,11 +95,19 @@ void test_protocol(uint8_t *buffer, uint8_t len){
     }
     //transmit_string ("test_protocol_done\r\n");
 }
+void USART_Flush( void )
+{
+    unsigned char dummy;
+    while ( UCSRA & (1<<RXC) ) {dummy = UDR;}
+}
 
 ISR(USART_RX_vect){
+    if(transmit_flag == 1){
+    }
     buffer[buffer_index] = USART_Receive();
     if(buffer_index == 31){
         transmit_flag = 1;
+        //UCSRB = ~(1<<RXEN);
     }
     buffer_index = ((buffer_index+1)%32);
 
@@ -175,7 +183,12 @@ int main (void)
             transmit_string("b");
         }
         transmit_flag = 0;
-        UCSRB = status; //if interrupt was enable previously reenable it.
+        for(buffer_index = 0; buffer_index < BUFFER_SIZE;buffer_index++){
+            buffer[buffer_index] = 0;
+        }
+        buffer_index = 0;
+        USART_Flush();
+        UCSRB = status;//|(1<<RXEN); //if interrupt was enable previously reenable it.
     }
 
  
