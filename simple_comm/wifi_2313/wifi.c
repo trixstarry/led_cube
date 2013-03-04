@@ -32,6 +32,12 @@
 #include "nRF24L01.h"
 #include "usart.h"
 
+
+volatile char buffer [32] = {'7','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
+                    'q','r','s','t','u','v','w','x','y','z','1','2','3','4','5','6'};
+volatile uint8_t buffer_index = 0;
+volatile uint8_t transmit_flag = 0;
+
 void Transmit(uint8_t *buffer,uint8_t buffersize){
     mirf_send(buffer,buffersize);
     _delay_ms(5);
@@ -90,6 +96,15 @@ void test_protocol(uint8_t *buffer, uint8_t len){
     //transmit_string ("test_protocol_done\r\n");
 }
 
+ISR(USART_RX_vect){
+    buffer[buffer_index] = USART_Receive();
+    if(buffer_index == 31){
+        transmit_flag = 1;
+    }
+    buffer_index = ((buffer_index+1)%32);
+
+}
+
 int main (void)
 {
 	USART_Init(MY_UBBR);
@@ -99,8 +114,6 @@ int main (void)
 //        //transmit_string ("Device Started!\r\n");
 //    }
 	
-	char buffer [32] = {'7','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
-                        'q','r','s','t','u','v','w','x','y','z','1','2','3','4','5','6'};
 	//uint8_t buffersize = BUFFER_SIZE;
 	// Initialize AVR for use with mirf
 
@@ -122,7 +135,7 @@ int main (void)
     transmit_string ("\r\ns");
 	while (1)
 	{
-        transmit_string ("l");
+        //transmit_string ("l");
         //transmit_string ("Device Started!\r\n");
         //test_Transmit(buffer,BUFFER_SIZE);
         
@@ -135,28 +148,34 @@ int main (void)
        //Transmit(buffer,BUFFER_SIZE);
         ////transmit_string("Did i send?\r\n");
         //_delay_ms(100);
-    transmit_string("t");
+        
+    if(transmit_flag ==1){
+        uint8_t status = UCSRB; //save usart status
+        UCSRB &= ~(1<<RXCIE);   //turn off receive interrupt enable
+        transmit_string("t");
+        uint16_t counter = 0;
+        while (mirf_send (buffer, BUFFER_SIZE) && counter < 1000)
+        {
+            _delay_us(10);
+        }
+        if (counter >= 1000)
+        {
+            transmit_string("e");
+        }
 
-    uint16_t counter = 0;
-    while (mirf_send (buffer, BUFFER_SIZE) && counter < 1000)
-    {
-        _delay_us(10);
-    }
-    if (counter >= 1000)
-    {
-        transmit_string("e");
-    }
-
-    //_delay_ms(50);
-    ////transmit_string("Rx_Powerup\r\n");
-    //rx_powerup();
-    //_delay_ms(50);
-    transmit_string("r");
-    if(Receive(buffer,BUFFER_SIZE)==1){
-        transmit_string("k");
-    }
-    else{
-        transmit_string("b");
+        //_delay_ms(50);
+        ////transmit_string("Rx_Powerup\r\n");
+        //rx_powerup();
+        //_delay_ms(50);
+        transmit_string("r");
+        if(Receive(buffer,BUFFER_SIZE)==1){
+            transmit_string("k");
+        }
+        else{
+            transmit_string("b");
+        }
+        transmit_flag = 0;
+        UCSRB = status; //if interrupt was enable previously reenable it.
     }
 
  
