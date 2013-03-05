@@ -238,27 +238,27 @@ void test_cube(uint8_t *buffer){
 
 
     red = (buffer[DATA])|(buffer[DATA+1]<<8)|(buffer[DATA+2]<<16)|((buffer[DATA+3]&MSB1)<<24);
-    //blue = (buffer[DATA+15]&(~MSB5))|(buffer[DATA+16]<<3)|(buffer[DATA+17]<<11)|((buffer[DATA+18]&MSB6)<<19);
+    blue = (buffer[DATA+15]&(~MSB5))|(buffer[DATA+16]<<3)|(buffer[DATA+17]<<11)|((buffer[DATA+18]&MSB6)<<19);
     //green = ((buffer[DATA2+1]&(~MSB2)))|(buffer[DATA2+2]<<6)|(buffer[DATA2+3]<<14)|((buffer[DATA2+4]&MSB3)<<22);
     leds(0,red,blue,green);
     //LAYER 1
     red = ((buffer[DATA+3]&(~MSB1)))|(buffer[DATA+4]<<7)|(buffer[DATA+5]<<15)|((buffer[DATA+6]&MSB2)<<23);
-    //blue = (buffer[DATA+18]&(~MSB6))|(buffer[DATA+19]<<2)|(buffer[DATA+20]<<10)|((buffer[DATA+21]&MSB7)<<18);
+    blue = (buffer[DATA+18]&(~MSB6))|(buffer[DATA+19]<<2)|(buffer[DATA+20]<<10)|((buffer[DATA+21]&MSB7)<<18);
     //green = ((buffer[DATA2+4]&(~MSB3)))|(buffer[DATA2+5]<<5)|(buffer[DATA2+6]<<13)|((buffer[DATA2+7]&MSB4)<<21);
     leds(1,red,blue,green);
     //LAYER 2
     red = (buffer[DATA+6]&(~MSB2))|(buffer[DATA+7]<<6)|(buffer[DATA+8]<<14)|((buffer[DATA+9]&MSB3)<<22);
-    //blue = (buffer[DATA+21]&(~MSB7))|(buffer[DATA+22]<<1)|(buffer[DATA+23]<<9)|((buffer[DATA+24])<<17);
+    blue = (buffer[DATA+21]&(~MSB7))|(buffer[DATA+22]<<1)|(buffer[DATA+23]<<9)|((buffer[DATA+24])<<17);
     //green = ((buffer[DATA2+7]&(~MSB4)))|(buffer[DATA2+8]<<4)|(buffer[DATA2+9]<<12)|((buffer[DATA2+10]&MSB5)<<20);
     leds(2,red,blue,green);
     //LAYER 3
     red = ((buffer[DATA+9]&(~MSB3)))|(buffer[DATA+10]<<5)|(buffer[DATA+11]<<13)|((buffer[DATA+12]&MSB4)<<21);
-    //blue = (buffer[DATA+25])|(buffer[DATA+26]<<8)|(buffer[DATA+27]<<16)|((buffer[DATA+28]&MSB1)<<24);
+    blue = (buffer[DATA+25])|(buffer[DATA+26]<<8)|(buffer[DATA+27]<<16)|((buffer[DATA+28]&MSB1)<<24);
     //green = ((buffer[DATA2+10]&(~MSB5)))|(buffer[DATA2+11]<<3)|(buffer[DATA2+12]<<11)|((buffer[DATA2+13]&MSB6)<<19);
     leds(3,red,blue,green);
     //LAYER 4
     red = ((buffer[DATA+12]&(~MSB4)))|(buffer[DATA+13]<<4)|(buffer[DATA+14]<<12)|((buffer[DATA+15]&MSB5)<<20);
-    //blue = ((buffer[DATA+28]&(~MSB1)))|(buffer[DATA+29]<<7)|(buffer[DATA2]<<15)|((buffer[DATA2+1]&MSB2)<<23);
+    blue = ((buffer[DATA+28]&(~MSB1)))|(buffer[DATA+29]<<7)|(buffer[DATA2]<<15)|((buffer[DATA2+1]&MSB2)<<23);
     //green = ((buffer[DATA2+13]&(~MSB6)))|(buffer[DATA2+14]<<2)|(buffer[DATA2+15]<<10)|((buffer[DATA2+15]&MSB7)<<18);
     leds(4,red,blue,green);
     //test_frame();
