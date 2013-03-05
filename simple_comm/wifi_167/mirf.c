@@ -251,4 +251,5 @@ char mirf_send(uint8_t * value, uint8_t len)
     mirf_CSN_hi;                    // Pull up chip select
     
     mirf_CE_hi;                     // Start transmission
+    return 0;
 }

@@ -260,53 +260,53 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr25/libgcc.a
  *(.fini0)
                 0x000005da                _etext = .
 
-.data           0x00800060       0x30 load address 0x000005da
+.data           0x00800060       0x32 load address 0x000005da
                 0x00800060                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800060        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr25/crttn2313.o
- .data          0x00800060       0x2f wifi.o
-                0x0080006f                buffer
- .data          0x0080008f        0x0 spi.o
- .data          0x0080008f        0x0 mirf.o
- .data          0x0080008f        0x0 usart.o
- .data          0x0080008f        0x0 /usr/lib/gcc/avr/4.5.3/avr25/libgcc.a(_exit.o)
- .data          0x0080008f        0x0 /usr/lib/gcc/avr/4.5.3/avr25/libgcc.a(_copy_data.o)
- .data          0x0080008f        0x0 /usr/lib/gcc/avr/4.5.3/avr25/libgcc.a(_clear_bss.o)
+ .data          0x00800060       0x31 wifi.o
+                0x00800071                buffer
+ .data          0x00800091        0x0 spi.o
+ .data          0x00800091        0x0 mirf.o
+ .data          0x00800091        0x0 usart.o
+ .data          0x00800091        0x0 /usr/lib/gcc/avr/4.5.3/avr25/libgcc.a(_exit.o)
+ .data          0x00800091        0x0 /usr/lib/gcc/avr/4.5.3/avr25/libgcc.a(_copy_data.o)
+ .data          0x00800091        0x0 /usr/lib/gcc/avr/4.5.3/avr25/libgcc.a(_clear_bss.o)
  *(.data*)
  *(.rodata)
  *(.rodata*)
  *(.gnu.linkonce.d*)
-                0x00800090                . = ALIGN (0x2)
- *fill*         0x0080008f        0x1 00
-                0x00800090                _edata = .
-                0x00800090                PROVIDE (__data_end, .)
+                0x00800092                . = ALIGN (0x2)
+ *fill*         0x00800091        0x1 00
+                0x00800092                _edata = .
+                0x00800092                PROVIDE (__data_end, .)
 
-.bss            0x00800090        0x3
-                0x00800090                PROVIDE (__bss_start, .)
+.bss            0x00800092        0x3
+                0x00800092                PROVIDE (__bss_start, .)
  *(.bss)
- .bss           0x00800090        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr25/crttn2313.o
- .bss           0x00800090        0x2 wifi.o
-                0x00800090                buffer_index
-                0x00800091                transmit_flag
- .bss           0x00800092        0x0 spi.o
- .bss           0x00800092        0x1 mirf.o
-                0x00800092                PTX
- .bss           0x00800093        0x0 usart.o
- .bss           0x00800093        0x0 /usr/lib/gcc/avr/4.5.3/avr25/libgcc.a(_exit.o)
- .bss           0x00800093        0x0 /usr/lib/gcc/avr/4.5.3/avr25/libgcc.a(_copy_data.o)
- .bss           0x00800093        0x0 /usr/lib/gcc/avr/4.5.3/avr25/libgcc.a(_clear_bss.o)
+ .bss           0x00800092        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr25/crttn2313.o
+ .bss           0x00800092        0x2 wifi.o
+                0x00800092                buffer_index
+                0x00800093                transmit_flag
+ .bss           0x00800094        0x0 spi.o
+ .bss           0x00800094        0x1 mirf.o
+                0x00800094                PTX
+ .bss           0x00800095        0x0 usart.o
+ .bss           0x00800095        0x0 /usr/lib/gcc/avr/4.5.3/avr25/libgcc.a(_exit.o)
+ .bss           0x00800095        0x0 /usr/lib/gcc/avr/4.5.3/avr25/libgcc.a(_copy_data.o)
+ .bss           0x00800095        0x0 /usr/lib/gcc/avr/4.5.3/avr25/libgcc.a(_clear_bss.o)
  *(.bss*)
  *(COMMON)
-                0x00800093                PROVIDE (__bss_end, .)
+                0x00800095                PROVIDE (__bss_end, .)
                 0x000005da                __data_load_start = LOADADDR (.data)
-                0x0000060a                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x0000060c                __data_load_end = (__data_load_start + SIZEOF (.data))
 
-.noinit         0x00800093        0x0
-                0x00800093                PROVIDE (__noinit_start, .)
+.noinit         0x00800095        0x0
+                0x00800095                PROVIDE (__noinit_start, .)
  *(.noinit*)
-                0x00800093                PROVIDE (__noinit_end, .)
-                0x00800093                _end = .
-                0x00800093                PROVIDE (__heap_start, .)
+                0x00800095                PROVIDE (__noinit_end, .)
+                0x00800095                _end = .
+                0x00800095                PROVIDE (__heap_start, .)
 
 .eeprom         0x00810000        0x0
  *(.eeprom*)

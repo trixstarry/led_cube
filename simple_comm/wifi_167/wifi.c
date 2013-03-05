@@ -480,15 +480,15 @@ int main (void)
     init();
     //LED1_ON;
     //LED2_ON;
-    uint8_t temp_buffer [32] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
+    uint8_t receive_buffer [32] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
         'q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F'};
     uint8_t buffer [64] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
         'q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
         'q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F'};
     uint8_t i = 0;
 	sei();
-    init2(buffer);
-    buffer[0] = 'a';
+    init2(receive_buffer);
+    //buffer[0] = 'a';
     //LED2_ON;
     //LED1_ON;
     //PORTB |= (1<<PB1);
@@ -552,16 +552,16 @@ int main (void)
         //led_off();
         //_delay_ms(500);
         //_delay_ms(50);
-        if(Receive(buffer,BUFFER_SIZE) == 1){
-            if(buffer[0] == ID_SELF){
-                data[0] = buffer[0];
-                data[1] = buffer[1];
-                data[2] = buffer[2];
-                buffer[0] = ID_SELF;
-                buffer[1] = ACK;
-                buffer[2] = sensors();
+        if(Receive(receive_buffer,BUFFER_SIZE) == 1){
+            if(receive_buffer[0] == ID_SELF){
+                data[0] = receive_buffer[0];
+                data[1] = receive_buffer[1];
+                data[2] = receive_buffer[2];
+                receive_buffer[0] = ID_SELF;
+                receive_buffer[1] = ACK;
+                receive_buffer[2] = sensors();
                 uint16_t counter = 0;
-                while (mirf_send (buffer, BUFFER_SIZE) && counter < 1000)
+                while (mirf_send (receive_buffer, BUFFER_SIZE) && counter < 1000)
                 {
                     _delay_us(10);
                 }
@@ -569,29 +569,33 @@ int main (void)
                 {
                     //transmit_string("e");
                 }
-                buffer[0] = data[0];
-                buffer[1] = data[1];
-                buffer[2] = data[2];
-                led1_on();
-                _delay_ms(500);
-                led_off();
+                receive_buffer[0] = data[0];
+                receive_buffer[1] = data[1];
+                receive_buffer[2] = data[2];
+                uint8_t i = 0;
+                for(i = 0; i < BUFFER_SIZE;i++){
+                    buffer[i] = receive_buffer[i];
+                }
+                //led1_on();
+                //_delay_ms(500);
+                //led_off();
 
                 /*
-                if(Receive(temp_buffer,BUFFER_SIZE) == 1){
-                    if(temp_buffer[0] == ID_SELF){
+                if(Receive(receive_buffer,BUFFER_SIZE) == 1){
+                    if(receive_buffer[0] == ID_SELF){
                         //led3_on();
-                        data[0] = temp_buffer[0];
-                        data[1] = temp_buffer[1];
-                        data[2] = temp_buffer[2];
-                        temp_buffer[0] = ID_SELF;
-                        temp_buffer[1] = ACK;
-                        temp_buffer[2] = sensors();
-                        Transmit(temp_buffer,BUFFER_SIZE);
-                        temp_buffer[0] = data[0];
-                        temp_buffer[1] = data[1];
-                        temp_buffer[2] = data[2];
+                        data[0] = receive_buffer[0];
+                        data[1] = receive_buffer[1];
+                        data[2] = receive_buffer[2];
+                        receive_buffer[0] = ID_SELF;
+                        receive_buffer[1] = ACK;
+                        receive_buffer[2] = sensors();
+                        Transmit(receive_buffer,BUFFER_SIZE);
+                        receive_buffer[0] = data[0];
+                        receive_buffer[1] = data[1];
+                        receive_buffer[2] = data[2];
                         for(i = 0; i < BUFFER_SIZE; i++){
-                            buffer[i+BUFFER_SIZE] = temp_buffer[i];
+                            buffer[i+BUFFER_SIZE] = receive_buffer[i];
                         }
                         led2_on();
                         _delay_ms(500);
@@ -620,13 +624,13 @@ int main (void)
             //            }
         }
         else{
-            led2_on();
-            _delay_ms(50);
-            led_off();
+            //led2_on();
+            //_delay_ms(50);
+            //led_off();
         }
-        _delay_ms(100);
-        led_off();
-        _delay_ms(50);
+        //_delay_ms(100);
+        //led_off();
+        //_delay_ms(50);
         // red is bytes 0 - 13
         // blue is bytes
         // green is bytes
@@ -636,7 +640,7 @@ int main (void)
         //_delay_ms(500);
         //led_off();
         //_delay_ms(500);
-        test_cube(buffer);
+        //test_cube(buffer);
         /*
     uint32_t red = 0;
     uint32_t blue = 0;

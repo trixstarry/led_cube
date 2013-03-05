@@ -177,10 +177,10 @@ int main (void)
         //_delay_ms(50);
         transmit_string("r");
         if(Receive(buffer,BUFFER_SIZE)==1){
-            transmit_string("k");
+            transmit_string("k\n");
         }
         else{
-            transmit_string("b");
+            transmit_string("b\n");
         }
         transmit_flag = 0;
         for(buffer_index = 0; buffer_index < BUFFER_SIZE;buffer_index++){
