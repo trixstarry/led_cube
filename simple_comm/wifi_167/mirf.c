@@ -143,7 +143,7 @@ ISR(PCINT0_vect)
     }
 }
 
-void rx_powerup(void){
+void tx_complete(void){
     uint8_t status;
     if (PTX) {
         // Read MiRF status 
@@ -210,11 +210,31 @@ void mirf_write_register(uint8_t reg, uint8_t * value, uint8_t len)
 }
 
 
-void mirf_send(uint8_t * value, uint8_t len) 
+char mirf_send(uint8_t * value, uint8_t len) 
 // Sends a data package to the default address. Be sure to send the correct
 // amount of bytes as configured as payload on the receiver.
 {
-    while (PTX) {}                  // Wait until last paket is send
+    uint8_t sreg_original = SREG;
+    cli ();
+
+    uint8_t status = 0;
+    mirf_read_register (STATUS, &status, 1);
+    // If PTX == 1 and TX_DS == 1, or if the interrupt line is low, data was sent but the interrupt never happened.
+    //   In this case, the interrupt was missed for some reason 
+    if ((PINB & (1<<PA3)) || ((status & (1<<MASK_TX_DS)) && PTX))
+    {
+        tx_complete();
+    }
+
+    // Restore interrupt state
+    SREG = sreg_original;
+
+    //uint8_t testbuffer[16] = {0x60,0x61,0x62,0x63,0x64,0x65,0x66,0x67,0x68,0x69,0x6A,0x6B,0x6C,0x6D,0x6E,0x6F};
+    //USART_Transmit(PTX);
+    if (PTX)
+    {
+        return -1; 
+    }
 
     mirf_CE_lo;
 

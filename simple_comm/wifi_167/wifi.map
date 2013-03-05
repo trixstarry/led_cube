@@ -124,7 +124,7 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000     0x1060
+.text           0x00000000      0xf2c
  *(.vectors)
  .vectors       0x00000000       0x50 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
                 0x00000000                __vectors
@@ -203,7 +203,7 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
                 0x00000378                __vector_10
                 0x00000378                __vector_16
                 0x00000378                __vector_18
- .text          0x0000037c      0xa48 wifi.o
+ .text          0x0000037c      0x8b8 wifi.o
                 0x0000037c                level
                 0x000003d4                transmit2
                 0x0000045a                red_led
@@ -212,53 +212,53 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
                 0x000005fe                leds
                 0x0000064a                test_frame
                 0x00000656                test_cube
-                0x00000a40                Transmit
-                0x00000a46                Receive
-                0x00000a62                test_Transmit
-                0x00000a84                test_protocol
-                0x00000aae                init
-                0x00000ac6                init2
-                0x00000ad6                transmit_led
-                0x00000adc                led1_on
-                0x00000b1e                led_off
-                0x00000b60                led2_on
-                0x00000ba2                led3_on
-                0x00000be4                test_xbee_pins
-                0x00000c00                sensors
-                0x00000c08                main
- .text          0x00000dc4       0x88 spi.o
-                0x00000dc4                spi_init
-                0x00000dd8                SPI_Transmit
-                0x00000de4                SPI_Transmit_All
-                0x00000e02                SPI_Receive
-                0x00000e10                SPI_Receive_All
-                0x00000e28                SPI_Transceive
- .text          0x00000e4c      0x210 mirf.o
-                0x00000e4c                mirf_init
-                0x00000e70                mirf_data_ready
-                0x00000e88                mirf_config_register
-                0x00000eb0                mirf_get_data
-                0x00000ed8                rx_powerup
-                0x00000f06                __vector_3
-                0x00000f72                mirf_config
-                0x00000f92                mirf_read_register
-                0x00000fc4                mirf_write_register
-                0x00000ff8                mirf_set_TADDR
-                0x00001004                mirf_set_RADDR
-                0x00001014                mirf_send
- .text          0x0000105c        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
- .text          0x0000105c        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
- .text          0x0000105c        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
-                0x0000105c                . = ALIGN (0x2)
+                0x0000087e                Transmit
+                0x000008a0                Receive
+                0x000008c4                test_Transmit
+                0x000008e6                test_protocol
+                0x00000910                init
+                0x00000928                init2
+                0x00000938                transmit_led
+                0x0000093e                led1_on
+                0x00000980                led_off
+                0x000009c2                led2_on
+                0x00000a04                led3_on
+                0x00000a46                test_xbee_pins
+                0x00000a62                sensors
+                0x00000a6a                main
+ .text          0x00000c34       0x88 spi.o
+                0x00000c34                spi_init
+                0x00000c48                SPI_Transmit
+                0x00000c54                SPI_Transmit_All
+                0x00000c72                SPI_Receive
+                0x00000c80                SPI_Receive_All
+                0x00000c98                SPI_Transceive
+ .text          0x00000cbc      0x26c mirf.o
+                0x00000cbc                mirf_init
+                0x00000ce0                mirf_data_ready
+                0x00000cf8                mirf_config_register
+                0x00000d20                mirf_get_data
+                0x00000d48                tx_complete
+                0x00000d76                __vector_3
+                0x00000de2                mirf_config
+                0x00000e02                mirf_read_register
+                0x00000e34                mirf_write_register
+                0x00000e68                mirf_set_TADDR
+                0x00000e74                mirf_set_RADDR
+                0x00000e84                mirf_send
+ .text          0x00000f28        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
+ .text          0x00000f28        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
+ .text          0x00000f28        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
+                0x00000f28                . = ALIGN (0x2)
  *(.text.*)
- .text.libgcc   0x0000105c        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
- .text.libgcc   0x0000105c        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
- .text.libgcc   0x0000105c        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
-                0x0000105c                . = ALIGN (0x2)
+ .text.libgcc   0x00000f28        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
+ .text.libgcc   0x00000f28        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
+ .text.libgcc   0x00000f28        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
+                0x00000f28                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x0000105c        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
-                0x0000105c                exit
-                0x0000105c                _exit
+ .fini9         0x00000f28        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
+                0x00000f28                exit
+                0x00000f28                _exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -277,11 +277,11 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x0000105c        0x4 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
+ .fini0         0x00000f28        0x4 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
  *(.fini0)
-                0x00001060                _etext = .
+                0x00000f2c                _etext = .
 
-.data           0x00800100       0x40 load address 0x00001060
+.data           0x00800100       0x40 load address 0x00000f2c
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800100        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
@@ -315,8 +315,8 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
  COMMON         0x00800172        0x1 mirf.o
                 0x00800172                PTX
                 0x00800173                PROVIDE (__bss_end, .)
-                0x00001060                __data_load_start = LOADADDR (.data)
-                0x000010a0                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00000f2c                __data_load_start = LOADADDR (.data)
+                0x00000f6c                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x00800173        0x0
                 0x00800173                PROVIDE (__noinit_start, .)
@@ -341,19 +341,19 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
 .signature
  *(.signature*)
 
-.stab           0x00000000     0x2b38
+.stab           0x00000000     0x2c10
  *(.stab)
  .stab          0x00000000      0x6cc /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
- .stab          0x000006cc     0x1770 wifi.o
-                               0x177c (size before relaxing)
- .stab          0x00001e3c      0x498 spi.o
+ .stab          0x000006cc     0x1788 wifi.o
+                               0x1794 (size before relaxing)
+ .stab          0x00001e54      0x498 spi.o
                                 0x660 (size before relaxing)
- .stab          0x000022d4      0x864 mirf.o
-                                0xa2c (size before relaxing)
+ .stab          0x000022ec      0x924 mirf.o
+                                0xaec (size before relaxing)
 
-.stabstr        0x00000000      0xe85
+.stabstr        0x00000000      0xea7
  *(.stabstr)
- .stabstr       0x00000000      0xe85 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
+ .stabstr       0x00000000      0xea7 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
 
 .stab.excl
  *(.stab.excl)

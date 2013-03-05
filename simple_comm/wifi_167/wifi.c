@@ -238,28 +238,28 @@ void test_cube(uint8_t *buffer){
 
 
     red = (buffer[DATA])|(buffer[DATA+1]<<8)|(buffer[DATA+2]<<16)|((buffer[DATA+3]&MSB1)<<24);
-    blue = (buffer[DATA+15]&(~MSB5))|(buffer[DATA+16]<<3)|(buffer[DATA+17]<<11)|((buffer[DATA+18]&MSB6)<<19);
-    green = ((buffer[DATA2+1]&(~MSB2)))|(buffer[DATA2+2]<<6)|(buffer[DATA2+3]<<14)|((buffer[DATA2+4]&MSB3)<<22);
+    //blue = (buffer[DATA+15]&(~MSB5))|(buffer[DATA+16]<<3)|(buffer[DATA+17]<<11)|((buffer[DATA+18]&MSB6)<<19);
+    //green = ((buffer[DATA2+1]&(~MSB2)))|(buffer[DATA2+2]<<6)|(buffer[DATA2+3]<<14)|((buffer[DATA2+4]&MSB3)<<22);
     leds(0,red,blue,green);
     //LAYER 1
     red = ((buffer[DATA+3]&(~MSB1)))|(buffer[DATA+4]<<7)|(buffer[DATA+5]<<15)|((buffer[DATA+6]&MSB2)<<23);
-    blue = (buffer[DATA+18]&(~MSB6))|(buffer[DATA+19]<<2)|(buffer[DATA+20]<<10)|((buffer[DATA+21]&MSB7)<<18);
-    green = ((buffer[DATA2+4]&(~MSB3)))|(buffer[DATA2+5]<<5)|(buffer[DATA2+6]<<13)|((buffer[DATA2+7]&MSB4)<<21);
+    //blue = (buffer[DATA+18]&(~MSB6))|(buffer[DATA+19]<<2)|(buffer[DATA+20]<<10)|((buffer[DATA+21]&MSB7)<<18);
+    //green = ((buffer[DATA2+4]&(~MSB3)))|(buffer[DATA2+5]<<5)|(buffer[DATA2+6]<<13)|((buffer[DATA2+7]&MSB4)<<21);
     leds(1,red,blue,green);
     //LAYER 2
     red = (buffer[DATA+6]&(~MSB2))|(buffer[DATA+7]<<6)|(buffer[DATA+8]<<14)|((buffer[DATA+9]&MSB3)<<22);
-    blue = (buffer[DATA+21]&(~MSB7))|(buffer[DATA+22]<<1)|(buffer[DATA+23]<<9)|((buffer[DATA+24])<<17);
-    green = ((buffer[DATA2+7]&(~MSB4)))|(buffer[DATA2+8]<<4)|(buffer[DATA2+9]<<12)|((buffer[DATA2+10]&MSB5)<<20);
+    //blue = (buffer[DATA+21]&(~MSB7))|(buffer[DATA+22]<<1)|(buffer[DATA+23]<<9)|((buffer[DATA+24])<<17);
+    //green = ((buffer[DATA2+7]&(~MSB4)))|(buffer[DATA2+8]<<4)|(buffer[DATA2+9]<<12)|((buffer[DATA2+10]&MSB5)<<20);
     leds(2,red,blue,green);
     //LAYER 3
     red = ((buffer[DATA+9]&(~MSB3)))|(buffer[DATA+10]<<5)|(buffer[DATA+11]<<13)|((buffer[DATA+12]&MSB4)<<21);
-    blue = (buffer[DATA+25])|(buffer[DATA+26]<<8)|(buffer[DATA+27]<<16)|((buffer[DATA+28]&MSB1)<<24);
-    green = ((buffer[DATA2+10]&(~MSB5)))|(buffer[DATA2+11]<<3)|(buffer[DATA2+12]<<11)|((buffer[DATA2+13]&MSB6)<<19);
+    //blue = (buffer[DATA+25])|(buffer[DATA+26]<<8)|(buffer[DATA+27]<<16)|((buffer[DATA+28]&MSB1)<<24);
+    //green = ((buffer[DATA2+10]&(~MSB5)))|(buffer[DATA2+11]<<3)|(buffer[DATA2+12]<<11)|((buffer[DATA2+13]&MSB6)<<19);
     leds(3,red,blue,green);
     //LAYER 4
     red = ((buffer[DATA+12]&(~MSB4)))|(buffer[DATA+13]<<4)|(buffer[DATA+14]<<12)|((buffer[DATA+15]&MSB5)<<20);
-    blue = ((buffer[DATA+28]&(~MSB1)))|(buffer[DATA+29]<<7)|(buffer[DATA2]<<15)|((buffer[DATA2+1]&MSB2)<<23);
-    green = ((buffer[DATA2+13]&(~MSB6)))|(buffer[DATA2+14]<<2)|(buffer[DATA2+15]<<10)|((buffer[DATA2+15]&MSB7)<<18);
+    //blue = ((buffer[DATA+28]&(~MSB1)))|(buffer[DATA+29]<<7)|(buffer[DATA2]<<15)|((buffer[DATA2+1]&MSB2)<<23);
+    //green = ((buffer[DATA2+13]&(~MSB6)))|(buffer[DATA2+14]<<2)|(buffer[DATA2+15]<<10)|((buffer[DATA2+15]&MSB7)<<18);
     leds(4,red,blue,green);
     //test_frame();
     uint8_t i = 0;
@@ -317,12 +317,20 @@ void test_cube(uint8_t *buffer){
 
         //Toggle latch
         TOGGLE_LATCH
-        _delay_ms(100);
+        _delay_ms(2);
     }
 }
 
 void Transmit(uint8_t *buffer, uint8_t buffersize){
-    	mirf_send(buffer,buffersize);
+        uint16_t counter = 0;
+        while (mirf_send (buffer, BUFFER_SIZE) && counter < 1000)
+        {
+            _delay_us(10);
+        }
+        if (counter >= 1000)
+        {
+            //transmit_string("e");
+        }
 		//_delay_ms(10);
 }
 
@@ -330,7 +338,7 @@ void Transmit(uint8_t *buffer, uint8_t buffersize){
 int8_t Receive(uint8_t *buffer,uint8_t buffersize){
         //uint64_t i = 0;
 		while (!mirf_data_ready()){
-            //test_cube(buffer);
+            test_cube(buffer);
             //if(i > 0x1FFFF){
                 //LED1_ON;
             //    return -1;
@@ -552,7 +560,15 @@ int main (void)
                 buffer[0] = ID_SELF;
                 buffer[1] = ACK;
                 buffer[2] = sensors();
-                Transmit(buffer,BUFFER_SIZE);
+                uint16_t counter = 0;
+                while (mirf_send (buffer, BUFFER_SIZE) && counter < 1000)
+                {
+                    _delay_us(10);
+                }
+                if (counter >= 1000)
+                {
+                    //transmit_string("e");
+                }
                 buffer[0] = data[0];
                 buffer[1] = data[1];
                 buffer[2] = data[2];
@@ -620,7 +636,7 @@ int main (void)
         //_delay_ms(500);
         //led_off();
         //_delay_ms(500);
-        //test_cube(buffer);
+        test_cube(buffer);
         /*
     uint32_t red = 0;
     uint32_t blue = 0;
