@@ -67,8 +67,8 @@ void mirf_init()
 #endif // __AVR_ATmega168__    */
 
 // Initialize PCINT4 for ATtiny2313
-//	GIMSK |= (1<<PCIE);
-//	PCMSK |= (1<<PCINT4);
+//      GIMSK |= (1<<PCIE);
+//      PCMSK |= (1<<PCINT4);
 
 // Initialize PCINT3 for ATtiny167
     PCICR |= (1<<PCIE0);

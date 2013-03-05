@@ -16,6 +16,8 @@
 #define BAUD 250000
 
 #define BUFFER_SIZE 32
+#define DATA 2 //starting position of data bytes
+#define DATA2 33
 
 #define SET_U2X 0
 #define MY_UBBR 12 // BAUD = 38400
@@ -26,6 +28,32 @@
 
 #define TOGGLE_LATCH PORTA |= (1<<SS);\
 	                 PORTA &= ~(1<<SS);
+
+#define CUBE1   0x01
+#define CUBE2   0x02
+#define CUBE3   0x04
+#define CUBE4   0x08
+#define ID_SELF CUBE1
+
+#define ACK     0x11
+#define DATA_S    0x22
+#define NACK    0x33
+
+#define MSB1  0x80
+#define MSB2  0xC0
+#define MSB3  0xE0
+#define MSB4  0xF0
+#define MSB5  0xF8
+#define MSB6  0xFC
+#define MSB7  0xFE
+
+#define LSB1  0x01
+#define LSB2  0x03
+#define LSB3  0x07
+#define LSB4  0x0F
+#define LSB5  0x1F
+#define LSB6  0x3F
+#define LSB7  0x7F
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -86,7 +114,7 @@ void transmit2(uint8_t layer){
 
 	//Toggle latch
 	TOGGLE_LATCH
-    //_delay_ms(1);
+    _delay_ms(100);
     //_delay_us(300);
 }
 
@@ -145,16 +173,151 @@ void leds(uint8_t layer,uint32_t red, uint32_t blue, uint32_t green){
 
 void test_frame(){
     uint8_t i = 0;
+    uint8_t j = 0;
+    uint8_t temp = 0;
     for(i=0;i<5;i++){
         //transmit1(frame[i][4],frame[i][3],frame[i][2],frame[i][1],frame[i][0]);
         //level(i);
-        transmit2(i);
+        //transmit2(i);
         //_delay_ms(500);
         //_delay_ms(500);
         //_delay_ms(500);
         //_delay_ms(500);
         //_delay_ms(3);
         //_delay_us(300);
+        switch(i){
+            case 0:
+                PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+                PORTB |= ((0<<PB4)|(0<<PB5)|(0<<PB6));
+                return;
+            case 1:
+                PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+                PORTB |= ((1<<PB4)|(0<<PB5)|(0<<PB6));
+                return;
+            case 2:
+                PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+                PORTB |= ((0<<PB4)|(1<<PB5)|(0<<PB6));
+                return;
+            case 3:
+                PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+                PORTB |= ((1<<PB4)|(1<<PB5)|(0<<PB6));
+                return;
+            case 4:
+                PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+                PORTB |= ((0<<PB4)|(0<<PB5)|(1<<PB6));
+                return;
+            default:
+                PORTB |= ((1<<PB4)|(1<<PB5)|(1<<PB6));
+        }
+        //level(i);
+        for(j=5;j-- > 0; ){
+            temp = (frame[i][j]);
+            //load first byte
+            SPDR = temp;
+            //temp = 0x0F & display_count;
+            while(bit_is_clear(SPSR,SPIF)){};
+
+            temp = (frame[i][j]>>8);
+            //load second byte
+            SPDR = temp;
+            //temp = 0x0F & display_count;
+            while(bit_is_clear(SPSR,SPIF)){};
+            frame[i][j] = 0;
+        }
+
+        //Toggle latch
+        TOGGLE_LATCH
+            _delay_ms(100);
+    }
+}
+
+void test_cube(uint8_t *buffer){
+    uint32_t red = 0;
+    uint32_t blue = 0;
+    uint32_t green = 0;
+
+
+    red = (buffer[DATA])|(buffer[DATA+1]<<8)|(buffer[DATA+2]<<16)|((buffer[DATA+3]&MSB1)<<24);
+    blue = (buffer[DATA+15]&(~MSB5))|(buffer[DATA+16]<<3)|(buffer[DATA+17]<<11)|((buffer[DATA+18]&MSB6)<<19);
+    green = ((buffer[DATA2+1]&(~MSB2)))|(buffer[DATA2+2]<<6)|(buffer[DATA2+3]<<14)|((buffer[DATA2+4]&MSB3)<<22);
+    leds(0,red,blue,green);
+    //LAYER 1
+    red = ((buffer[DATA+3]&(~MSB1)))|(buffer[DATA+4]<<7)|(buffer[DATA+5]<<15)|((buffer[DATA+6]&MSB2)<<23);
+    blue = (buffer[DATA+18]&(~MSB6))|(buffer[DATA+19]<<2)|(buffer[DATA+20]<<10)|((buffer[DATA+21]&MSB7)<<18);
+    green = ((buffer[DATA2+4]&(~MSB3)))|(buffer[DATA2+5]<<5)|(buffer[DATA2+6]<<13)|((buffer[DATA2+7]&MSB4)<<21);
+    leds(1,red,blue,green);
+    //LAYER 2
+    red = (buffer[DATA+6]&(~MSB2))|(buffer[DATA+7]<<6)|(buffer[DATA+8]<<14)|((buffer[DATA+9]&MSB3)<<22);
+    blue = (buffer[DATA+21]&(~MSB7))|(buffer[DATA+22]<<1)|(buffer[DATA+23]<<9)|((buffer[DATA+24])<<17);
+    green = ((buffer[DATA2+7]&(~MSB4)))|(buffer[DATA2+8]<<4)|(buffer[DATA2+9]<<12)|((buffer[DATA2+10]&MSB5)<<20);
+    leds(2,red,blue,green);
+    //LAYER 3
+    red = ((buffer[DATA+9]&(~MSB3)))|(buffer[DATA+10]<<5)|(buffer[DATA+11]<<13)|((buffer[DATA+12]&MSB4)<<21);
+    blue = (buffer[DATA+25])|(buffer[DATA+26]<<8)|(buffer[DATA+27]<<16)|((buffer[DATA+28]&MSB1)<<24);
+    green = ((buffer[DATA2+10]&(~MSB5)))|(buffer[DATA2+11]<<3)|(buffer[DATA2+12]<<11)|((buffer[DATA2+13]&MSB6)<<19);
+    leds(3,red,blue,green);
+    //LAYER 4
+    red = ((buffer[DATA+12]&(~MSB4)))|(buffer[DATA+13]<<4)|(buffer[DATA+14]<<12)|((buffer[DATA+15]&MSB5)<<20);
+    blue = ((buffer[DATA+28]&(~MSB1)))|(buffer[DATA+29]<<7)|(buffer[DATA2]<<15)|((buffer[DATA2+1]&MSB2)<<23);
+    green = ((buffer[DATA2+13]&(~MSB6)))|(buffer[DATA2+14]<<2)|(buffer[DATA2+15]<<10)|((buffer[DATA2+15]&MSB7)<<18);
+    leds(4,red,blue,green);
+    //test_frame();
+    uint8_t i = 0;
+    uint8_t j = 0;
+    uint8_t temp = 0;
+    for(i=0;i<5;i++){
+        //transmit1(frame[i][4],frame[i][3],frame[i][2],frame[i][1],frame[i][0]);
+        //level(i);
+        //transmit2(i);
+        //_delay_ms(500);
+        //_delay_ms(500);
+        //_delay_ms(500);
+        //_delay_ms(500);
+        //_delay_ms(3);
+        //_delay_us(300);
+        switch(i){
+            case 0:
+                PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+                PORTB |= ((0<<PB4)|(0<<PB5)|(0<<PB6));
+                break;
+            case 1:
+                PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+                PORTB |= ((1<<PB4)|(0<<PB5)|(0<<PB6));
+                break;
+            case 2:
+                PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+                PORTB |= ((0<<PB4)|(1<<PB5)|(0<<PB6));
+                break;
+            case 3:
+                PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+                PORTB |= ((1<<PB4)|(1<<PB5)|(0<<PB6));
+                break;
+            case 4:
+                PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+                PORTB |= ((0<<PB4)|(0<<PB5)|(1<<PB6));
+                break;
+            default:
+                PORTB |= ((1<<PB4)|(1<<PB5)|(1<<PB6));
+        }
+        //level(i);
+        for(j=5;j-- > 0; ){
+            temp = (frame[i][j]);
+            //load first byte
+            SPDR = temp;
+            //temp = 0x0F & display_count;
+            while(bit_is_clear(SPSR,SPIF)){};
+
+            temp = (frame[i][j]>>8);
+            //load second byte
+            SPDR = temp;
+            //temp = 0x0F & display_count;
+            while(bit_is_clear(SPSR,SPIF)){};
+            frame[i][j] = 0;
+        }
+
+        //Toggle latch
+        TOGGLE_LATCH
+        _delay_ms(100);
     }
 }
 
@@ -167,6 +330,7 @@ void Transmit(uint8_t *buffer, uint8_t buffersize){
 int8_t Receive(uint8_t *buffer,uint8_t buffersize){
         //uint64_t i = 0;
 		while (!mirf_data_ready()){
+            //test_cube(buffer);
             //if(i > 0x1FFFF){
                 //LED1_ON;
             //    return -1;
@@ -175,8 +339,8 @@ int8_t Receive(uint8_t *buffer,uint8_t buffersize){
             //i++;
         }
 		mirf_get_data(buffer);
-        leds(4,buffer[0],buffer[1],buffer[2]);
-        test_frame();
+        //leds(4,buffer[0],buffer[1],buffer[2]);
+        //test_frame();
 
         //SPI_Transmit_All(buffer,buffersize);
         return 1;
@@ -296,8 +460,8 @@ void test_xbee_pins(){
 
 }
 
-void sensors(uint8_t *buffer){
-    buffer[0] = (~PINB & ((1<<PB0)|(1<<PB1)|(1<<PB2)|(1<<PB3)));
+uint8_t sensors(){
+    return (~PINB & ((1<<PB0)|(1<<PB1)|(1<<PB2)|(1<<PB3)));
 }
 
 
@@ -308,9 +472,12 @@ int main (void)
     init();
     //LED1_ON;
     //LED2_ON;
-    //char buffer [16] = {'.','e','l','l','o',' ','n','o','o','d','l','e','!','.','.','}'};
-    char buffer [32] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
-        'q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F',};
+    uint8_t temp_buffer [32] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
+        'q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F'};
+    uint8_t buffer [64] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
+        'q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
+        'q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F'};
+    uint8_t i = 0;
 	sei();
     init2(buffer);
     buffer[0] = 'a';
@@ -343,12 +510,14 @@ int main (void)
    led1_on();
    _delay_ms(50);
    led_off();
+   uint8_t data[3] = {0,0,0};
 	
 	while (1)
 	{
         //test_xbee_pins();
         //_delay_ms(100);
         //PORTB |= (1<<PB1);
+
         /*
         led1_on();
         led2_off();
@@ -376,32 +545,171 @@ int main (void)
         //_delay_ms(500);
         //_delay_ms(50);
         if(Receive(buffer,BUFFER_SIZE) == 1){
-            //if((buffer[3] == 'l')){//}&&(buffer[31] == '}')){
-               // led1_on();
-               // _delay_ms(50);
-               // led_off();
-               sensors(buffer);
+            if(buffer[0] == ID_SELF){
+                data[0] = buffer[0];
+                data[1] = buffer[1];
+                data[2] = buffer[2];
+                buffer[0] = ID_SELF;
+                buffer[1] = ACK;
+                buffer[2] = sensors();
                 Transmit(buffer,BUFFER_SIZE);
-                
-//                //rx_powerup();
-//                //_delay_ms(1);
-//                //led1_on();
-//                //led2_off();
-////            }
-//            else{
-//            led2_on();
-//            led_off();
-//            }
+                buffer[0] = data[0];
+                buffer[1] = data[1];
+                buffer[2] = data[2];
+                led1_on();
+                _delay_ms(500);
+                led_off();
+
+                /*
+                if(Receive(temp_buffer,BUFFER_SIZE) == 1){
+                    if(temp_buffer[0] == ID_SELF){
+                        //led3_on();
+                        data[0] = temp_buffer[0];
+                        data[1] = temp_buffer[1];
+                        data[2] = temp_buffer[2];
+                        temp_buffer[0] = ID_SELF;
+                        temp_buffer[1] = ACK;
+                        temp_buffer[2] = sensors();
+                        Transmit(temp_buffer,BUFFER_SIZE);
+                        temp_buffer[0] = data[0];
+                        temp_buffer[1] = data[1];
+                        temp_buffer[2] = data[2];
+                        for(i = 0; i < BUFFER_SIZE; i++){
+                            buffer[i+BUFFER_SIZE] = temp_buffer[i];
+                        }
+                        led2_on();
+                        _delay_ms(500);
+                        led_off();
+                    }
+                }
+                */
+            }
+            //if((buffer[3] == 'l')){//}&&(buffer[31] == '}')){
+            // led1_on();
+            // _delay_ms(50);
+            // led_off();
+            //data = buffer[0];
+            //sensors(buffer);
+            //Transmit(buffer,BUFFER_SIZE);
+            //buffer[0] = data;
+
+            //                //rx_powerup();
+            //                //_delay_ms(1);
+            //                //led1_on();
+            //                //led2_off();
+            ////            }
+            //            else{
+            //            led2_on();
+            //            led_off();
+            //            }
         }
         else{
             led2_on();
             _delay_ms(50);
             led_off();
         }
-        //led_off();
+        _delay_ms(100);
+        led_off();
         _delay_ms(50);
-        //leds(4,buffer[0],buffer[1],buffer[2]);
-        //test_frame();
+        // red is bytes 0 - 13
+        // blue is bytes
+        // green is bytes
+        //
+        //LAYER 0
+        //led2_on();
+        //_delay_ms(500);
+        //led_off();
+        //_delay_ms(500);
+        //test_cube(buffer);
+        /*
+    uint32_t red = 0;
+    uint32_t blue = 0;
+    uint32_t green = 0;
+
+
+    red = (buffer[DATA])|(buffer[DATA+1]<<8)|(buffer[DATA+2]<<16)|((buffer[DATA+3]&MSB1)<<24);
+    blue = (buffer[DATA+15]&(~MSB5))|(buffer[DATA+16]<<3)|(buffer[DATA+17]<<11)|((buffer[DATA+18]&MSB6)<<19);
+    //green = ((buffer[DATA2+1]&(~MSB2)))|(buffer[DATA2+2]<<6)|(buffer[DATA2+3]<<14)|((buffer[DATA2+4]&MSB3)<<22);
+    leds(0,red,blue,green);
+    //LAYER 1
+    red = ((buffer[DATA+3]&(~MSB1)))|(buffer[DATA+4]<<7)|(buffer[DATA+5]<<15)|((buffer[DATA+6]&MSB2)<<23);
+    blue = (buffer[DATA+18]&(~MSB6))|(buffer[DATA+19]<<2)|(buffer[DATA+20]<<10)|((buffer[DATA+21]&MSB7)<<18);
+    //green = ((buffer[DATA2+4]&(~MSB3)))|(buffer[DATA2+5]<<5)|(buffer[DATA2+6]<<13)|((buffer[DATA2+7]&MSB4)<<21);
+    leds(1,red,blue,green);
+    //LAYER 2
+    red = (buffer[DATA+6]&(~MSB2))|(buffer[DATA+7]<<6)|(buffer[DATA+8]<<14)|((buffer[DATA+9]&MSB3)<<22);
+    blue = (buffer[DATA+21]&(~MSB7))|(buffer[DATA+22]<<1)|(buffer[DATA+23]<<9)|((buffer[DATA+24])<<17);
+    //green = ((buffer[DATA2+7]&(~MSB4)))|(buffer[DATA2+8]<<4)|(buffer[DATA2+9]<<12)|((buffer[DATA2+10]&MSB5)<<20);
+    leds(2,red,blue,green);
+    //LAYER 3
+    red = ((buffer[DATA+9]&(~MSB3)))|(buffer[DATA+10]<<5)|(buffer[DATA+11]<<13)|((buffer[DATA+12]&MSB4)<<21);
+    blue = (buffer[DATA+25])|(buffer[DATA+26]<<8)|(buffer[DATA+27]<<16)|((buffer[DATA+28]&MSB1)<<24);
+    //green = ((buffer[DATA2+10]&(~MSB5)))|(buffer[DATA2+11]<<3)|(buffer[DATA2+12]<<11)|((buffer[DATA2+13]&MSB6)<<19);
+    leds(3,red,blue,green);
+    //LAYER 4
+    red = ((buffer[DATA+12]&(~MSB4)))|(buffer[DATA+13]<<4)|(buffer[DATA+14]<<12)|((buffer[DATA+15]&MSB5)<<20);
+    blue = ((buffer[DATA+28]&(~MSB1)))|(buffer[DATA+29]<<7)|(buffer[DATA2]<<15)|((buffer[DATA2+1]&MSB2)<<23);
+    //green = ((buffer[DATA2+13]&(~MSB6)))|(buffer[DATA2+14]<<2)|(buffer[DATA2+15]<<10)|((buffer[DATA2+15]&MSB7)<<18);
+    leds(4,red,blue,green);
+    //test_frame();
+    uint8_t i = 0;
+    uint8_t j = 0;
+    uint8_t temp = 0;
+    for(i=0;i<5;i++){
+        //transmit1(frame[i][4],frame[i][3],frame[i][2],frame[i][1],frame[i][0]);
+        //level(i);
+        //transmit2(i);
+        //_delay_ms(500);
+        //_delay_ms(500);
+        //_delay_ms(500);
+        //_delay_ms(500);
+        //_delay_ms(3);
+        //_delay_us(300);
+        switch(i){
+            case 0:
+                PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+                PORTB |= ((0<<PB4)|(0<<PB5)|(0<<PB6));
+                break;
+            case 1:
+                PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+                PORTB |= ((1<<PB4)|(0<<PB5)|(0<<PB6));
+                break;
+            case 2:
+                PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+                PORTB |= ((0<<PB4)|(1<<PB5)|(0<<PB6));
+                break;
+            case 3:
+                PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+                PORTB |= ((1<<PB4)|(1<<PB5)|(0<<PB6));
+                break;
+            case 4:
+                PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
+                PORTB |= ((0<<PB4)|(0<<PB5)|(1<<PB6));
+                break;
+            default:
+                PORTB |= ((1<<PB4)|(1<<PB5)|(1<<PB6));
+        }
+        //level(i);
+        for(j=5;j-- > 0; ){
+            temp = (frame[i][j]);
+            //load first byte
+            SPDR = temp;
+            //temp = 0x0F & display_count;
+            while(bit_is_clear(SPSR,SPIF)){};
+
+            temp = (frame[i][j]>>8);
+            //load second byte
+            SPDR = temp;
+            //temp = 0x0F & display_count;
+            while(bit_is_clear(SPSR,SPIF)){};
+            frame[i][j] = 0;
+    }
+
+    //Toggle latch
+    TOGGLE_LATCH
+        _delay_ms(100);
+    }
+    */
     }
 
 }
