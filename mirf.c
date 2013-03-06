@@ -31,43 +31,48 @@
 #include <avr/interrupt.h>
 #include <util/delay.h>
 
-#define F_CPU 8000000UL	// 1Mhz clock
-
 // Defines for setting the MiRF registers for transmitting or receiving mode
 #define TX_POWERUP mirf_config_register(CONFIG, mirf_CONFIG | ( (1<<PWR_UP) | (0<<PRIM_RX) ) )
 #define RX_POWERUP mirf_config_register(CONFIG, mirf_CONFIG | ( (1<<PWR_UP) | (1<<PRIM_RX) ) )
 
 
 // Flag which denotes transmitting mode
-volatile uint8_t PTX = 0;
+volatile uint8_t PTX;
 
 void mirf_init() 
 // Initializes pins ans interrupt to communicate with the MiRF module
 // Should be called in the early initializing phase at startup.
 {
     // Define CSN and CE as Output and set them to default
-    DDRB |= ((1<<CSN)|(1<<CE));
-    PORTB |= (1<<PB4); //Enable the interrupt pin as an input set to high since the IRQ is active low
+    DDRA |= ((1<<CSN)|(1<<CE));
     mirf_CE_lo;
     mirf_CSN_hi;
 
-#if defined(__AVR_ATtiny167__)
-    // Initialize PCINT3 for ATtiny167
-    PCICR |= (1<<PCIE0);
-    PCMSK0 |= (1<<PCINT3);
+#if defined (__AVR_ATtiny167__)
+#endif
+#if defined (__AVR_ATtiny2313__)
+#endif
+
+/*#if defined(__AVR_ATmega8__)
+    // Initialize external interrupt 0 (PD2)
+    MCUCR = ((1<<ISC11)|(0<<ISC10)|(1<<ISC01)|(0<<ISC00)); // Set external interupt on falling edge
+    GICR  = ((0<<INT1)|(1<<INT0));                         // Activate INT0
 #endif // __AVR_ATmega8__
 
-#if defined(__AVR_ATtiny2313__)
-    // Initialize PCINT4
-    GIMSK |= (1<<PCIE);
-	PCMSK |= (1<<PCINT4);
+#if defined(__AVR_ATmega168__)
+    // Initialize external interrupt on port PD6 (PCINT22)
+    DDRB &= ~(1<<PD6);
+    PCMSK2 = (1<<PCINT22);
+    PCICR  = (1<<PCIE2);
 #endif // __AVR_ATmega168__    */
 
-    /*
-// Initialize PCINT4
-	GIMSK |= (1<<PCIE);
-	PCMSK |= (1<<PCINT4);
-    */
+// Initialize PCINT4 for ATtiny2313
+//      GIMSK |= (1<<PCIE);
+//      PCMSK |= (1<<PCINT4);
+
+// Initialize PCINT3 for ATtiny167
+    PCICR |= (1<<PCIE0);
+    PCMSK0 |= (1<<PCINT3);
 
     // Initialize spi module
     spi_init();
@@ -83,24 +88,16 @@ void mirf_config()
 
     // Set length of incoming payload 
     mirf_config_register(RX_PW_P0, mirf_PAYLOAD);
+
     //mirf_set_RADDR(0xB3B4B5B6F1);
-    //mirf_set_RADDR(0x7878787878);
-    //mirf_set_RADDR_P1(0xB3B4B5B6F1);
     //mirf_set_TADDR(0xB3B4B5B6F1);
-    //mirf_set_TADDR(0x7878787878);
+
+
 
     // Start receiver 
     PTX = 0;        // Start in receiving mode
     RX_POWERUP;     // Power up in receiving mode
     mirf_CE_hi;     // Listening for pakets
-}
-
-void mirf_set_RADDR_P1(uint8_t * adr) 
-// Sets the receiving address
-{
-    mirf_CE_lo;
-    mirf_write_register(RX_ADDR_P1,adr,5);
-    mirf_CE_hi;
 }
 
 void mirf_set_RADDR(uint8_t * adr) 
@@ -117,18 +114,16 @@ void mirf_set_TADDR(uint8_t * adr)
     mirf_write_register(TX_ADDR, adr,5);
 }
 
-#if defined(__AVR_ATtiny2313__)
-    ISR(PCINT_vect)
+/*#if defined(__AVR_ATmega8__)
+SIGNAL(SIG_INTERRUPT0) 
 #endif // __AVR_ATmega8__
-#if defined(__AVR_ATtiny167__)
-    ISR(PCINT0_vect)
-#endif // __AVR_ATmega168__  
+#if defined(__AVR_ATmega168__)
+SIGNAL(SIG_PIN_CHANGE2) 
+#endif // __AVR_ATmega168__  */
+
 // Interrupt handler 
-//ISR(PCINT_vect)
+ISR(PCINT0_vect)
 {
-    //DDRD |= (1<<6);
-    //PORTD |= (1<<6);
-    //transmit_string("interupted\n");
     uint8_t status;   
     // If still in transmitting mode then finish transmission
     if (PTX) {
@@ -146,14 +141,6 @@ void mirf_set_TADDR(uint8_t * adr)
         // Reset status register for further interaction
         mirf_config_register(STATUS,(1<<TX_DS)|(1<<MAX_RT)); // Reset status register
     }
-//PORTD &= (~(1<<6));
-#if defined(__AVR_ATtiny2313__)
-    EIFR |= (1<<PCIF);
-#endif // __AVR_ATmega8__
-#if defined(__AVR_ATtiny167__)
-    PCIFR |= (1<<PCIF0);
-#endif // __AVR_ATmega168__  
-//    EIFR |= (1<<PCIF);
 }
 
 void tx_complete(void){
@@ -161,7 +148,7 @@ void tx_complete(void){
     if (PTX) {
         // Read MiRF status 
         mirf_CSN_lo;                                // Pull down chip select
-        status = SPI_Receive();               // Read status register
+        status = SPI_Transmit(0x00);               // Read status register
         mirf_CSN_hi;                                // Pull up chip select
 
         mirf_CE_lo;                             // Deactivate transreceiver
@@ -172,14 +159,7 @@ void tx_complete(void){
         // Reset status register for further interaction
         mirf_config_register(STATUS,(1<<TX_DS)|(1<<MAX_RT)); // Reset status register
     }
-#if defined(__AVR_ATtiny2313__)
-    EIFR |= (1<<PCIF);
-#endif // __AVR_ATmega8__
-#if defined(__AVR_ATtiny167__)
-    PCIFR |= (1<<PCIF0);
-#endif // __AVR_ATmega168__  
 }
-
 extern uint8_t mirf_data_ready() 
 // Checks if data is available for reading
 {
@@ -199,9 +179,6 @@ extern void mirf_get_data(uint8_t * data)
     SPI_Transmit( R_RX_PAYLOAD );            // Send cmd to read rx payload
     SPI_Transceive(data,data,mirf_PAYLOAD); // Read payload
     mirf_CSN_hi;                               // Pull up chip select
-    mirf_CSN_lo;                    // Pull down chip select
-    SPI_Transmit( FLUSH_RX );     // Write cmd to flush tx fifo
-    mirf_CSN_hi;                    // Pull up chip select
     mirf_config_register(STATUS,(1<<RX_DR));   // Reset status register
 }
 
@@ -237,31 +214,17 @@ char mirf_send(uint8_t * value, uint8_t len)
 // Sends a data package to the default address. Be sure to send the correct
 // amount of bytes as configured as payload on the receiver.
 {
-
-    // Save interrupt state and turn off interrupts
     uint8_t sreg_original = SREG;
     cli ();
 
     uint8_t status = 0;
     mirf_read_register (STATUS, &status, 1);
-
-    
-    #if defined(__AVR_ATtiny2313__)
-    // If PTX == 1 and TX_DS == 1, or if the interrupt line is low, data was sent but the interrupt never happened.
-    //   In this case, the interrupt was missed for some reason 
-    if ((PINB & (1<<PB4)) || ((status & (1<<MASK_TX_DS)) && PTX))
-    {
-        tx_complete();
-    }
-    #endif // __AVR_ATmega8__
-    #if defined(__AVR_ATtiny167__)
     // If PTX == 1 and TX_DS == 1, or if the interrupt line is low, data was sent but the interrupt never happened.
     //   In this case, the interrupt was missed for some reason 
     if ((PINB & (1<<PA3)) || ((status & (1<<MASK_TX_DS)) && PTX))
     {
         tx_complete();
     }
-    #endif // __AVR_ATmega168__  
 
     // Restore interrupt state
     SREG = sreg_original;
@@ -272,27 +235,21 @@ char mirf_send(uint8_t * value, uint8_t len)
     {
         return -1; 
     }
-//    while (PTX) {}                  // Wait until last paket is send
 
-    //USART_Transmit('h');
     mirf_CE_lo;
 
     PTX = 1;                        // Set to transmitter mode
     TX_POWERUP;                     // Power up
+    //mirf_set_TADDR(0x7878787878);
     
-    //USART_Transmit('h');
     mirf_CSN_lo;                    // Pull down chip select
     SPI_Transmit( FLUSH_TX );     // Write cmd to flush tx fifo
     mirf_CSN_hi;                    // Pull up chip select
     mirf_CSN_lo;                    // Pull down chip select
     SPI_Transmit( W_TX_PAYLOAD ); // Write cmd to write payload
-    //USART_Transmit('h');
-    //SPI_Transmit_All(testbuffer,16);
     SPI_Transmit_All(value,len);   // Write payload
     mirf_CSN_hi;                    // Pull up chip select
-    //USART_Transmit('h');
     
     mirf_CE_hi;                     // Start transmission
-    //USART_Transmit('q');
     return 0;
 }

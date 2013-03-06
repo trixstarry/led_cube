@@ -1,8 +1,8 @@
 PRG            = ledcube
 
-OBJ            = $(PRG).o mirf.o spi.o
+OBJ            = $(PRG).o spi.o mirf.o 
 
-MCU_TARGET     = attiny167
+MCU_TARGET     = attiny2313
 #OPTIMIZE       = -O0    # options are 1, 2, 3, s
 #OPTIMIZE       = -O1    # options are 1, 2, 3, s
 OPTIMIZE        = -O2    # options are 1, 2, 3, s
@@ -25,6 +25,7 @@ all: $(PRG).elf lst text eeprom
 
 $(PRG).elf: $(OBJ)
 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $^ $(LIBS)
+	avr-size $(PRG).elf
 
 clean: 
 	rm -rf *.o $(PRG).elf *.eps *.png *.pdf *.bak 
@@ -32,7 +33,7 @@ clean:
 
 program: $(PRG).hex
 #	avrdude -p m128 -c usbasp  -e -U flash:w:$(PRG).hex 
-	avrdude -p t167 -c osuisp2 -e -U flash:w:$(PRG).hex 
+	avrdude -p t2313 -c osuisp2 -e -U flash:w:$(PRG).hex 
 
 lst:  $(PRG).lst
 
