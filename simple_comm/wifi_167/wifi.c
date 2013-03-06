@@ -237,29 +237,29 @@ void test_cube(uint8_t *buffer){
     uint32_t green = 0;
 
 
-    red = (buffer[DATA])|(buffer[DATA+1]<<8)|(buffer[DATA+2]<<16)|((buffer[DATA+3]&MSB1)<<24);
-    blue = (buffer[DATA+15]&(~MSB5))|(buffer[DATA+16]<<3)|(buffer[DATA+17]<<11)|((buffer[DATA+18]&MSB6)<<19);
-    green = ((buffer[DATA2+1]&(~MSB2)))|(buffer[DATA2+2]<<6)|(buffer[DATA2+3]<<14)|((buffer[DATA2+4]&MSB3)<<22);
+    red = (buffer[0])|(buffer[0+1]<<8)|(buffer[0+2]<<16)|((buffer[0+3]&MSB1)<<24);
+    blue = (buffer[0+15]&(~MSB5))|(buffer[0+16]<<3)|(buffer[0+17]<<11)|((buffer[0+18]&MSB6)<<19);
+    green = ((buffer[32+1]&(~MSB2)))|(buffer[32+2]<<6)|(buffer[32+3]<<14)|((buffer[32+4]&MSB3)<<22);
     leds(0,red,blue,green);
     //LAYER 1
-    red = ((buffer[DATA+3]&(~MSB1)))|(buffer[DATA+4]<<7)|(buffer[DATA+5]<<15)|((buffer[DATA+6]&MSB2)<<23);
-    blue = (buffer[DATA+18]&(~MSB6))|(buffer[DATA+19]<<2)|(buffer[DATA+20]<<10)|((buffer[DATA+21]&MSB7)<<18);
-    green = ((buffer[DATA2+4]&(~MSB3)))|(buffer[DATA2+5]<<5)|(buffer[DATA2+6]<<13)|((buffer[DATA2+7]&MSB4)<<21);
+    red = ((buffer[0+3]&(~MSB1)))|(buffer[0+4]<<7)|(buffer[0+5]<<15)|((buffer[0+6]&MSB2)<<23);
+    blue = (buffer[0+18]&(~MSB6))|(buffer[0+19]<<2)|(buffer[0+20]<<10)|((buffer[0+21]&MSB7)<<18);
+    green = ((buffer[32+4]&(~MSB3)))|(buffer[32+5]<<5)|(buffer[32+6]<<13)|((buffer[32+7]&MSB4)<<21);
     leds(1,red,blue,green);
     //LAYER 2
-    red = (buffer[DATA+6]&(~MSB2))|(buffer[DATA+7]<<6)|(buffer[DATA+8]<<14)|((buffer[DATA+9]&MSB3)<<22);
-    blue = (buffer[DATA+21]&(~MSB7))|(buffer[DATA+22]<<1)|(buffer[DATA+23]<<9)|((buffer[DATA+24])<<17);
-    green = ((buffer[DATA2+7]&(~MSB4)))|(buffer[DATA2+8]<<4)|(buffer[DATA2+9]<<12)|((buffer[DATA2+10]&MSB5)<<20);
+    red = (buffer[0+6]&(~MSB2))|(buffer[0+7]<<6)|(buffer[0+8]<<14)|((buffer[0+9]&MSB3)<<22);
+    blue = (buffer[0+21]&(~MSB7))|(buffer[0+22]<<1)|(buffer[0+23]<<9)|((buffer[0+24])<<17);
+    green = ((buffer[32+7]&(~MSB4)))|(buffer[32+8]<<4)|(buffer[32+9]<<12)|((buffer[32+10]&MSB5)<<20);
     leds(2,red,blue,green);
     //LAYER 3
-    red = ((buffer[DATA+9]&(~MSB3)))|(buffer[DATA+10]<<5)|(buffer[DATA+11]<<13)|((buffer[DATA+12]&MSB4)<<21);
-    blue = (buffer[DATA+25])|(buffer[DATA+26]<<8)|(buffer[DATA+27]<<16)|((buffer[DATA+28]&MSB1)<<24);
-    green = ((buffer[DATA2+10]&(~MSB5)))|(buffer[DATA2+11]<<3)|(buffer[DATA2+12]<<11)|((buffer[DATA2+13]&MSB6)<<19);
+    red = ((buffer[0+9]&(~MSB3)))|(buffer[0+10]<<5)|(buffer[0+11]<<13)|((buffer[0+12]&MSB4)<<21);
+    blue = (buffer[0+25])|(buffer[0+26]<<8)|(buffer[0+27]<<16)|((buffer[0+28]&MSB1)<<24);
+    green = ((buffer[32+10]&(~MSB5)))|(buffer[32+11]<<3)|(buffer[32+12]<<11)|((buffer[32+13]&MSB6)<<19);
     leds(3,red,blue,green);
     //LAYER 4
-    red = ((buffer[DATA+12]&(~MSB4)))|(buffer[DATA+13]<<4)|(buffer[DATA+14]<<12)|((buffer[DATA+15]&MSB5)<<20);
-    blue = ((buffer[DATA+28]&(~MSB1)))|(buffer[DATA+29]<<7)|(buffer[DATA2]<<15)|((buffer[DATA2+1]&MSB2)<<23);
-    green = ((buffer[DATA2+13]&(~MSB6)))|(buffer[DATA2+14]<<2)|(buffer[DATA2+15]<<10)|((buffer[DATA2+15]&MSB7)<<18);
+    red = ((buffer[0+12]&(~MSB4)))|(buffer[0+13]<<4)|(buffer[0+14]<<12)|((buffer[0+15]&MSB5)<<20);
+    blue = ((buffer[0+28]&(~MSB1)))|(buffer[0+29]<<7)|(buffer[32]<<15)|((buffer[32+1]&MSB2)<<23);
+    green = ((buffer[32+13]&(~MSB6)))|(buffer[32+14]<<2)|(buffer[32+15]<<10)|((buffer[32+15]&MSB7)<<18);
     leds(4,red,blue,green);
     //test_frame();
     uint8_t i = 0;
@@ -317,7 +317,15 @@ void test_cube(uint8_t *buffer){
 
         //Toggle latch
         TOGGLE_LATCH
-        _delay_ms(2);
+            if(i < 4){
+                _delay_ms(2);
+            }
+            else if(4 == i){
+                //_delay_us(100);
+            }
+            else{
+                _delay_ms(500);
+            }
     }
 }
 
@@ -335,7 +343,7 @@ void Transmit(uint8_t *buffer, uint8_t buffersize){
 }
 
 
-int8_t Receive(uint8_t *buffer,uint8_t buffersize){
+int8_t Receive(uint8_t *buffer,uint8_t *receive_buffer,uint8_t buffersize){
         //uint64_t i = 0;
 		while (!mirf_data_ready()){
             test_cube(buffer);
@@ -346,7 +354,7 @@ int8_t Receive(uint8_t *buffer,uint8_t buffersize){
             //led1_on();
             //i++;
         }
-		mirf_get_data(buffer);
+		mirf_get_data(receive_buffer);
         //leds(4,buffer[0],buffer[1],buffer[2]);
         //test_frame();
 
@@ -362,6 +370,7 @@ void test_Transmit(uint8_t *buffer, uint8_t len){
     }
     Transmit(buffer,len);
 }
+/*
 void test_protocol(uint8_t *buffer, uint8_t len){
     if(Receive(buffer,len) == 1){
         Transmit(buffer,len);
@@ -371,6 +380,7 @@ void test_protocol(uint8_t *buffer, uint8_t len){
       //LED1_ON;
     }
 }
+*/
 
 void init(){
     //DDRA |= (1<<PB0)|(1<<PB1);
@@ -480,6 +490,8 @@ int main (void)
     init();
     //LED1_ON;
     //LED2_ON;
+    uint8_t temp_buffer [32] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
+        'q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F'};
     uint8_t receive_buffer [32] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
         'q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F'};
     uint8_t buffer [64] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
@@ -552,16 +564,21 @@ int main (void)
         //led_off();
         //_delay_ms(500);
         //_delay_ms(50);
-        if(Receive(receive_buffer,BUFFER_SIZE) == 1){
-            if(receive_buffer[0] == ID_SELF){
+        if(Receive(buffer,receive_buffer,BUFFER_SIZE) == 1){
+            if((ID_SELF == receive_buffer[0])&&(0x04 == receive_buffer[1])){
+                uint16_t counter = 0;
+                uint16_t i = 0;
+                for(i = 2; i < BUFFER_SIZE;i++){
+                    buffer[i-2] = receive_buffer[i];
+                }
                 data[0] = receive_buffer[0];
                 data[1] = receive_buffer[1];
                 data[2] = receive_buffer[2];
                 receive_buffer[0] = ID_SELF;
                 receive_buffer[1] = ACK;
                 receive_buffer[2] = sensors();
-                uint16_t counter = 0;
-                while (mirf_send (receive_buffer, BUFFER_SIZE) && counter < 1000)
+                //uint16_t counter = 0;
+                while (mirf_send (buffer, BUFFER_SIZE) && counter < 1000)
                 {
                     _delay_us(10);
                 }
@@ -572,36 +589,51 @@ int main (void)
                 receive_buffer[0] = data[0];
                 receive_buffer[1] = data[1];
                 receive_buffer[2] = data[2];
-                uint16_t i = 0;
-                for(i = 0; i < BUFFER_SIZE;i++){
-                    buffer[i] = receive_buffer[i];
-                }
+                //uint16_t i = 0;
+                //for(i = 0; i < BUFFER_SIZE;i++){
+                //    buffer[i] = receive_buffer[i];
+                //}
                 //led1_on();
                 //_delay_ms(500);
                 //led_off();
+            }
+            if((receive_buffer[0] == ID_SELF)&&(receive_buffer[1] == 0x08)){
+                for(i = 34; i < 64; i++){
+                    buffer[i-2] = receive_buffer[i-32];
+                    //temp_buffer[i-32] = buffer[i];
+                }
+                Transmit(buffer,BUFFER_SIZE);
+            }
+            /*
+                while((receive_buffer[0] != ID_SELF)&&(receive_buffer[1] != 0x08)){
+                    if(Receive(buffer,receive_buffer,BUFFER_SIZE) == 1){
+                        if((receive_buffer[0] == ID_SELF)&&(receive_buffer[1] == 0x08)){
+                            //led3_on();
+                               //data[0] = buffer[0];
+                               //data[1] = buffer[1];
+                               //data[2] = buffer[2];
+                               //buffer[0] = ID_SELF;
+                               //buffer[1] = ACK;
+                               //buffer[2] = (sensors()+0xF0);
+                               //Transmit(buffer,BUFFER_SIZE);
+                               //buffer[0] = data[0];
+                               //buffer[1] = data[1];
+                               //buffer[2] = data[2];
 
-                if(Receive(receive_buffer,BUFFER_SIZE) == 1){
-                    if(receive_buffer[0] == ID_SELF){
-                        //led3_on();
-                        data[0] = buffer[0];
-                        data[1] = buffer[1];
-                        data[2] = buffer[2];
-                        buffer[0] = ID_SELF;
-                        buffer[1] = ACK;
-                        buffer[2] = (sensors()+0xF0);
-                        Transmit(buffer,BUFFER_SIZE);
-                        buffer[0] = data[0];
-                        buffer[1] = data[1];
-                        buffer[2] = data[2];
-                        for(i = 32; i < 64; i++){
-                            buffer[i] = receive_buffer[i-BUFFER_SIZE];
+                            for(i = 34; i < 64; i++){
+                                buffer[i-2] = receive_buffer[i-32];
+                                //temp_buffer[i-32] = buffer[i];
+                            }
+                            Transmit(buffer,BUFFER_SIZE);
+
+                            //led2_on();
+                            //_delay_ms(500);
+                            //led_off();
                         }
-                        //led2_on();
-                        //_delay_ms(500);
-                        //led_off();
                     }
                 }
             }
+        */
             //if((buffer[3] == 'l')){//}&&(buffer[31] == '}')){
             // led1_on();
             // _delay_ms(50);
@@ -621,11 +653,11 @@ int main (void)
             //            led_off();
             //            }
         }
-        else{
+        //else{
             //led2_on();
             //_delay_ms(50);
             //led_off();
-        }
+        //}
         //_delay_ms(100);
         //led_off();
         //_delay_ms(50);
