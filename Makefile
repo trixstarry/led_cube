@@ -1,4 +1,4 @@
-PRG            = ledcube
+PRG            = wifi
 
 OBJ            = $(PRG).o spi.o mirf.o 
 
