@@ -1130,6 +1130,7 @@ void clear_frame(){
     }
 
 void test_pattern(){
+    //
     uint32_t plane = 0x1FFFFFF;
     uint32_t row4 = 0x1F00000;
     uint32_t row3 = 0xF8000;
