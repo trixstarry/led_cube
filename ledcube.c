@@ -267,29 +267,30 @@ void test_cube(uint8_t *buffer){
     uint32_t green = 0;
 
 
-    red = (buffer[0])|(buffer[0+1]<<8)|(buffer[0+2]<<16)|((buffer[0+3]&MSB1)<<24);
-    blue = (buffer[0+15]&(~MSB5))|(buffer[0+16]<<3)|(buffer[0+17]<<11)|((buffer[0+18]&MSB6)<<19);
-    green = ((buffer[30+1]&(~MSB2)))|(buffer[30+2]<<6)|(buffer[30+3]<<14)|((buffer[30+4]&MSB3)<<22);
+    red = (buffer[0])|(buffer[0+1]<<8)|(buffer[0+2]<<16)|((buffer[0+3]&LSB1)<<24);
+    blue = (buffer[0+15]&(~LSB5))|(buffer[0+16]<<3)|(buffer[0+17]<<11)|((buffer[0+18]&LSB6)<<19);
+    green = ((buffer[30+1]&(~LSB2)))|(buffer[30+2]<<6)|(buffer[30+3]<<14)|((buffer[30+4]&LSB3)<<22);
+    //red = ((buffer[0+3]&LSB1)<<24)|(buffer[0+2]<<16)|(buffer[0+1]<<8)|(buffer[0])
     leds(0,red,blue,green);
     //LAYER 1
-    red = ((buffer[0+3]&(~MSB1)))|(buffer[0+4]<<7)|(buffer[0+5]<<15)|((buffer[0+6]&MSB2)<<23);
-    blue = (buffer[0+18]&(~MSB6))|(buffer[0+19]<<2)|(buffer[0+20]<<10)|((buffer[0+21]&MSB7)<<18);
-    green = ((buffer[30+4]&(~MSB3)))|(buffer[30+5]<<5)|(buffer[30+6]<<13)|((buffer[30+7]&MSB4)<<21);
+    red = ((buffer[0+3]&(~LSB1)))|(buffer[0+4]<<7)|(buffer[0+5]<<15)|((buffer[0+6]&LSB2)<<23);
+    blue = (buffer[0+18]&(~LSB6))|(buffer[0+19]<<2)|(buffer[0+20]<<10)|((buffer[0+21]&LSB7)<<18);
+    green = ((buffer[30+4]&(~LSB3)))|(buffer[30+5]<<5)|(buffer[30+6]<<13)|((buffer[30+7]&LSB4)<<21);
     leds(1,red,blue,green);
     //LAYER 2
-    red = (buffer[0+6]&(~MSB2))|(buffer[0+7]<<6)|(buffer[0+8]<<14)|((buffer[0+9]&MSB3)<<22);
-    blue = (buffer[0+21]&(~MSB7))|(buffer[0+22]<<1)|(buffer[0+23]<<9)|((buffer[0+24])<<17);
-    green = ((buffer[30+7]&(~MSB4)))|(buffer[30+8]<<4)|(buffer[30+9]<<12)|((buffer[30+10]&MSB5)<<20);
+    red = (buffer[0+6]&(~LSB2))|(buffer[0+7]<<6)|(buffer[0+8]<<14)|((buffer[0+9]&LSB3)<<22);
+    blue = (buffer[0+21]&(~LSB7))|(buffer[0+22]<<1)|(buffer[0+23]<<9)|((buffer[0+24])<<17);
+    green = ((buffer[30+7]&(~LSB4)))|(buffer[30+8]<<4)|(buffer[30+9]<<12)|((buffer[30+10]&LSB5)<<20);
     leds(2,red,blue,green);
     //LAYER 3
-    red = ((buffer[0+9]&(~MSB3)))|(buffer[0+10]<<5)|(buffer[0+11]<<13)|((buffer[0+12]&MSB4)<<21);
-    blue = (buffer[0+25])|(buffer[0+26]<<8)|(buffer[0+27]<<16)|((buffer[0+28]&MSB1)<<24);
-    green = ((buffer[30+10]&(~MSB5)))|(buffer[30+11]<<3)|(buffer[30+12]<<11)|((buffer[30+13]&MSB6)<<19);
+    red = ((buffer[0+9]&(~LSB3)))|(buffer[0+10]<<5)|(buffer[0+11]<<13)|((buffer[0+12]&LSB4)<<21);
+    blue = (buffer[0+25])|(buffer[0+26]<<8)|(buffer[0+27]<<16)|((buffer[0+28]&LSB1)<<24);
+    green = ((buffer[30+10]&(~LSB5)))|(buffer[30+11]<<3)|(buffer[30+12]<<11)|((buffer[30+13]&LSB6)<<19);
     leds(3,red,blue,green);
     //LAYER 4
-    red = ((buffer[0+12]&(~MSB4)))|(buffer[0+13]<<4)|(buffer[0+14]<<12)|((buffer[0+15]&MSB5)<<20);
-    blue = ((buffer[0+28]&(~MSB1)))|(buffer[0+29]<<7)|(buffer[30]<<15)|((buffer[30+1]&MSB2)<<23);
-    green = ((buffer[30+13]&(~MSB6)))|(buffer[30+14]<<2)|(buffer[30+15]<<10)|((buffer[30+15]&MSB7)<<18);
+    red = ((buffer[0+12]&(~LSB4)))|(buffer[0+13]<<4)|(buffer[0+14]<<12)|((buffer[0+15]&LSB5)<<20);
+    blue = ((buffer[0+28]&(~LSB1)))|(buffer[0+29]<<7)|(buffer[30]<<15)|((buffer[30+1]&LSB2)<<23);
+    green = ((buffer[30+13]&(~LSB6)))|(buffer[30+14]<<2)|(buffer[30+15]<<10)|((buffer[30+15]&LSB7)<<18);
     leds(4,red,blue,green);
     uint8_t i = 0;
     uint8_t j = 0;
