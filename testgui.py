@@ -14,7 +14,10 @@ import gtk, gobject, glib
 import communication
 
 
+
 class PyApp(gtk.Window):
+    FORMAT_DEFAULT = 1
+
     def __init__(self):
         super(PyApp,self).__init__()
 
@@ -22,7 +25,7 @@ class PyApp(gtk.Window):
 
         self.set_title("LED Cube Test GUI")
         self.connect("destroy", gtk.main_quit)
-        self.set_size_request(500,300)
+        self.set_size_request(300,200)
         self.set_position(gtk.WIN_POS_CENTER)
         self.set_border_width(5)
 
@@ -31,32 +34,54 @@ class PyApp(gtk.Window):
 
         hBox = gtk.HBox(False,0)
 
-        scroll_wins = gtk.ScrolledWindow()
-        scroll_wins.set_border_width(0)
-        scroll_wins.set_policy(gtk.POLICY_AUTOMATIC,gtk.POLICY_ALWAYS)
+        #scroll_wins = gtk.ScrolledWindow()
+        #scroll_wins.set_border_width(0)
+        #scroll_wins.set_policy(gtk.POLICY_AUTOMATIC,gtk.POLICY_ALWAYS)
 
-        self.model = gtk.ListStore(gobject.TYPE_STRING)
-        self.tree_view = gtk.TreeView(self.model)
-        scroll_wins.add_with_viewport(self.tree_view)
-        self.tree_view.show()
+        #self.model = gtk.ListStore(gobject.TYPE_STRING)
+        #self.tree_view = gtk.TreeView(self.model)
+        #scroll_wins.add_with_viewport(self.tree_view)
+        #self.tree_view.show()
 
-        cell = gtk.CellRendererText()
-        column = gtk.TreeViewColumn("Active Cubes",cell,text=0)
-        self.tree_view.append_column(column)
+        #cell = gtk.CellRendererText()
+        #column = gtk.TreeViewColumn("Active Cubes",cell,text=0)
+        #self.tree_view.append_column(column)
 
-        table.attach(scroll_wins,0,5,0,1,gtk.FILL|gtk.EXPAND,gtk.FILL|gtk.EXPAND,1,1)
+        #table.attach(scroll_wins,0,5,0,1,gtk.FILL|gtk.EXPAND,gtk.FILL|gtk.EXPAND,1,1)
 
         hBox = gtk.HBox(False,0)
 
-        inputLabel = gtk.Label("Input:")
-        hBox.pack_start(inputLabel,False,False,0)
-        self.inputEntry = gtk.Entry(20)
-        self.inputEntry.set_size_request(150,30)
-        hBox.pack_start(self.inputEntry,False,False,0)
+        patternLabel = gtk.Label("Pattern:")
+        hBox.pack_start(patternLabel,False,False,0)
+        #self.patternDropDown = gtk.Entry(20)
+        liststore2 = gtk.ListStore(gobject.TYPE_STRING)            
+        liststore2.append(["test1"])
+        liststore2.append(["test2"])
+        liststore2.append(["test3"])
+        liststore2.append(["test4"])
+        liststore2.append(["test5"])
+        self.formatCombo = gtk.ComboBox(liststore2)
+        cell = gtk.CellRendererText()
+        self.formatCombo.pack_start(cell)
+        self.formatCombo.add_attribute(cell,'text',0)
+        self.formatCombo.set_size_request(80,30)
+        self.formatCombo.set_wrap_width(1)
+        self.formatCombo.set_model(liststore2)
+        self.formatCombo.set_active(self.FORMAT_DEFAULT)
+        hBox.pack_start(gtk.Label('       '),False,False,0)
+        hBox.pack_start(self.formatCombo,False,False,3)
+        #vBox_op.pack_start(hBox,False,False,1)
 
-        sendBtn = gtk.Button("Transmit")
+        #self.patternDropDown.set_size_request(150,30)
+        #hBox.pack_start(self.patternDropDown,False,False,0)
+
+        sendBtn = gtk.Button("Start")
         sendBtn.connect("clicked",self.Send)
         hBox.pack_start(sendBtn,False,False,0)
+
+        stopBtn = gtk.Button("Stop")
+        stopBtn.connect("clicked",self.Stop)
+        hBox.pack_start(stopBtn,False,False,0)
 
         table.attach(hBox,0,5,1,2,gtk.FILL,gtk.FILL,1,1)
 
@@ -78,22 +103,23 @@ class PyApp(gtk.Window):
         btn1 = gtk.Button("Scan")
         hBox.pack_start(btn1,False,False,0)
         
-        btn2 = gtk.Button("Upload")
-        hBox.pack_start(btn2,False,False,0)
+        #btn2 = gtk.Button("Upload")
+        #hBox.pack_start(btn2,False,False,0)
 
-        btn3 = gtk.Button("Test3")
-        hBox.pack_start(btn3,False,False,0)
+        #btn3 = gtk.Button("Test3")
+        #hBox.pack_start(btn3,False,False,0)
 
 
         helpBtn = gtk.Button("Help")
         helpBtn.set_size_request(70,30)
         helpBtn.connect("clicked",self.helpMe)
-        hBox.pack_start(helpBtn,False,False,0)
+        #hBox.pack_end(helpBtn,False,False,0)
 
         quit = gtk.Button("Quit")
         quit.set_size_request(50,30)
         quit.connect("released",gtk.main_quit)
-        hBox.pack_start(quit,False,False,0) 
+        hBox.pack_end(quit,False,False,0) 
+        hBox.pack_end(helpBtn,False,False,0)
 
         table.attach(hBox,0,5,3,4,gtk.FILL,gtk.FILL,1,1)
 
@@ -106,14 +132,23 @@ class PyApp(gtk.Window):
         data = 1
         self.comm = communication.Communication()
 
+    def text_out(self,output):
+        self.textbuffer.set_text(output)
+        self.scroll_VAdjustment.set_value(self.scroll_VAdjustment.get_upper())
+
     def Send(self,widget):
-        data = self.inputEntry.get_text()
+        data = "\x02\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" #self.inputEntry.get_text()
         self.comm.Transmit(data) 
-        print self.inputEntry.get_text()
-        print self.Receive()
+        print 1#self.inputEntry.get_text()
+        #print self.Receive()
+
+    def Stop(self,widget):
+        print "stopped"
 
     def Receive(self):
         data = self.comm.Receive()
+        text_out(data)
+
 
     def helpMe(self,widget):
         about = gtk.AboutDialog()
