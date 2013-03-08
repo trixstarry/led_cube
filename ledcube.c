@@ -58,6 +58,12 @@
 #define LSB6  0x3F
 #define LSB7  0x7F
 
+#define PATTERN1 1
+#define PATTERN2 2
+#define PATTERN3 3
+#define PATTERN4 4
+#define PATTERN5 5
+
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
@@ -68,6 +74,8 @@
 #include "ledcube.h"
 
 uint16_t frame[5][5] = {{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0}}; //5 layers and 5 led drivers
+uint8_t item = 0;
+uint8_t frame_num = 0;
 
 
 void level(uint8_t layer){
@@ -426,7 +434,8 @@ void Transmit(uint8_t *buffer, uint8_t buffersize){
 int8_t Receive(uint8_t *buffer,uint8_t *receive_buffer,uint8_t buffersize){
         uint8_t i = 0;
 		while (!mirf_data_ready()){
-            test_cube(buffer);
+            //test_cube(buffer);
+            pattern(item,frame_num);
             //i = (i+1) % 5;
             //if(i > 0x1FFFF){
                 //LED1_ON;
@@ -556,6 +565,7 @@ int main (void)
         }
         //_delay_ms(500);
         */
+        /*
         static uint8_t index = 0;
         uint32_t count = 0;
         while(count < 50){
@@ -563,15 +573,18 @@ int main (void)
         count++;
         }
         index = (index+1)%5;
+        */
         
-        /*
         if(Receive(buffer,receive_buffer,BUFFER_SIZE) == 1){
             //translate(buffer);
-            if((ID_SELF == receive_buffer[0])&&(PACKET1 == receive_buffer[1])){
-                for(i = 2; i < BUFFER_SIZE;i++){
-                    buffer[i-2] = receive_buffer[i];
-                }
+            if((ID_SELF == receive_buffer[0])&&(PATTERN1 == receive_buffer[1])){
+                //for(i = 2; i < BUFFER_SIZE;i++){
+                //    buffer[i-2] = receive_buffer[i];
+                //}
                 //test_cube(buffer);
+                frame_num = receive_buffer[2];
+                item = 1;
+
                 receive_buffer[0] = ID_SELF;
                 receive_buffer[1] = ACK;
                 receive_buffer[2] = SENSORS;
@@ -585,10 +598,48 @@ int main (void)
                     //transmit_string("e");
                 }
             }
-            if((receive_buffer[0] == ID_SELF)&&(receive_buffer[1] == PACKET2)){
-                for(i = 34; i < 64; i++){
-                    buffer[i-2] = receive_buffer[i-32];
-                }
+            if((receive_buffer[0] == ID_SELF)&&(receive_buffer[1] == PATTERN2)){
+                //for(i = 34; i < 64; i++){
+                //    buffer[i-2] = receive_buffer[i-32];
+                //}
+                frame_num = receive_buffer[2];
+                item = 2;
+
+                receive_buffer[0] = ID_SELF;
+                receive_buffer[1] = ACK;
+                receive_buffer[2] = SENSORS;
+                Transmit(receive_buffer,BUFFER_SIZE);
+            }
+            if((receive_buffer[0] == ID_SELF)&&(receive_buffer[1] == PATTERN3)){
+                //for(i = 34; i < 64; i++){
+                //    buffer[i-2] = receive_buffer[i-32];
+                //}
+                frame_num = receive_buffer[2];
+                item = 3;
+
+                receive_buffer[0] = ID_SELF;
+                receive_buffer[1] = ACK;
+                receive_buffer[2] = SENSORS;
+                Transmit(receive_buffer,BUFFER_SIZE);
+            }
+            if((receive_buffer[0] == ID_SELF)&&(receive_buffer[1] == PATTERN4)){
+                //for(i = 34; i < 64; i++){
+                //    buffer[i-2] = receive_buffer[i-32];
+                //}
+                frame_num = receive_buffer[2];
+                item = 4;
+
+                receive_buffer[0] = ID_SELF;
+                receive_buffer[1] = ACK;
+                receive_buffer[2] = SENSORS;
+                Transmit(receive_buffer,BUFFER_SIZE);
+            }
+            if((receive_buffer[0] == ID_SELF)&&(receive_buffer[1] == PATTERN5)){
+                //for(i = 34; i < 64; i++){
+                //    buffer[i-2] = receive_buffer[i-32];
+                //}
+                frame_num = receive_buffer[2];
+                item = 5;
 
                 receive_buffer[0] = ID_SELF;
                 receive_buffer[1] = ACK;
@@ -596,7 +647,6 @@ int main (void)
                 Transmit(receive_buffer,BUFFER_SIZE);
             }
         }
-        */
     }
 
 }
