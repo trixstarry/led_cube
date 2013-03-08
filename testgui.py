@@ -18,6 +18,7 @@ import time
 
 class PyApp(gtk.Window):
     FORMAT_DEFAULT = 1
+    output = "\r\n"
 
     def __init__(self):
         super(PyApp,self).__init__()
@@ -88,17 +89,19 @@ class PyApp(gtk.Window):
         table.attach(hBox,0,5,1,2,gtk.FILL,gtk.FILL,1,1)
 
         textWindow = gtk.TextView()
+        self.textbuffer = textWindow.get_buffer()
         textbuffer = textWindow.get_buffer()
         textWindow.set_editable(False)
         textWindow.modify_fg(gtk.STATE_NORMAL, gtk.gdk.Color(5140,5140,5140))
         textWindow.set_cursor_visible(False)
         textWindow.show()
 
-        output_win = gtk.ScrolledWindow()
-        output_win.set_border_width(0)
-        output_win.set_policy(gtk.POLICY_AUTOMATIC,gtk.POLICY_ALWAYS)
-        output_win.add_with_viewport(textWindow)
-        table.attach(output_win,0,5,2,3,gtk.FILL|gtk.EXPAND,gtk.FILL|gtk.EXPAND,1,1)
+        self.output_win = gtk.ScrolledWindow()
+        self.output_win.set_border_width(0)
+        self.output_win.set_policy(gtk.POLICY_AUTOMATIC,gtk.POLICY_ALWAYS)
+        self.output_win.add_with_viewport(textWindow)
+        self.scroll_VAdjustment = self.output_win.get_vadjustment()
+        table.attach(self.output_win,0,5,2,3,gtk.FILL|gtk.EXPAND,gtk.FILL|gtk.EXPAND,1,1)
         
         hBox = gtk.HBox(False,0)
         
@@ -134,52 +137,95 @@ class PyApp(gtk.Window):
         data = 1
         self.comm = communication.Communication()
 
-    def text_out(self,output):
-        self.textbuffer.set_text(output)
+    def text_out(self):
+        self.textbuffer.set_text(self.output)
         self.scroll_VAdjustment.set_value(self.scroll_VAdjustment.get_upper())
 
     def Send(self,widget):
         selected = self.patterns[self.formatCombo.get_active()]
         if selected == "Power Duration":
-            data = '\x01\x04\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
-            data2 = '\x01\x08\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+            data = '\x01\x04\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+            #data2 = '\x01\x08\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
             self.comm.Transmit(data) 
-            time.sleep(.2)
-            self.comm.Transmit(data2)
+            self.output = "\r\n".join((self.output,"Power Duration Pattern Enabled"))
+            self.text_out()
+            #time.sleep(.2)
+            #self.comm.Transmit(data2)
         elif selected == "Cube Connection":
             #print self.Receive()
+            data = '\x01\x03\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+            self.comm.Transmit(data) 
+            sensors = self.Receive()
+            if sensors == '\x01':
+                time.sleep(0.15)
+                data = '\x01\x03\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+                self.comm.Transmit(data) 
+                self.output = "\r\n".join(self.output,"Cube1 detects abother cube on side 1")
+                self.text_out()
+
+            if sensors == '\x02':
+                time.sleep(0.15)
+                data = '\x01\x03\x01\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+                self.comm.Transmit(data) 
+            if sensors == '\x04':
+                time.sleep(0.15)
+                data = '\x01\x03\x02\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+                self.comm.Transmit(data) 
+            if sensors == '\x08':
+                time.sleep(0.15)
+                data = '\x01\x03\x03\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+                self.comm.Transmit(data) 
+               
+            self.output = "\r\n".join((self.output,"Cube Connection Pattern Enabled"))
+            self.text_out()
 
         elif selected == "Dual Algorithms":
             #stuff
+            data = '\x01\x04\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+            self.comm.Transmit(data) 
+            self.output = "\r\n".join((self.output,"Dual Algorithms Enabled"))
+            self.text_out()
         elif selected == "Input Timing":
             #stuff
+            data = '\x01\x04\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+            self.comm.Transmit(data) 
+            self.output = "\r\n".join((self.output,"Input Timing Test Enabled"))
         elif selected == "Moving Pattern":
             #stuff
+            data = '\x01\x01\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+            self.comm.Transmit(data) 
+            self.output = "\r\n".join((self.output,"Moving Pattern Test Enabled"))
+            self.text_out()
         else:
                 
-            data = '\x01\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
+            data = '\x01\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
             #self.inputEntry.get_text()
-            data2 = "\x01\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" 
+            #data2 = "\x01\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" 
             #self.inputEntry.get_text()
             self.comm.Transmit(data) 
             #print 'test\x01'
-            print data
-            time.sleep(.2)
-            self.comm.Transmit(data2)
-            print data2#self.inputEntry.get_text()
+            #print data
+            #time.sleep(.2)
+            #self.comm.Transmit(data2)
+            #print data2#self.inputEntry.get_text()
             #print self.Receive()
 
     def Stop(self,widget):
-        print "stopped"
-        data = '\x01\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
-        data2 = "\x01\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" 
+        data = '\x01\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
         self.comm.Transmit(data) 
-        time.sleep(.2)
-        self.comm.Transmit(data2)
+        time.sleep(.15)
+        data = '\x02\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
+        self.comm.Transmit(data) 
+        time.sleep(.15)
+        data = '\x02\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
+        self.comm.Transmit(data) 
+        self.output = "\r\n".join((self.output,"All Patterns Stopped"))
+        self.text_out()
 
     def Receive(self):
         data = self.comm.Receive()
-        text_out(data)
+        #text_out(data)
+        return data[1]
 
 
     def helpMe(self,widget):
