@@ -12,6 +12,7 @@ pygtk.require('2.0')
 import gtk
 import gtk, gobject, glib
 import communication
+import time
 
 
 
@@ -55,11 +56,12 @@ class PyApp(gtk.Window):
         hBox.pack_start(patternLabel,False,False,0)
         #self.patternDropDown = gtk.Entry(20)
         liststore2 = gtk.ListStore(gobject.TYPE_STRING)            
-        liststore2.append(["test1"])
-        liststore2.append(["test2"])
-        liststore2.append(["test3"])
-        liststore2.append(["test4"])
-        liststore2.append(["test5"])
+        liststore2.append(["Power Duration"])
+        liststore2.append(["Cube Connection"])
+        liststore2.append(["Dual Algorithms"])
+        liststore2.append(["Input Timing"])
+        liststore2.append(["Moving Pattern"])
+        self.patterns = ["Power Duration","Cube Connection","Dual Algorithms","Input Timing","Moving Pattern"]
         self.formatCombo = gtk.ComboBox(liststore2)
         cell = gtk.CellRendererText()
         self.formatCombo.pack_start(cell)
@@ -137,13 +139,43 @@ class PyApp(gtk.Window):
         self.scroll_VAdjustment.set_value(self.scroll_VAdjustment.get_upper())
 
     def Send(self,widget):
-        data = "\x02\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" #self.inputEntry.get_text()
-        self.comm.Transmit(data) 
-        print 1#self.inputEntry.get_text()
-        #print self.Receive()
+        selected = self.patterns[self.formatCombo.get_active()]
+        if selected == "Power Duration":
+            data = '\x01\x04\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+            data2 = '\x01\x08\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+            self.comm.Transmit(data) 
+            time.sleep(.2)
+            self.comm.Transmit(data2)
+        elif selected == "Cube Connection":
+            #print self.Receive()
+
+        elif selected == "Dual Algorithms":
+            #stuff
+        elif selected == "Input Timing":
+            #stuff
+        elif selected == "Moving Pattern":
+            #stuff
+        else:
+                
+            data = '\x01\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
+            #self.inputEntry.get_text()
+            data2 = "\x01\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" 
+            #self.inputEntry.get_text()
+            self.comm.Transmit(data) 
+            #print 'test\x01'
+            print data
+            time.sleep(.2)
+            self.comm.Transmit(data2)
+            print data2#self.inputEntry.get_text()
+            #print self.Receive()
 
     def Stop(self,widget):
         print "stopped"
+        data = '\x01\x04\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
+        data2 = "\x01\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" 
+        self.comm.Transmit(data) 
+        time.sleep(.2)
+        self.comm.Transmit(data2)
 
     def Receive(self):
         data = self.comm.Receive()
