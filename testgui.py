@@ -14,11 +14,26 @@ import gtk, gobject, glib
 import communication
 import time
 
-
+#This function allows the GUI to continue to run during long calculations                                                                    
+def yieldsleep(func):
+    def start(*args, **kwds):
+        iterable = func(*args, **kwds)
+        def step(*args, **kwds):
+            try:
+              time = next(iterable)
+              glib.timeout_add(time, step)
+            except StopIteration:
+              pass
+        glib.idle_add(step)
+    return start
 
 class PyApp(gtk.Window):
     FORMAT_DEFAULT = 1
     output = "\r\n"
+    RUNNING = False
+    PATTERN = ["Pattern 1","Pattern 2","Pattern 3","Pattern 4","Pattern 5"]
+    #PATTERN = ["Power Duration","Cube Connection","Dual Algorithms","Input Timing","Moving Pattern"]
+    i = 0
 
     def __init__(self):
         super(PyApp,self).__init__()
@@ -57,17 +72,16 @@ class PyApp(gtk.Window):
         hBox.pack_start(patternLabel,False,False,0)
         #self.patternDropDown = gtk.Entry(20)
         liststore2 = gtk.ListStore(gobject.TYPE_STRING)            
-        liststore2.append(["Power Duration"])
-        liststore2.append(["Cube Connection"])
-        liststore2.append(["Dual Algorithms"])
-        liststore2.append(["Input Timing"])
-        liststore2.append(["Moving Pattern"])
-        self.patterns = ["Power Duration","Cube Connection","Dual Algorithms","Input Timing","Moving Pattern"]
+        liststore2.append([self.PATTERN[0]])
+        liststore2.append([self.PATTERN[1]])
+        liststore2.append([self.PATTERN[2]])
+        liststore2.append([self.PATTERN[3]])
+        liststore2.append([self.PATTERN[4]])
         self.formatCombo = gtk.ComboBox(liststore2)
         cell = gtk.CellRendererText()
         self.formatCombo.pack_start(cell)
         self.formatCombo.add_attribute(cell,'text',0)
-        self.formatCombo.set_size_request(80,30)
+        self.formatCombo.set_size_request(120,30)
         self.formatCombo.set_wrap_width(1)
         self.formatCombo.set_model(liststore2)
         self.formatCombo.set_active(self.FORMAT_DEFAULT)
@@ -106,6 +120,7 @@ class PyApp(gtk.Window):
         hBox = gtk.HBox(False,0)
         
         btn1 = gtk.Button("Scan")
+        btn1.connect("clicked",self.scan)
         hBox.pack_start(btn1,False,False,0)
         
         #btn2 = gtk.Button("Upload")
@@ -127,6 +142,7 @@ class PyApp(gtk.Window):
         hBox.pack_end(helpBtn,False,False,0)
 
         table.attach(hBox,0,5,3,4,gtk.FILL,gtk.FILL,1,1)
+        #self.display()
 
         
         
@@ -141,8 +157,8 @@ class PyApp(gtk.Window):
         self.textbuffer.set_text(self.output)
         self.scroll_VAdjustment.set_value(self.scroll_VAdjustment.get_upper())
 
-    def Send(self,widget):
-        selected = self.patterns[self.formatCombo.get_active()]
+    def display(self):
+        selected = self.PATTERN[self.formatCombo.get_active()]
         if selected == "Power Duration":
             data = '\x01\x04\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
             #data2 = '\x01\x08\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
@@ -190,10 +206,33 @@ class PyApp(gtk.Window):
             data = '\x01\x04\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
             self.comm.Transmit(data) 
             self.output = "\r\n".join((self.output,"Input Timing Test Enabled"))
+            self.text_out()
         elif selected == "Moving Pattern":
             #stuff
-            data = '\x01\x01\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
-            self.comm.Transmit(data) 
+            """
+            while self.STOPPED == False:
+                data = '\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+                i = 0;
+                id = '\x01'
+                frame = ['\x00','\x01','\x02','\x03','\x04']
+
+                self.comm.Transmit(''.join((id,frame[i],data))) 
+                i = (i+1)%5;
+                self.output = "\r\n".join((self.output,"Moving Pattern Test Enabled"))
+                self.text_out()
+                yield 1
+            self.STOPPED = True
+            """
+            data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+            #i = 0;
+            id = '\x01'
+            pattern = '\x02'
+            frame = ['\x00','\x01','\x02','\x03','\x04']
+
+            data_out = ''.join((id,pattern,frame[self.i],data))
+
+            self.comm.Transmit(data_out) 
+            self.i = (self.i+1)%5;
             self.output = "\r\n".join((self.output,"Moving Pattern Test Enabled"))
             self.text_out()
         else:
@@ -210,7 +249,108 @@ class PyApp(gtk.Window):
             #print data2#self.inputEntry.get_text()
             #print self.Receive()
 
+    @yieldsleep
+    def Send(self,widget):
+        if self.RUNNING == True:
+            return
+        self.RUNNING = True
+        while self.RUNNING == True:
+            selected = self.PATTERN[self.formatCombo.get_active()]
+            if selected == self.PATTERN[0]:
+                data = '\x01\x04\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+                #data2 = '\x01\x08\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+                self.comm.Transmit(data) 
+                self.output = "\r\n".join((self.output,"Power Duration Pattern Enabled"))
+                self.text_out()
+                #time.sleep(.2)
+                #self.comm.Transmit(data2)
+            elif selected == self.PATTERN[1]:
+                #print self.Receive()
+                data = '\x01\x03\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+                self.comm.Transmit(data) 
+                #sensors = self.Receive()
+                if sensors == '\x01':
+                    time.sleep(0.15)
+                    data = '\x01\x03\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+                    self.comm.Transmit(data) 
+                    self.output = "\r\n".join(self.output,"Cube1 detects abother cube on side 1")
+                    self.text_out()
+
+                if sensors == '\x02':
+                    time.sleep(0.15)
+                    data = '\x01\x03\x01\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+                    self.comm.Transmit(data) 
+                if sensors == '\x04':
+                    time.sleep(0.15)
+                    data = '\x01\x03\x02\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+                    self.comm.Transmit(data) 
+                if sensors == '\x08':
+                    time.sleep(0.15)
+                    data = '\x01\x03\x03\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+                    self.comm.Transmit(data) 
+                   
+                self.output = "\r\n".join((self.output,"Cube Connection Pattern Enabled"))
+                self.text_out()
+
+            elif selected == self.PATTERN[2]:
+                #stuff
+                data = '\x01\x04\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+                self.comm.Transmit(data) 
+                self.output = "\r\n".join((self.output,"Dual Algorithms Enabled"))
+                self.text_out()
+            elif selected == self.PATTERN[3]:
+                #stuff
+                data = '\x01\x04\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+                self.comm.Transmit(data) 
+                self.output = "\r\n".join((self.output,"Input Timing Test Enabled"))
+                self.text_out()
+            elif selected == self.PATTERN[4]:
+                #stuff
+                """
+                while self.STOPPED == False:
+                    data = '\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+                    i = 0;
+                    id = '\x01'
+                    frame = ['\x00','\x01','\x02','\x03','\x04']
+
+                    self.comm.Transmit(''.join((id,frame[i],data))) 
+                    i = (i+1)%5;
+                    self.output = "\r\n".join((self.output,"Moving Pattern Test Enabled"))
+                    self.text_out()
+                    yield 1
+                self.STOPPED = True
+                """
+                data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+                #i = 0;
+                id = '\x01'
+                pattern = '\x02'
+                frame = ['\x00','\x01','\x02','\x03','\x04']
+
+                data_out = ''.join((id,pattern,frame[self.i],data))
+
+                self.comm.Transmit(data_out) 
+                self.i = (self.i+1)%5;
+                self.output = "\r\n".join((self.output,"Moving Pattern Test Enabled"))
+                self.text_out()
+            else:
+                    
+                data = '\x01\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
+                #self.inputEntry.get_text()
+                #data2 = "\x01\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" 
+                #self.inputEntry.get_text()
+                self.comm.Transmit(data) 
+                #print 'test\x01'
+                #print data
+                #time.sleep(.2)
+                #self.comm.Transmit(data2)
+                #print data2#self.inputEntry.get_text()
+                #print self.Receive()
+            yield 1000
+            #while gtk.events_pending():
+            #    gtk.main_iteration()
+
     def Stop(self,widget):
+        self.RUNNING = False
         data = '\x01\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
         self.comm.Transmit(data) 
         time.sleep(.15)
@@ -224,8 +364,20 @@ class PyApp(gtk.Window):
 
     def Receive(self):
         data = self.comm.Receive()
+        print "data: "+data[2]
         #text_out(data)
-        return data[1]
+        return data[2]
+
+    def ping(self):
+        data = '\x02\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
+        self.comm.Transmit(data)
+        self.Receive()
+
+    def scan(self,widget):
+        ping(1)
+        ping(2)
+        ping(3)
+        ping(4)
 
 
     def helpMe(self,widget):
