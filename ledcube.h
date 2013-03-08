@@ -170,3 +170,40 @@ uint16_t B[25][5] PROGMEM = {   {0    ,C2P10,0    ,0    ,0    }, //1
                         {0    ,0    ,0    ,0    ,C5P6 },
                         {0    ,0    ,0    ,0    ,C5P7 } //25
 };
+
+uint32_t power_duration[3] PROGMEM = {0x1FFFFFF,0x1FFFFFF,0x1FFFFFF};
+uint32_t off[5][3] PROGMEM = {
+                {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0}
+                };
+uint32_t on[5][3] PROGMEM = 
+    {
+    {0x1FFFFFF,0x1FFFFFF,0x1FFFFFF},{0x1FFFFFF,0x1FFFFFF,0x1FFFFFF},{0x1FFFFFF,0x1FFFFFF,0x1FFFFFF},{0x1FFFFFF,0x1FFFFFF,0x1FFFFFF},{0x1FFFFFF,0x1FFFFFF,0x1FFFFFF}
+    };
+uint32_t pattern1[5][5][3] PROGMEM = 
+    {
+    {{0x1FFFFFF,0,0},{0x1FFFFFF,0,0},{0x1FFFFFF,0,0},{0x1FFFFFF,0,0},{0x1FFFFFF,0,0}},
+    {{0,0x1FFFFFF,0},{0,0x1FFFFFF,0},{0,0x1FFFFFF,0},{0,0x1FFFFFF,0},{0,0x1FFFFFF,0}},
+    {{0,0,0x1FFFFFF},{0,0,0x1FFFFFF},{0,0,0x1FFFFFF},{0,0,0x1FFFFFF},{0,0,0x1FFFFFF}},
+    {{0x1FFFFFF,0x1FFFFFF,0x1FFFFFF},{0x1FFFFFF,0x1FFFFFF,0x1FFFFFF},{0x1FFFFFF,0x1FFFFFF,0x1FFFFFF},{0x1FFFFFF,0x1FFFFFF,0x1FFFFFF},{0x1FFFFFF,0x1FFFFFF,0x1FFFFFF}},
+    {{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0,}}
+    };
+uint32_t pattern2[5][5][3] PROGMEM = 
+    {
+    {{0x1,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0}},
+    {{0x2,0,0},{0,0,0},{0,0,},{0,0,0},{0,0,0}},
+    {{0x4,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0}},
+    {{0x8,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0}},
+    {{0x10,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0,}}
+    };
+
+//This is the magnet test
+//Displays red column over each hall effect sensor
+uint32_t pattern3[5][5][3] PROGMEM = 
+    {
+    {{0x4,0,0},{0x4,0,0},{0x4,0,0},{0x4,0,0},{0x4,0,0}},
+    {{0x400,0,0},{0x400,0,0},{0x400,0,},{0x400,0,0},{0x400,0,0}},
+    {{0x4000,0},{0x4000,0,0},{0x4000,0,0},{0x4000,0,0},{0x4000,0,0}},
+    {{0x400000,0},{0x400000,0,0},{0x400000,0,0},{0x400000,0,0},{0x400000,0,0}},
+    {{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0,}}
+    };
+

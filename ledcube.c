@@ -69,6 +69,7 @@
 
 uint16_t frame[5][5] = {{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0},{0,0,0,0,0}}; //5 layers and 5 led drivers
 
+
 void level(uint8_t layer){
     switch(layer){
         case 0:
@@ -226,6 +227,89 @@ void test_frame(){
         //Toggle latch
         TOGGLE_LATCH
             _delay_ms(100);
+    }
+}
+
+void pattern(uint8_t selection,uint8_t num){
+    uint8_t red = 0;
+    uint8_t blue = 1;
+    uint8_t green = 2;
+
+    switch(selection){
+        case 1:
+            leds(0,pgm_read_dword(&(pattern1[num][0][red])),pgm_read_dword(&(pattern1[num][0][blue])),pgm_read_dword(&(pattern1[num][0][green])));
+            leds(1,pgm_read_dword(&(pattern1[num][1][red])),pgm_read_dword(&(pattern1[num][1][blue])),pgm_read_dword(&(pattern1[num][1][green])));
+            leds(2,pgm_read_dword(&(pattern1[num][2][red])),pgm_read_dword(&(pattern1[num][2][blue])),pgm_read_dword(&(pattern1[num][2][green])));
+            leds(3,pgm_read_dword(&(pattern1[num][3][red])),pgm_read_dword(&(pattern1[num][3][blue])),pgm_read_dword(&(pattern1[num][3][green])));
+            leds(4,pgm_read_dword(&(pattern1[num][4][red])),pgm_read_dword(&(pattern1[num][4][blue])),pgm_read_dword(&(pattern1[num][4][green])));
+            break;
+        case 2:
+            leds(0,pgm_read_dword(&(pattern2[num][0][red])),pgm_read_dword(&(pattern2[num][0][blue])),pgm_read_dword(&(pattern2[num][0][green])));
+            leds(1,pgm_read_dword(&(pattern2[num][1][red])),pgm_read_dword(&(pattern2[num][1][blue])),pgm_read_dword(&(pattern2[num][1][green])));
+            leds(2,pgm_read_dword(&(pattern2[num][2][red])),pgm_read_dword(&(pattern2[num][2][blue])),pgm_read_dword(&(pattern2[num][2][green])));
+            leds(3,pgm_read_dword(&(pattern2[num][3][red])),pgm_read_dword(&(pattern2[num][3][blue])),pgm_read_dword(&(pattern2[num][3][green])));
+            leds(4,pgm_read_dword(&(pattern2[num][4][red])),pgm_read_dword(&(pattern2[num][4][blue])),pgm_read_dword(&(pattern2[num][4][green])));
+            break;
+        case 3:
+            leds(0,pgm_read_dword(&(pattern3[num][0][red])),pgm_read_dword(&(pattern3[num][0][blue])),pgm_read_dword(&(pattern3[num][0][green])));
+            leds(1,pgm_read_dword(&(pattern3[num][1][red])),pgm_read_dword(&(pattern3[num][1][blue])),pgm_read_dword(&(pattern3[num][1][green])));
+            leds(2,pgm_read_dword(&(pattern3[num][2][red])),pgm_read_dword(&(pattern3[num][2][blue])),pgm_read_dword(&(pattern3[num][2][green])));
+            leds(3,pgm_read_dword(&(pattern3[num][3][red])),pgm_read_dword(&(pattern3[num][3][blue])),pgm_read_dword(&(pattern3[num][3][green])));
+            leds(4,pgm_read_dword(&(pattern3[num][4][red])),pgm_read_dword(&(pattern3[num][4][blue])),pgm_read_dword(&(pattern3[num][4][green])));
+            break;
+        case 4:
+            leds(0,pgm_read_dword(&(on[0][red])),pgm_read_dword(&(on[0][blue])),pgm_read_dword(&(on[0][green])));
+            leds(1,pgm_read_dword(&(on[1][red])),pgm_read_dword(&(on[1][blue])),pgm_read_dword(&(on[1][green])));
+            leds(2,pgm_read_dword(&(on[2][red])),pgm_read_dword(&(on[2][blue])),pgm_read_dword(&(on[2][green])));
+            leds(3,pgm_read_dword(&(on[3][red])),pgm_read_dword(&(on[3][blue])),pgm_read_dword(&(on[3][green])));
+            leds(4,pgm_read_dword(&(on[4][red])),pgm_read_dword(&(on[4][blue])),pgm_read_dword(&(on[4][green])));
+            break;
+        case 5:
+            leds(0,pgm_read_dword(&(off[0][red])),pgm_read_dword(&(off[0][blue])),pgm_read_dword(&(off[0][green])));
+            leds(1,pgm_read_dword(&(off[1][red])),pgm_read_dword(&(off[1][blue])),pgm_read_dword(&(off[1][green])));
+            leds(2,pgm_read_dword(&(off[2][red])),pgm_read_dword(&(off[2][blue])),pgm_read_dword(&(off[2][green])));
+            leds(3,pgm_read_dword(&(off[3][red])),pgm_read_dword(&(off[3][blue])),pgm_read_dword(&(off[3][green])));
+            leds(4,pgm_read_dword(&(off[4][red])),pgm_read_dword(&(off[4][blue])),pgm_read_dword(&(off[4][green])));
+            break;
+        default:
+            leds(0,1,0,0);
+            leds(1,1,0,0);
+            leds(2,1,0,0);
+            leds(3,1,0,0);
+            leds(4,1,0,0);
+            //
+        }
+    uint8_t i = 0;
+    uint8_t j = 0;
+    uint8_t temp = 0;
+    for(i=0;i<5;i++){
+        level(i);
+        for(j=5;j-- > 0; ){
+            temp = (frame[i][j]);
+            //load first byte
+            SPDR = temp;
+            //temp = 0x0F & display_count;
+            while(bit_is_clear(SPSR,SPIF)){};
+
+            temp = (frame[i][j]>>8);
+            //load second byte
+            SPDR = temp;
+            //temp = 0x0F & display_count;
+            while(bit_is_clear(SPSR,SPIF)){};
+            frame[i][j] = 0;
+        }
+
+        //Toggle latch
+        TOGGLE_LATCH
+        if(i < 4){
+            _delay_ms(2);
+        }
+        else if(4 == i){
+            //_delay_us(100);
+        }
+        else{
+            _delay_ms(500);
+        }
     }
 }
 
@@ -472,6 +556,15 @@ int main (void)
         }
         //_delay_ms(500);
         */
+        static uint8_t index = 0;
+        uint32_t count = 0;
+        while(count < 50){
+        pattern(3,index);
+        count++;
+        }
+        index = (index+1)%5;
+        
+        /*
         if(Receive(buffer,receive_buffer,BUFFER_SIZE) == 1){
             //translate(buffer);
             if((ID_SELF == receive_buffer[0])&&(PACKET1 == receive_buffer[1])){
@@ -503,6 +596,7 @@ int main (void)
                 Transmit(receive_buffer,BUFFER_SIZE);
             }
         }
+        */
     }
 
 }
