@@ -157,98 +157,6 @@ class PyApp(gtk.Window):
         self.textbuffer.set_text(self.output)
         self.scroll_VAdjustment.set_value(self.scroll_VAdjustment.get_upper())
 
-    def display(self):
-        selected = self.PATTERN[self.formatCombo.get_active()]
-        if selected == "Power Duration":
-            data = '\x01\x04\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
-            #data2 = '\x01\x08\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
-            self.comm.Transmit(data) 
-            self.output = "\r\n".join((self.output,"Power Duration Pattern Enabled"))
-            self.text_out()
-            #time.sleep(.2)
-            #self.comm.Transmit(data2)
-        elif selected == "Cube Connection":
-            #print self.Receive()
-            data = '\x01\x03\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
-            self.comm.Transmit(data) 
-            sensors = self.Receive()
-            if sensors == '\x01':
-                time.sleep(0.15)
-                data = '\x01\x03\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
-                self.comm.Transmit(data) 
-                self.output = "\r\n".join(self.output,"Cube1 detects abother cube on side 1")
-                self.text_out()
-
-            if sensors == '\x02':
-                time.sleep(0.15)
-                data = '\x01\x03\x01\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
-                self.comm.Transmit(data) 
-            if sensors == '\x04':
-                time.sleep(0.15)
-                data = '\x01\x03\x02\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
-                self.comm.Transmit(data) 
-            if sensors == '\x08':
-                time.sleep(0.15)
-                data = '\x01\x03\x03\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
-                self.comm.Transmit(data) 
-               
-            self.output = "\r\n".join((self.output,"Cube Connection Pattern Enabled"))
-            self.text_out()
-
-        elif selected == "Dual Algorithms":
-            #stuff
-            data = '\x01\x04\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
-            self.comm.Transmit(data) 
-            self.output = "\r\n".join((self.output,"Dual Algorithms Enabled"))
-            self.text_out()
-        elif selected == "Input Timing":
-            #stuff
-            data = '\x01\x04\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
-            self.comm.Transmit(data) 
-            self.output = "\r\n".join((self.output,"Input Timing Test Enabled"))
-            self.text_out()
-        elif selected == "Moving Pattern":
-            #stuff
-            """
-            while self.STOPPED == False:
-                data = '\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
-                i = 0;
-                id = '\x01'
-                frame = ['\x00','\x01','\x02','\x03','\x04']
-
-                self.comm.Transmit(''.join((id,frame[i],data))) 
-                i = (i+1)%5;
-                self.output = "\r\n".join((self.output,"Moving Pattern Test Enabled"))
-                self.text_out()
-                yield 1
-            self.STOPPED = True
-            """
-            data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
-            #i = 0;
-            id = '\x01'
-            pattern = '\x02'
-            frame = ['\x00','\x01','\x02','\x03','\x04']
-
-            data_out = ''.join((id,pattern,frame[self.i],data))
-
-            self.comm.Transmit(data_out) 
-            self.i = (self.i+1)%5;
-            self.output = "\r\n".join((self.output,"Moving Pattern Test Enabled"))
-            self.text_out()
-        else:
-                
-            data = '\x01\x05\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
-            #self.inputEntry.get_text()
-            #data2 = "\x01\x08\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00" 
-            #self.inputEntry.get_text()
-            self.comm.Transmit(data) 
-            #print 'test\x01'
-            #print data
-            #time.sleep(.2)
-            #self.comm.Transmit(data2)
-            #print data2#self.inputEntry.get_text()
-            #print self.Receive()
-
     @yieldsleep
     def Send(self,widget):
         if self.RUNNING == True:
@@ -270,13 +178,12 @@ class PyApp(gtk.Window):
 
                 self.output = "\r\n".join((self.output,"Power Duration Pattern Enabled"))
                 self.text_out()
-                #time.sleep(.2)
-                #self.comm.Transmit(data2)
             elif selected == self.PATTERN[1]:
                 #print self.Receive()
                 data = '\x01\x03\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
                 self.comm.Transmit(data) 
                 #sensors = self.Receive()
+                sensors = '\x02'
                 if sensors == '\x01':
                     time.sleep(0.15)
                     data = '\x01\x03\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
@@ -372,7 +279,7 @@ class PyApp(gtk.Window):
 
     def Receive(self):
         data = self.comm.Receive()
-        print "data: "+data[2]
+        print "data: "+data
         #text_out(data)
         return data[2]
 
