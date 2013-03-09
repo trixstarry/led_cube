@@ -266,6 +266,8 @@ class PyApp(gtk.Window):
                 data_out = ''.join((id,pattern,frame[self.i],data))
 
                 self.comm.Transmit(data_out) 
+                self.i = (self.i+1)%5;
+
                 self.output = "\r\n".join((self.output,"Power Duration Pattern Enabled"))
                 self.text_out()
                 #time.sleep(.2)
