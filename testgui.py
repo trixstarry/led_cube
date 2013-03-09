@@ -254,8 +254,8 @@ class PyApp(gtk.Window):
         if self.RUNNING == True:
             return
         self.RUNNING = True
+        selected = self.PATTERN[self.formatCombo.get_active()]
         while self.RUNNING == True:
-            selected = self.PATTERN[self.formatCombo.get_active()]
             if selected == self.PATTERN[0]:
                 data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
                 #i = 0;
