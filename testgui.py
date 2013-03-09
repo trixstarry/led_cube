@@ -257,9 +257,15 @@ class PyApp(gtk.Window):
         while self.RUNNING == True:
             selected = self.PATTERN[self.formatCombo.get_active()]
             if selected == self.PATTERN[0]:
-                data = '\x01\x04\x00\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
-                #data2 = '\x01\x08\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
-                self.comm.Transmit(data) 
+                data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+                #i = 0;
+                id = '\x01'
+                pattern = '\x01'
+                frame = ['\x00','\x01','\x02','\x03','\x04']
+
+                data_out = ''.join((id,pattern,frame[self.i],data))
+
+                self.comm.Transmit(data_out) 
                 self.output = "\r\n".join((self.output,"Power Duration Pattern Enabled"))
                 self.text_out()
                 #time.sleep(.2)
