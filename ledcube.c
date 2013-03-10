@@ -505,7 +505,7 @@ int main (void)
 //                if (receive_buffer[3] == RESPONSE){
 //                    Transmit(receive_buffer,BUFFER_SIZE);
 //                }
-                Transmit(receive_buffer,BUFFER_SIZE);
+//                Transmit(receive_buffer,BUFFER_SIZE);
             }
             if((receive_buffer[0] == ID_SELF)&&(receive_buffer[1] == PATTERN2)){
                 frame_num = receive_buffer[2];
