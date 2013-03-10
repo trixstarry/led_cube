@@ -13,6 +13,7 @@ import gtk
 import gtk, gobject, glib
 import communication
 import time
+import threading
 
 #This function allows the GUI to continue to run during long calculations                                                                    
 def yieldsleep(func):
@@ -26,6 +27,12 @@ def yieldsleep(func):
               pass
         glib.idle_add(step)
     return start
+
+#class transmit_thread(threading.Thread):
+#    def run(self):
+#
+#    def transmit(self):
+
 
 class PyApp(gtk.Window):
     FORMAT_DEFAULT = 1
@@ -304,24 +311,26 @@ class PyApp(gtk.Window):
         while self.RUNNING1 == True:
             cube = 'Cube 1: '
             id = '\x01'
-            data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+            data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+            response = '\x00'
             frame = ['\x00','\x01','\x02','\x03','\x04']
             pattern = '\x05'
             if selected == self.PATTERN[0]:
                 pattern = '\x01'
 
-                data_out = ''.join((id,pattern,frame[self.i1],data))
+                data_out = ''.join((id,pattern,frame[self.i1],response,data))
 
                 self.comm.Transmit(data_out) 
 
                 self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
                 self.text_out()
             elif selected == self.PATTERN[1]:
+                response = '\x01'
                 #print self.Receive()
                 pattern = '\x03'
                 #self.comm.Transmit(data) 
                 sensors = self.Receive()
-                print sensors
+                #print sensors
                 #sensors = '\x02'
                 if sensors == 2:
                     self.side = 0
@@ -338,32 +347,32 @@ class PyApp(gtk.Window):
                 else:
                     pattern = '\x05'
                     self.output = "\r\n".join((self.output,''.join((cube,"Nothing Detected"))))
-                data_out = ''.join((id,pattern,frame[self.side],data))
+                data_out = ''.join((id,pattern,frame[self.side],response,data))
                 self.comm.Transmit(data_out) 
                 self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
                 self.text_out()
 
             elif selected == self.PATTERN[2]:
-                pattern = '\x03'
-                data_out = ''.join((id,pattern,frame[self.i1],data))
+                pattern = '\x02'
+                data_out = ''.join((id,pattern,frame[self.i1],response,data))
                 self.comm.Transmit(data_out) 
                 self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
                 self.text_out()
             elif selected == self.PATTERN[3]:
                 pattern = '\x04'
-                data_out = ''.join((id,pattern,frame[self.i1],data))
+                data_out = ''.join((id,pattern,frame[self.i1],response,data))
                 self.comm.Transmit(data_out) 
                 self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
                 self.text_out()
             elif selected == self.PATTERN[4]:
                 pattern = '\x04'
-                data_out = ''.join((id,pattern,frame[self.i1],data))
+                data_out = ''.join((id,pattern,frame[self.i1],response,data))
                 self.comm.Transmit(data_out) 
                 self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
                 self.text_out()
             else:
                 pattern = '\x01'
-                data_out = ''.join((id,pattern,frame[self.i1],data))
+                data_out = ''.join((id,pattern,frame[self.i1],response,data))
                 self.comm.Transmit(data_out) 
                 self.output = "\r\n".join((self.output,"Error 71"))
                 self.text_out()
