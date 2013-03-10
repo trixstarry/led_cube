@@ -20,6 +20,9 @@
 #define MY_UBBR 12 // BAUD = 38400
 //#define BAUD 9600
 //#define MY_UBBR 51 // F_CPU/(16*BAUD)-1
+#define BUSY 0xAB
+#define STATUS_REQUEST 0xAC
+#define OK  0xAA
 
 //#define SET_U2X 1 // Set U2X in UCSRA (double speed USART)
 //#define MY_UBBR 12 // 76800
@@ -38,10 +41,18 @@ volatile char buffer [32] = {'7','b','c','d','e','f','g','h','i','j','k','l','m'
 volatile uint8_t buffer_index = 0;
 volatile uint8_t transmit_flag = 0;
 volatile uint8_t timeout_flag = 1;
+volatile uint8_t doing_flag = 0;
 
 void Transmit(uint8_t *buffer,uint8_t buffersize){
-    mirf_send(buffer,buffersize);
-    _delay_ms(5);
+    uint16_t counter = 0;
+    while (mirf_send (buffer, BUFFER_SIZE) && counter < 1000)
+    {
+        _delay_us(10);
+    }
+    if (counter >= 1000)
+    {
+        //transmit_string("e");
+    }
 }
 
 int8_t Receive(uint8_t *buffer,uint8_t buffersize){
@@ -49,7 +60,7 @@ int8_t Receive(uint8_t *buffer,uint8_t buffersize){
 //char test [7] = {'d','a','t','a',' ','i','s',' ','\n'};
     while (!mirf_data_ready()){
         _delay_us (100);
-        if(i > 5000){
+        if(i > 50){
             return -1;
         }
         i++;
@@ -102,8 +113,28 @@ void USART_Flush( void )
     while ( UCSRA & (1<<RXC) ) {dummy = UDR;}
 }
 
+void test () {
+    if(1 == transmit_flag){
+        Transmit(buffer,BUFFER_SIZE);
+        transmit_flag = 0;
+    }
+    else{
+        if(Receive(buffer,BUFFER_SIZE)==1){
+            transmit_string("k\n");
+        }
+        else{
+            transmit_string("b\n");
+        }
+        buffer_index = 0;
+    }
+}
+
+
 ISR(USART_RX_vect){
     if(transmit_flag == 1){
+        USART_Receive();
+        USART_Transmit(BUSY);
+        return;
     }
     buffer[buffer_index] = USART_Receive();
     if(buffer_index == 3){
@@ -165,7 +196,9 @@ int main (void)
        //Transmit(buffer,BUFFER_SIZE);
         ////transmit_string("Did i send?\r\n");
         //_delay_ms(100);
+        test();
         
+        /*
     if(transmit_flag ==1){
         uint8_t status = UCSRB; //save usart status
         UCSRB &= ~(1<<RXCIE);   //turn off receive interrupt enable
@@ -202,10 +235,11 @@ int main (void)
         buffer_index = 0;
         USART_Flush();
         UCSRB = status;//|(1<<RXEN); //if interrupt was enable previously reenable it.
+        */
     }
 
  
 //        test_protocol(buffer,BUFFER_SIZE);
-	}
+//	}
 	
 }
