@@ -192,8 +192,9 @@ int main (void)
             else{
                 transmit_string("b\n");
             }
-            transmit_flag = 0;
+            //transmit_flag = 0;
         }
+        transmit_flag = 0;
         for(buffer_index = 0; buffer_index < BUFFER_SIZE;buffer_index++){
             buffer[buffer_index] = 0;
         }
