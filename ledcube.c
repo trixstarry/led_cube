@@ -34,13 +34,15 @@
 #define CUBE2   0x02
 #define CUBE3   0x04
 #define CUBE4   0x08
-#define ID_SELF CUBE2
+#define ID_SELF CUBE1
 #define PACKET1 0x04
 #define PACKET2 0x08
 
 #define ACK     0x11
 #define DATA_S    0x22
 #define NACK    0x33
+#define NO_RESPONSE 0x00
+#define RESPONSE 0x01
 
 #define MSB1  0x80
 #define MSB2  0xC0
@@ -492,159 +494,61 @@ int main (void)
 	
 	while (1)
 	{
-        /*
-        //static uint32_t layer = 0;
-        static uint8_t layer = 0;
-        static uint32_t red = 0x02;
-        static uint32_t blue = 1;
-        static uint32_t green = 1;
-        leds(layer,red,red,red);
-        //red = red<<1;
-        //if(red == 0){
-        //    red = 1;
-       // }
-        layer = (layer+1)%5;
-        uint8_t i = 0;
-        uint8_t j = 0;
-        uint8_t temp = 0;
-        for(i=0;i<5;i++){
-            switch(i){
-                case 0:
-                    PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
-                    PORTB |= ((0<<PB4)|(0<<PB5)|(0<<PB6));
-                    break;
-                case 1:
-                    PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
-                    PORTB |= ((1<<PB4)|(0<<PB5)|(0<<PB6));
-                    break;
-                case 2:
-                    PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
-                    PORTB |= ((0<<PB4)|(1<<PB5)|(0<<PB6));
-                    break;
-                case 3:
-                    PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
-                    PORTB |= ((1<<PB4)|(1<<PB5)|(0<<PB6));
-                    break;
-                case 4:
-                    PORTB &= ~((1<<PB4)|(1<<PB5)|(1<<PB6));
-                    PORTB |= ((0<<PB4)|(0<<PB5)|(1<<PB6));
-                    break;
-                default:
-                    PORTB |= ((1<<PB4)|(1<<PB5)|(1<<PB6));
-            }
-            //level(i);
-            for(j=5;j-- > 0; ){
-                temp = (frame[i][j]);
-                //load first byte
-                SPDR = temp;
-                //temp = 0x0F & display_count;
-                while(bit_is_clear(SPSR,SPIF)){};
-
-                temp = (frame[i][j]>>8);
-                //load second byte
-                SPDR = temp;
-                //temp = 0x0F & display_count;
-                while(bit_is_clear(SPSR,SPIF)){};
-                frame[i][j] = 0;
-            }
-
-            //Toggle latch
-            TOGGLE_LATCH
-                if(i < 4){
-                   // _delay_ms(2);
-                }
-                else if(4 == i){
-                    //_delay_us(100);
-                }
-                else{
-                   // _delay_ms(500);
-                }
-            if(i == (layer-1)){
-            _delay_ms(500);
-            }
-        }
-        //_delay_ms(500);
-        */
-        /*
-        static uint8_t index = 0;
-        uint32_t count = 0;
-        while(count < 50){
-        pattern(3,index);
-        count++;
-        }
-        index = (index+1)%5;
-        */
-        
         if(Receive(buffer,receive_buffer,BUFFER_SIZE) == 1){
-            //translate(buffer);
             if((ID_SELF == receive_buffer[0])&&(PATTERN1 == receive_buffer[1])){
-                //for(i = 2; i < BUFFER_SIZE;i++){
-                //    buffer[i-2] = receive_buffer[i];
-                //}
-                //test_cube(buffer);
                 frame_num = receive_buffer[2];
                 item = 1;
 
                 receive_buffer[0] = ID_SELF;
                 receive_buffer[1] = ACK;
                 receive_buffer[2] = SENSORS;
-                counter = 0;
-                while (mirf_send (receive_buffer, BUFFER_SIZE) && counter < 1000)
-                {
-                    _delay_us(10);
-                }
-                if (counter >= 1000)
-                {
-                    //transmit_string("e");
+                if (receive_buffer[3] == RESPONSE){
+                    Transmit(receive_buffer,BUFFER_SIZE);
                 }
             }
             if((receive_buffer[0] == ID_SELF)&&(receive_buffer[1] == PATTERN2)){
-                //for(i = 34; i < 64; i++){
-                //    buffer[i-2] = receive_buffer[i-32];
-                //}
                 frame_num = receive_buffer[2];
                 item = 2;
 
                 receive_buffer[0] = ID_SELF;
                 receive_buffer[1] = ACK;
                 receive_buffer[2] = SENSORS;
-                Transmit(receive_buffer,BUFFER_SIZE);
+                if (receive_buffer[3] == RESPONSE){
+                    Transmit(receive_buffer,BUFFER_SIZE);
+                }
             }
             if((receive_buffer[0] == ID_SELF)&&(receive_buffer[1] == PATTERN3)){
-                //for(i = 34; i < 64; i++){
-                //    buffer[i-2] = receive_buffer[i-32];
-                //}
                 frame_num = receive_buffer[2];
                 item = 3;
 
                 receive_buffer[0] = ID_SELF;
                 receive_buffer[1] = ACK;
                 receive_buffer[2] = SENSORS;
-                Transmit(receive_buffer,BUFFER_SIZE);
+                if (receive_buffer[3] == RESPONSE){
+                    Transmit(receive_buffer,BUFFER_SIZE);
+                }
             }
             if((receive_buffer[0] == ID_SELF)&&(receive_buffer[1] == PATTERN4)){
-                //for(i = 34; i < 64; i++){
-                //    buffer[i-2] = receive_buffer[i-32];
-                //}
                 frame_num = receive_buffer[2];
                 item = 4;
 
                 receive_buffer[0] = ID_SELF;
                 receive_buffer[1] = ACK;
                 receive_buffer[2] = SENSORS;
-                Transmit(receive_buffer,BUFFER_SIZE);
+                if (receive_buffer[3] == RESPONSE){
+                    Transmit(receive_buffer,BUFFER_SIZE);
+                }
             }
             if((receive_buffer[0] == ID_SELF)&&(receive_buffer[1] == PATTERN5)){
-                //for(i = 34; i < 64; i++){
-                //    buffer[i-2] = receive_buffer[i-32];
-                //}
                 frame_num = receive_buffer[2];
                 item = 5;
 
                 receive_buffer[0] = ID_SELF;
                 receive_buffer[1] = ACK;
                 receive_buffer[2] = SENSORS;
-                Transmit(receive_buffer,BUFFER_SIZE);
+                if (receive_buffer[3] == RESPONSE){
+                    Transmit(receive_buffer,BUFFER_SIZE);
+                }
             }
         }
     }
