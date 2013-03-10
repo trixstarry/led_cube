@@ -33,14 +33,7 @@ class Communication():
         #self.s1.write('&')
 
     def Receive(self):
-        data = ""
-        item = ""
-        #while True:
-        data = self.s1.readline() 
-        data = self.s1.readline()
-            #if item == '&':
-            #    break
-            #else:
-            #    data += item
-        return data
+        data1 = ""
+        data1 = self.s1.readline() 
+        return data1
 
