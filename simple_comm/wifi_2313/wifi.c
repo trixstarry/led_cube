@@ -37,6 +37,7 @@ volatile char buffer [32] = {'7','b','c','d','e','f','g','h','i','j','k','l','m'
                     'q','r','s','t','u','v','w','x','y','z','1','2','3','4','5','6'};
 volatile uint8_t buffer_index = 0;
 volatile uint8_t transmit_flag = 0;
+volatile uint8_t timeout_flag = 1;
 
 void Transmit(uint8_t *buffer,uint8_t buffersize){
     mirf_send(buffer,buffersize);
@@ -105,6 +106,14 @@ ISR(USART_RX_vect){
     if(transmit_flag == 1){
     }
     buffer[buffer_index] = USART_Receive();
+    if(buffer_index == 3){
+        if(buffer[buffer_index] == '\x00'){
+            timeout_flag = 0;
+        }
+        else{
+            timeout_flag = 1;
+        }
+    }
     if(buffer_index == 31){
         transmit_flag = 1;
         //UCSRB = ~(1<<RXEN);
@@ -160,7 +169,7 @@ int main (void)
     if(transmit_flag ==1){
         uint8_t status = UCSRB; //save usart status
         UCSRB &= ~(1<<RXCIE);   //turn off receive interrupt enable
-        transmit_string("t");
+        //transmit_string("t");
         uint16_t counter = 0;
         while (mirf_send (buffer, BUFFER_SIZE) && counter < 1000)
         {
@@ -168,21 +177,23 @@ int main (void)
         }
         if (counter >= 1000)
         {
-            transmit_string("e");
+            //transmit_string("e");
         }
 
         //_delay_ms(50);
         ////transmit_string("Rx_Powerup\r\n");
         //rx_powerup();
         //_delay_ms(50);
-        transmit_string("r");
-        if(Receive(buffer,BUFFER_SIZE)==1){
-            transmit_string("k\n");
+        //transmit_string("r");
+        if(1 == timeout_flag){
+            if(Receive(buffer,BUFFER_SIZE)==1){
+                transmit_string("k\n");
+            }
+            else{
+                transmit_string("b\n");
+            }
+            transmit_flag = 0;
         }
-        else{
-            transmit_string("b\n");
-        }
-        transmit_flag = 0;
         for(buffer_index = 0; buffer_index < BUFFER_SIZE;buffer_index++){
             buffer[buffer_index] = 0;
         }
