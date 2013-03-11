@@ -33,10 +33,9 @@ class Communication():
         #self.s1.write('&')
 
     def Receive(self):
-        data = ""
-        first = True
+        data = "" first = True
         while(True):
-            data = [int(x.encode('hex'),16) for x in self.s1.readline()] 
+            data = self.s1.readline()
             #print data
             if not data:
                 if first == True:
@@ -46,14 +45,17 @@ class Communication():
             #print "*********************"
             #print [int(x.encode('hex'),16) for x in data]
             try:
-                if data[0] == 'b':
+                if data == 'b\n':
+                    #print data
                     return 0
-                if ((data[0] == 'a')):
-
-                    data = [int(x.encode('hex'),16) for x in self.s1.readline()] 
-                    #print "sensor input is:"
-                    #print data[2]
-                    return data[2]
+                if ((data == 'a\n')):
+                    while(1):
+                        data = self.s1.readline() 
+                        if data == "c\n":
+                            data = [int(x.encode('hex'),16) for x in self.s1.readline()] 
+                        #print "sensor input is:"
+                        #print data[2]
+                            return data[2]
             except:
                 #data = []
                 data = [-1,-1,-1]
