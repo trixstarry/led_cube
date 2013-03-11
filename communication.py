@@ -46,9 +46,11 @@ class Communication():
             #print "*********************"
             #print [int(x.encode('hex'),16) for x in data]
             try:
-                if data[-3] == 'b':
+                if data[0] == 'b':
                     return 0
-                if ((data[1] == 17)):
+                if ((data[0] == 'a')):
+
+                    data = [int(x.encode('hex'),16) for x in self.s1.readline()] 
                     #print "sensor input is:"
                     #print data[2]
                     return data[2]

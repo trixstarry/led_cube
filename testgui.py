@@ -478,11 +478,12 @@ class PyApp(gtk.Window):
             
            # self.Receive()
             self.i2 = (self.i2+1)%5;
-            time.sleep(.1)
+            #time.sleep(.1)
             yield 1000
 
     def Stop2(self,widget):
         self.RUNNING2 = False
+        self.i2 = 0
         id = '\x02'
         pattern = '\x05'
         data = '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
