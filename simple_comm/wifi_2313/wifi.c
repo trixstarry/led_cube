@@ -116,6 +116,7 @@ void USART_Flush( void )
 void test () {
     if(1 == transmit_flag){
         Transmit(buffer,BUFFER_SIZE);
+        USART_Transmit(OK);
         transmit_flag = 0;
     }
     else{
@@ -123,7 +124,7 @@ void test () {
             transmit_string("k\n");
         }
         else{
-            transmit_string("b\n");
+            //transmit_string("b\n");
         }
         buffer_index = 0;
     }
