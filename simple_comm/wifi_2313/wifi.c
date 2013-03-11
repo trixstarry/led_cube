@@ -38,6 +38,8 @@
 
 volatile char buffer [32] = {'7','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
                     'q','r','s','t','u','v','w','x','y','z','1','2','3','4','5','6'};
+volatile char buffer_in_use = 0;
+
 volatile uint8_t buffer_index = 0;
 volatile uint8_t transmit_flag = 0;
 volatile uint8_t timeout_flag = 1;
@@ -71,12 +73,12 @@ int8_t Receive(uint8_t *buffer,uint8_t buffersize){
     //}
     //_delay_ms(50);
     mirf_get_data(buffer);
-    transmit_string("\r\n");
-    for(i = 0; i < (buffersize); i++)
-    {
-        USART_Transmit(buffer[i]);
-    }
-    transmit_string("\r\n");
+//    transmit_string("\r\n");
+//    for(i = 0; i < (buffersize); i++)
+//    {
+//        USART_Transmit(buffer[i]);
+//    }
+//    transmit_string("\r\n");
     return 1;
 }
 
@@ -114,59 +116,53 @@ void USART_Flush( void )
 }
 
 void test () {
-    if(1 == transmit_flag){
-        //Transmit(buffer,BUFFER_SIZE);
-        USART_Transmit(OK);
+    if (1 == Receive(buffer, BUFFER_SIZE))
+    {
+        USART_Transmit('c');
         USART_Transmit('\n');
-        transmit_flag = 0;
+        char i = 0;
+        for(i = 0; i < BUFFER_SIZE; i++)
+        {
+            USART_Transmit(buffer[i]);
+        }
+        USART_Transmit('\n');
     }
-    else{
-//        if(Receive(buffer,BUFFER_SIZE)==1){
-//            transmit_string("k\n");
-//        }
-//        else{
-//            //transmit_string("b\n");
-//        }
-        _delay_ms(5);
-        //buffer_index = 0;
-
+    if(1 == buffer_in_use)
+    {
+        // do something with the data in buffer...
+        Transmit(buffer, BUFFER_SIZE);
+        buffer_in_use = 0;
     }
 }
 
 
 ISR(USART_RX_vect){
-    /*
-    if(transmit_flag == 1){
-        USART_Receive();
-        USART_Transmit(BUSY);
-        USART_Transmit('\n');
-        return;
+
+    uint8_t data = USART_Receive();
+    if ((0 == buffer_index) && (0 == buffer_in_use))
+    {
+        transmit_flag = 0;
     }
-    */
-    //buffer[buffer_index] = USART_Receive();
-    //USART_Transmit(USART_Receive());
-    /*
-    if(buffer_index == 3){
-        if(buffer[buffer_index] == '\x00'){
-            timeout_flag = 0;
-        }
-        else{
-            timeout_flag = 1;
-        }
+    if (0 == transmit_flag)
+    {
+        buffer[buffer_index] = data;
     }
-    */
-    USART_Transmit('i');
-    USART_Transmit('\n');
-    USART_Receive();
 
     if(buffer_index == 31){
-        transmit_flag = 1;
-        USART_Transmit('a');
-        USART_Transmit('\n');
-        //UCSRB = ~(1<<RXEN);
+        if (1 == transmit_flag)
+        {
+            USART_Transmit('b');
+            USART_Transmit('\n');
+        }
+        else
+        {
+            transmit_flag = 1;
+            buffer_in_use = 1;
+            USART_Transmit('a');
+            USART_Transmit('\n');
+        }
     }
     buffer_index = ((buffer_index+1)%32);
-
 }
 
 int main (void)

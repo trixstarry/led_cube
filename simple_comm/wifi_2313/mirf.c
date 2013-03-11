@@ -274,7 +274,7 @@ char mirf_send(uint8_t * value, uint8_t len)
     }
 //    while (PTX) {}                  // Wait until last paket is send
 
-    USART_Transmit('h');
+//    USART_Transmit('h');
     mirf_CE_lo;
 
     PTX = 1;                        // Set to transmitter mode
@@ -290,9 +290,9 @@ char mirf_send(uint8_t * value, uint8_t len)
     //spi_transmit_sync(testbuffer,16);
     spi_transmit_sync(value,len);   // Write payload
     mirf_CSN_hi;                    // Pull up chip select
-    USART_Transmit('h');
+ //   USART_Transmit('h');
     
     mirf_CE_hi;                     // Start transmission
-    USART_Transmit('q');
+//    USART_Transmit('q');
     return 0;
 }
