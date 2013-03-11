@@ -513,11 +513,11 @@ int main (void)
                 receive_buffer[0] = ID_SELF;
                 receive_buffer[1] = ACK;
                 receive_buffer[2] = SENSORS;
-                Transmit(receive_buffer,BUFFER_SIZE);
-//                if (receive_buffer[3] == RESPONSE){
-//                    Transmit(receive_buffer,BUFFER_SIZE);
-//                }
-//                Transmit(receive_buffer,BUFFER_SIZE);
+                //Transmit(receive_buffer,BUFFER_SIZE);
+                if (receive_buffer[3] == RESPONSE){
+                    Transmit(receive_buffer,BUFFER_SIZE);
+                }
+                //Transmit(receive_buffer,BUFFER_SIZE);
             }
             if((receive_buffer[0] == ID_SELF)&&(receive_buffer[1] == PATTERN2)){
                 frame_num = receive_buffer[2];
@@ -526,10 +526,10 @@ int main (void)
                 receive_buffer[0] = ID_SELF;
                 receive_buffer[1] = ACK;
                 receive_buffer[2] = SENSORS;
-                Transmit(receive_buffer,BUFFER_SIZE);
-//                if (receive_buffer[3] == RESPONSE){
-//                    Transmit(receive_buffer,BUFFER_SIZE);
-//                }
+                //Transmit(receive_buffer,BUFFER_SIZE);
+                if (receive_buffer[3] == RESPONSE){
+                    Transmit(receive_buffer,BUFFER_SIZE);
+                }
             }
             if((receive_buffer[0] == ID_SELF)&&(receive_buffer[1] == PATTERN3)){
                 frame_num = receive_buffer[2];
@@ -538,10 +538,10 @@ int main (void)
                 receive_buffer[0] = ID_SELF;
                 receive_buffer[1] = ACK;
                 receive_buffer[2] = SENSORS;
-//                if (receive_buffer[3] == RESPONSE){
-//                    Transmit(receive_buffer,BUFFER_SIZE);
-//                }
-                Transmit(receive_buffer,BUFFER_SIZE);
+                if (receive_buffer[3] == RESPONSE){
+                    Transmit(receive_buffer,BUFFER_SIZE);
+                }
+                //Transmit(receive_buffer,BUFFER_SIZE);
             }
             if((receive_buffer[0] == ID_SELF)&&(receive_buffer[1] == PATTERN4)){
                 frame_num = receive_buffer[2];
@@ -550,10 +550,10 @@ int main (void)
                 receive_buffer[0] = ID_SELF;
                 receive_buffer[1] = ACK;
                 receive_buffer[2] = SENSORS;
-//                if (receive_buffer[3] == RESPONSE){
-//                    Transmit(receive_buffer,BUFFER_SIZE);
-//                }
-                Transmit(receive_buffer,BUFFER_SIZE);
+                if (receive_buffer[3] == RESPONSE){
+                    Transmit(receive_buffer,BUFFER_SIZE);
+                }
+                //Transmit(receive_buffer,BUFFER_SIZE);
             }
             if((receive_buffer[0] == ID_SELF)&&(receive_buffer[1] == PATTERN5)){
                 frame_num = receive_buffer[2];
@@ -562,10 +562,10 @@ int main (void)
                 receive_buffer[0] = ID_SELF;
                 receive_buffer[1] = ACK;
                 receive_buffer[2] = SENSORS;
-//                if (receive_buffer[3] == RESPONSE){
-//                    Transmit(receive_buffer,BUFFER_SIZE);
-//                }
-                Transmit(receive_buffer,BUFFER_SIZE);
+                if (receive_buffer[3] == RESPONSE){
+                    Transmit(receive_buffer,BUFFER_SIZE);
+                }
+                //Transmit(receive_buffer,BUFFER_SIZE);
             }
         }
     }
