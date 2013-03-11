@@ -43,6 +43,7 @@ class PyApp(gtk.Window):
     RUNNING4 = False
     PATTERN = ["Pattern 1","Pattern 2","Pattern 3","Pattern 4","Pattern 5"]
     ACTIVE = [False,False,False,False]
+    num = 0
     #PATTERN = ["Power Duration","Cube Connection","Dual Algorithms","Input Timing","Moving Pattern"]
     side = 0
     i1 = 0
@@ -109,10 +110,12 @@ class PyApp(gtk.Window):
         #hBox.pack_start(self.patternDropDown,False,False,0)
 
         sendBtn = gtk.Button("Start")
+        sendBtn.connect("clicked",self.set_num1)
         sendBtn.connect("clicked",self.Send1)
         hBox.pack_start(sendBtn,False,False,0)
 
         stopBtn = gtk.Button("Stop")
+        stopBtn.connect("clicked",self.set_num1)
         stopBtn.connect("clicked",self.Stop1)
         hBox.pack_start(stopBtn,False,False,0)
         vBox.pack_start(hBox,False,False,0)
@@ -147,10 +150,12 @@ class PyApp(gtk.Window):
         #hBox.pack_start(self.patternDropDown,False,False,0)
 
         sendBtn = gtk.Button("Start")
+        sendBtn.connect("clicked",self.set_num2)
         sendBtn.connect("clicked",self.Send2)
         hBox.pack_start(sendBtn,False,False,0)
 
         stopBtn = gtk.Button("Stop")
+        stopBtn.connect("clicked",self.set_num2)
         stopBtn.connect("clicked",self.Stop2)
         hBox.pack_start(stopBtn,False,False,0)
         vBox.pack_start(hBox,False,False,0)
@@ -260,9 +265,11 @@ class PyApp(gtk.Window):
         
         hBox = gtk.HBox(False,0)
         
+        '''
         btn1 = gtk.Button("Scan")
         btn1.connect("clicked",self.scan)
         hBox.pack_start(btn1,False,False,0)
+        '''
         
         #btn2 = gtk.Button("Upload")
         #hBox.pack_start(btn2,False,False,0)
@@ -298,141 +305,94 @@ class PyApp(gtk.Window):
         self.textbuffer.set_text(self.output)
         self.scroll_VAdjustment.set_value(self.scroll_VAdjustment.get_upper())
 
+    def set_num1(self,widget):
+        self.num = 1
+
+    def set_num2(self,widget):
+        self.num = 2
+
+    def set_num3(self,widget):
+        self.num = 3
+
+    def set_num4(self,widget):
+        self.num = 4
+
     @yieldsleep
     def Send1(self,widget):
+        '''
+        if self.num == 1:
+            id = '\x01'
+            running = self.RUNNING1
+            cube = 'Cube 1: '
+            index = self.i1
+            self.i1 = ((self.i1 +1)%5)
+            formatCombo = self.formatCombo1.get_active()
+        elif self.num == 2:
+            id = '\x02'
+            running = self.RUNNING2
+            cube = 'Cube 2: '
+            index = self.i2
+            self.i2 = ((self.i2 +1)%5)
+            formatCombo = self.formatCombo2.get_active()
+        elif self.num == 3:
+            id = '\x03'
+            running = self.RUNNING3
+            cube = 'Cube 3: '
+            index = self.i3
+            self.i3 = ((self.i3 +1)%5)
+            formatCombo = self.formatCombo3.get_active()
+        elif self.num == 4:
+            id = '\x04'
+            running = self.RUNNING4
+            cube = 'Cube 4: '
+            index = self.i4
+            self.i4 = ((self.i4 +1)%5)
+            formatCombo = self.formatCombo4.get_active()
+            '''
+
+        id = '\x01'
+        #running = self.RUNNING1
+        cube = 'Cube 1: '
+        index = self.i1
+        self.i1 = ((self.i1 +1)%5)
+        formatCombo = self.formatCombo1.get_active()
+            
         if self.RUNNING1 == True:
             self.Stop1(widget)
-            self.i1 = 0
+            index = 0
             self.RUNNING1 == False
             yield 1000
             #return
         self.RUNNING1 = True
-        selected = self.PATTERN[self.formatCombo1.get_active()]
+        selected = self.PATTERN[formatCombo]
+        response = '\x00'
         while self.RUNNING1 == True:
-            cube = 'Cube 1: '
-            id = '\x01'
+            #cube = 'Cube 2: '
+            #id = '\x02'
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
-            response = '\x00'
             frame = ['\x00','\x01','\x02','\x03','\x04']
             pattern = '\x05'
             if selected == self.PATTERN[0]:
                 pattern = '\x01'
 
-                data_out = ''.join((id,pattern,frame[self.i1],response,data))
+                data_out = ''.join((id,pattern,frame[index],response,data))
 
                 self.comm.Transmit(data_out) 
 
                 self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
                 self.text_out()
             elif selected == self.PATTERN[1]:
-                response = '\x01'
-                #print self.Receive()
                 pattern = '\x03'
                 #self.comm.Transmit(data) 
+                response = '\x01'
+                data_out = ''.join((id,pattern,frame[self.side],response,data))
+                self.comm.Transmit(data_out) 
                 sensors = self.Receive()
-                #print sensors
                 #sensors = '\x02'
                 if sensors == 2:
                     self.side = 0
                     self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 1"))))
                 elif sensors == 1:
-                    self.side = 1
-                    self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 2"))))
-                elif sensors == 4:
-                    self.side = 2
-                    self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 3"))))
-                elif sensors == 8:
-                    self.side = 3
-                    self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 4"))))
-                else:
-                    pattern = '\x05'
-                    self.output = "\r\n".join((self.output,''.join((cube,"Nothing Detected"))))
-                data_out = ''.join((id,pattern,frame[self.side],response,data))
-                self.comm.Transmit(data_out) 
-                self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
-                self.text_out()
-
-            elif selected == self.PATTERN[2]:
-                pattern = '\x02'
-                data_out = ''.join((id,pattern,frame[self.i1],response,data))
-                self.comm.Transmit(data_out) 
-                self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
-                self.text_out()
-            elif selected == self.PATTERN[3]:
-                pattern = '\x04'
-                data_out = ''.join((id,pattern,frame[self.i1],response,data))
-                self.comm.Transmit(data_out) 
-                self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
-                self.text_out()
-            elif selected == self.PATTERN[4]:
-                pattern = '\x04'
-                data_out = ''.join((id,pattern,frame[self.i1],response,data))
-                self.comm.Transmit(data_out) 
-                self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
-                self.text_out()
-            else:
-                pattern = '\x01'
-                data_out = ''.join((id,pattern,frame[self.i1],response,data))
-                self.comm.Transmit(data_out) 
-                self.output = "\r\n".join((self.output,"Error 71"))
-                self.text_out()
-
-            
-            #self.Receive()
-            self.i1 = (self.i1+1)%5;
-            time.sleep(.1)
-            yield 1000
-
-    def Stop1(self,widget):
-        self.RUNNING1 = False
-        id = '\x01'
-        pattern = '\x05'
-        data = '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
-        data_out = ''.join((id,pattern,data))
-        self.comm.Transmit(data_out) 
-        time.sleep(.15)
-        self.comm.Transmit(data_out) 
-        self.output = "\r\n".join((self.output,"Cube 1: Stopped."))
-        self.text_out()
-
-    @yieldsleep
-    def Send2(self,widget):
-        if self.RUNNING2 == True:
-            self.Stop2(widget)
-            self.i2 = 0
-            self.RUNNING2 == False
-            yield 1000
-            #return
-        self.RUNNING2 = True
-        selected = self.PATTERN[self.formatCombo2.get_active()]
-        response = '\x00'
-        while self.RUNNING2 == True:
-            cube = 'Cube 2: '
-            id = '\x02'
-            data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
-            frame = ['\x00','\x01','\x02','\x03','\x04']
-            pattern = '\x05'
-            if selected == self.PATTERN[0]:
-                pattern = '\x01'
-
-                data_out = ''.join((id,pattern,frame[self.i2],response,data))
-
-                self.comm.Transmit(data_out) 
-
-                self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
-                self.text_out()
-            elif selected == self.PATTERN[1]:
-                pattern = '\x03'
-                #self.comm.Transmit(data) 
-                response = '\x01'
-                data_out = ''.join((id,pattern,frame[self.side],response,data))
-                self.comm.Transmit(data_out) 
-                sensors = self.Receive()
-                #sensors = '\x02'
-                if sensors == 1:
-                    self.side = 0
-                    self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 1"))))
-                elif sensors == 2:
                     self.side = 2
                     self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 2"))))
                 elif sensors == 4:
@@ -453,32 +413,182 @@ class PyApp(gtk.Window):
 
             elif selected == self.PATTERN[2]:
                 pattern = '\x03'
-                data_out = ''.join((id,pattern,frame[self.i2],response,data))
+                data_out = ''.join((id,pattern,frame[index],response,data))
                 self.comm.Transmit(data_out) 
                 self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
                 self.text_out()
             elif selected == self.PATTERN[3]:
                 pattern = '\x04'
-                data_out = ''.join((id,pattern,frame[self.i2],response,data))
+                data_out = ''.join((id,pattern,frame[index],response,data))
                 self.comm.Transmit(data_out) 
                 self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
                 self.text_out()
             elif selected == self.PATTERN[4]:
                 pattern = '\x04'
-                data_out = ''.join((id,pattern,frame[self.i2],response,data))
+                data_out = ''.join((id,pattern,frame[index],response,data))
                 self.comm.Transmit(data_out) 
                 self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
                 self.text_out()
             else:
                 pattern = '\x05'
-                data_out = ''.join((id,pattern,frame[self.i2],response,data))
+                data_out = ''.join((id,pattern,frame[index],response,data))
                 self.comm.Transmit(data_out) 
                 self.output = "\r\n".join((self.output,"Error 71"))
                 self.text_out()
 
             
+            '''
+            if self.num == 1:
+                self.RUNNING1 = running
+            elif self.num == 2:
+                self.RUNNING2 = running
+            elif self.num == 3:
+                self.RUNNING3 = running
+            elif self.num == 4:
+                self.RUNNING4 = running
+                '''
+            
            # self.Receive()
-            self.i2 = (self.i2+1)%5;
+            index = (index+1)%5;
+            #time.sleep(.1)
+            yield 1000
+
+    def Stop1(self,widget):
+        self.RUNNING1 = False
+        id = '\x01'
+        pattern = '\x05'
+        data = '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
+        response = '\x00'
+        filler = '\x00'
+        data_out = ''.join((id,pattern,filler,response,data))
+        time.sleep(.15)
+        self.comm.Transmit(data_out) 
+        self.output = "\r\n".join((self.output,"Cube 1: Stopped."))
+        self.text_out()
+
+    @yieldsleep
+    def Send2(self,widget):
+        '''
+        if self.num == 1:
+            id = '\x01'
+            running = self.RUNNING1
+            cube = 'Cube 1: '
+            index = self.i1
+            self.i1 = ((self.i1 +1)%5)
+            formatCombo = self.formatCombo1.get_active()
+        elif self.num == 2:
+            id = '\x02'
+            running = self.RUNNING2
+            cube = 'Cube 2: '
+            index = self.i2
+            self.i2 = ((self.i2 +1)%5)
+            formatCombo = self.formatCombo2.get_active()
+        elif self.num == 3:
+            id = '\x03'
+            running = self.RUNNING3
+            cube = 'Cube 3: '
+            index = self.i3
+            self.i3 = ((self.i3 +1)%5)
+            formatCombo = self.formatCombo3.get_active()
+        elif self.num == 4:
+            id = '\x04'
+            running = self.RUNNING4
+            cube = 'Cube 4: '
+            index = self.i4
+            self.i4 = ((self.i4 +1)%5)
+            formatCombo = self.formatCombo4.get_active()
+            '''
+
+        id = '\x02'
+        #running = self.RUNNING2
+        cube = 'Cube 2: '
+        index = self.i2
+        self.i2 = ((self.i2 +1)%5)
+        formatCombo = self.formatCombo2.get_active()
+            
+        if self.RUNNING2 == True:
+            self.Stop2(widget)
+            index = 0
+            self.RUNNING2 == False
+            yield 1000
+            #return
+        self.RUNNING2 = True
+        selected = self.PATTERN[formatCombo]
+        response = '\x00'
+        while self.RUNNING2 == True:
+            #cube = 'Cube 2: '
+            #id = '\x02'
+            data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+            frame = ['\x00','\x01','\x02','\x03','\x04']
+            pattern = '\x05'
+            if selected == self.PATTERN[0]:
+                pattern = '\x01'
+
+                data_out = ''.join((id,pattern,frame[index],response,data))
+
+                self.comm.Transmit(data_out) 
+
+                self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
+                self.text_out()
+            elif selected == self.PATTERN[1]:
+                pattern = '\x03'
+                #self.comm.Transmit(data) 
+                response = '\x01'
+                data_out = ''.join((id,pattern,frame[self.side],response,data))
+                self.comm.Transmit(data_out) 
+                sensors = self.Receive()
+                #sensors = '\x02'
+                if sensors == 2:
+                    self.side = 0
+                    self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 1"))))
+                elif sensors == 1:
+                    self.side = 2
+                    self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 2"))))
+                elif sensors == 4:
+                    self.side = 2
+                    self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 3"))))
+                elif sensors == 8:
+                    self.side = 3
+                    self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 4"))))
+                else:
+                    pattern = '\x01'
+                    self.side = 1
+                    self.output = "\r\n".join((self.output,''.join((cube,"Nothing Detected"))))
+                data_out = ''.join((id,pattern,frame[self.side],response,data))
+#                self.comm.Transmit(data_out) 
+#                self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
+                self.text_out()
+                #self.side = 0
+
+            elif selected == self.PATTERN[2]:
+                pattern = '\x03'
+                data_out = ''.join((id,pattern,frame[index],response,data))
+                self.comm.Transmit(data_out) 
+                self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
+                self.text_out()
+            elif selected == self.PATTERN[3]:
+                pattern = '\x04'
+                data_out = ''.join((id,pattern,frame[index],response,data))
+                self.comm.Transmit(data_out) 
+                self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
+                self.text_out()
+            elif selected == self.PATTERN[4]:
+                pattern = '\x04'
+                data_out = ''.join((id,pattern,frame[index],response,data))
+                self.comm.Transmit(data_out) 
+                self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
+                self.text_out()
+            else:
+                pattern = '\x05'
+                data_out = ''.join((id,pattern,frame[index],response,data))
+                self.comm.Transmit(data_out) 
+                self.output = "\r\n".join((self.output,"Error 71"))
+                self.text_out()
+
+            
+            
+           # self.Receive()
+            index = (index+1)%5;
             #time.sleep(.1)
             yield 1000
 
