@@ -405,16 +405,17 @@ class PyApp(gtk.Window):
             #return
         self.RUNNING2 = True
         selected = self.PATTERN[self.formatCombo2.get_active()]
+        response = '\x00'
         while self.RUNNING2 == True:
             cube = 'Cube 2: '
             id = '\x02'
-            data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+            data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
             frame = ['\x00','\x01','\x02','\x03','\x04']
             pattern = '\x05'
             if selected == self.PATTERN[0]:
                 pattern = '\x01'
 
-                data_out = ''.join((id,pattern,frame[self.i2],data))
+                data_out = ''.join((id,pattern,frame[self.i2],response,data))
 
                 self.comm.Transmit(data_out) 
 
@@ -423,7 +424,8 @@ class PyApp(gtk.Window):
             elif selected == self.PATTERN[1]:
                 pattern = '\x03'
                 #self.comm.Transmit(data) 
-                data_out = ''.join((id,pattern,frame[self.side],data))
+                response = '\x01'
+                data_out = ''.join((id,pattern,frame[self.side],response,data))
                 self.comm.Transmit(data_out) 
                 sensors = self.Receive()
                 #sensors = '\x02'
@@ -443,7 +445,7 @@ class PyApp(gtk.Window):
                     pattern = '\x01'
                     self.side = 1
                     self.output = "\r\n".join((self.output,''.join((cube,"Nothing Detected"))))
-                data_out = ''.join((id,pattern,frame[self.side],data))
+                data_out = ''.join((id,pattern,frame[self.side],response,data))
 #                self.comm.Transmit(data_out) 
 #                self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
                 self.text_out()
@@ -451,25 +453,25 @@ class PyApp(gtk.Window):
 
             elif selected == self.PATTERN[2]:
                 pattern = '\x03'
-                data_out = ''.join((id,pattern,frame[self.i2],data))
+                data_out = ''.join((id,pattern,frame[self.i2],response,data))
                 self.comm.Transmit(data_out) 
                 self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
                 self.text_out()
             elif selected == self.PATTERN[3]:
                 pattern = '\x04'
-                data_out = ''.join((id,pattern,frame[self.i2],data))
+                data_out = ''.join((id,pattern,frame[self.i2],response,data))
                 self.comm.Transmit(data_out) 
                 self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
                 self.text_out()
             elif selected == self.PATTERN[4]:
                 pattern = '\x04'
-                data_out = ''.join((id,pattern,frame[self.i2],data))
+                data_out = ''.join((id,pattern,frame[self.i2],response,data))
                 self.comm.Transmit(data_out) 
                 self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
                 self.text_out()
             else:
                 pattern = '\x05'
-                data_out = ''.join((id,pattern,frame[self.i2],data))
+                data_out = ''.join((id,pattern,frame[self.i2],response,data))
                 self.comm.Transmit(data_out) 
                 self.output = "\r\n".join((self.output,"Error 71"))
                 self.text_out()
@@ -485,12 +487,14 @@ class PyApp(gtk.Window):
         self.i2 = 0
         id = '\x02'
         pattern = '\x05'
-        data = '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
-        data_out = ''.join((id,pattern,data))
+        data = '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
+        response = '\x00'
+        filler = '\x00'
+        data_out = ''.join((id,pattern,filler,response,data))
         #self.comm.Transmit(data_out) 
         time.sleep(.15)
         self.comm.Transmit(data_out) 
-        self.comm.Receive()
+        #self.comm.Receive()
         self.output = "\r\n".join((self.output,"Cube 2: Stopped."))
         self.text_out()
 
