@@ -28,12 +28,40 @@ class Communication():
                         print "ERROR: Could not find LEDCUBE USB Dongle."
 
 
-    def Transmit(self,data):
-        self.s1.write(data)
-        #self.s1.write('&')
+#    def Transmit(self,data):
+#        self.s1.write(data)
+#        #self.s1.write('&')
+
+    def Transmit (self, data):
+        if (len (data) != 32):
+            print ("Cannot send data: length is not 32:" + data)
+            return -1
+
+        while (True):
+            self.s1.write(data)
+            rx = self.s1.readline()
+            if (rx == 'a\n'):
+                return 1
+            if (rx != 'b\n'):
+                print ("unexpected byte from serial: [" + rx + "]")
+                return -2
+
 
     def Receive(self):
-        data = "" first = True
+        data = self.s1.readline() 
+        if data == "c\n":
+            data = [int(x.encode('hex'),16) for x in self.s1.read(32)]
+            #print "data = "
+            print data
+            print "Reading leftovers: " + self.s1.readline()
+            print "Done!"
+        else:
+            print ("Data was not expected: [" + data + "]")
+            return -1
+        return data[2]
+
+        data = ""
+        first = True
         while(True):
             data = self.s1.readline()
             #print data
@@ -52,7 +80,9 @@ class Communication():
                     while(1):
                         data = self.s1.readline() 
                         if data == "c\n":
-                            data = [int(x.encode('hex'),16) for x in self.s1.readline()] 
+                            data = [int(x.encode('hex'),16) for x in self.s1.read(32)]
+                            print data
+                            print "Reading leftovers: " + self.s1.readline()
                         #print "sensor input is:"
                         #print data[2]
                             return data[2]

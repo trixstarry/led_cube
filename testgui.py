@@ -421,11 +421,10 @@ class PyApp(gtk.Window):
                 self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
                 self.text_out()
             elif selected == self.PATTERN[1]:
-                #hex_value = 0xAB
-                #print ("hex = 0x%x" % hex_value)
-                #print self.Receive()
                 pattern = '\x03'
                 #self.comm.Transmit(data) 
+                data_out = ''.join((id,pattern,frame[self.side],data))
+                self.comm.Transmit(data_out) 
                 sensors = self.Receive()
                 #sensors = '\x02'
                 if sensors == 1:
@@ -445,10 +444,10 @@ class PyApp(gtk.Window):
                     self.side = 1
                     self.output = "\r\n".join((self.output,''.join((cube,"Nothing Detected"))))
                 data_out = ''.join((id,pattern,frame[self.side],data))
-                self.comm.Transmit(data_out) 
-                self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
+#                self.comm.Transmit(data_out) 
+#                self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
                 self.text_out()
-                self.side = 0
+                #self.side = 0
 
             elif selected == self.PATTERN[2]:
                 pattern = '\x03'
@@ -488,9 +487,10 @@ class PyApp(gtk.Window):
         pattern = '\x05'
         data = '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
         data_out = ''.join((id,pattern,data))
-        self.comm.Transmit(data_out) 
+        #self.comm.Transmit(data_out) 
         time.sleep(.15)
         self.comm.Transmit(data_out) 
+        self.comm.Receive()
         self.output = "\r\n".join((self.output,"Cube 2: Stopped."))
         self.text_out()
 
