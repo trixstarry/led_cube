@@ -115,29 +115,37 @@ void USART_Flush( void )
 
 void test () {
     if(1 == transmit_flag){
-        Transmit(buffer,BUFFER_SIZE);
+        //Transmit(buffer,BUFFER_SIZE);
         USART_Transmit(OK);
+        USART_Transmit('\n');
         transmit_flag = 0;
     }
     else{
-        if(Receive(buffer,BUFFER_SIZE)==1){
-            transmit_string("k\n");
-        }
-        else{
-            //transmit_string("b\n");
-        }
-        buffer_index = 0;
+//        if(Receive(buffer,BUFFER_SIZE)==1){
+//            transmit_string("k\n");
+//        }
+//        else{
+//            //transmit_string("b\n");
+//        }
+        _delay_ms(5);
+        //buffer_index = 0;
+
     }
 }
 
 
 ISR(USART_RX_vect){
+    /*
     if(transmit_flag == 1){
         USART_Receive();
         USART_Transmit(BUSY);
+        USART_Transmit('\n');
         return;
     }
-    buffer[buffer_index] = USART_Receive();
+    */
+    //buffer[buffer_index] = USART_Receive();
+    //USART_Transmit(USART_Receive());
+    /*
     if(buffer_index == 3){
         if(buffer[buffer_index] == '\x00'){
             timeout_flag = 0;
@@ -146,8 +154,15 @@ ISR(USART_RX_vect){
             timeout_flag = 1;
         }
     }
+    */
+    USART_Transmit('i');
+    USART_Transmit('\n');
+    USART_Receive();
+
     if(buffer_index == 31){
         transmit_flag = 1;
+        USART_Transmit('a');
+        USART_Transmit('\n');
         //UCSRB = ~(1<<RXEN);
     }
     buffer_index = ((buffer_index+1)%32);
@@ -181,7 +196,7 @@ int main (void)
     mirf_config_register(STATUS,(1<<TX_DS)|(1<<MAX_RT)); // Reset status register
     _delay_ms(50);
 	
-    transmit_string ("\r\ns");
+    transmit_string ("s\r\n");
 	while (1)
 	{
         //transmit_string ("l");
