@@ -494,6 +494,17 @@ int main (void)
 	
 	while (1)
 	{
+        /*
+        item = 1;
+        //frame_num = 1;
+        while(counter < 100){
+            pattern(item,frame_num);
+            counter++;
+            }
+        counter = 0;
+        frame_num = ((frame_num+1)%5);
+        */
+
         if(Receive(buffer,receive_buffer,BUFFER_SIZE) == 1){
             if((ID_SELF == receive_buffer[0])&&(PATTERN1 == receive_buffer[1])){
                 frame_num = receive_buffer[2];
