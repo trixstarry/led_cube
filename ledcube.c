@@ -1108,7 +1108,7 @@ void test_frame(){
     uint8_t i = 0;
     for(i=0;i<5;i++){
         //transmit1(frame[i][4],frame[i][3],frame[i][2],frame[i][1],frame[i][0]);
-        //level(i);
+        level(0);
         transmit2(i);
         //_delay_ms(500);
         //_delay_ms(500);
@@ -1131,11 +1131,18 @@ void clear_frame(){
 
 void test_pattern(){
     uint32_t plane = 0x1FFFFFF;
-    uint32_t row4 = 0x1F00000;
-    uint32_t row3 = 0xF8000;
-    uint32_t row2 = 0x7C00;
-    uint32_t row1 = 0x3E0;
-    uint32_t row0 = 0x1F;
+    uint32_t row4 = 0;
+    uint32_t row3 = 0;
+    uint32_t row2 = 0;
+    uint32_t row1 = 0;
+    uint32_t row0 = 0;
+    /*
+    uint32_t row4 = 0x1FFFFFF;
+    uint32_t row3 = 0x1FFFFFF;
+    uint32_t row2 = 0x1FFFFFF;
+    uint32_t row1 = 0x1FFFFFF;
+    uint32_t row0 = 0x1FFFFFF;
+    */
     uint16_t counter = 0;
     while(1){
         while(counter <0x0018){
@@ -1503,6 +1510,11 @@ int main(){
    led1_on();
    _delay_ms(50);
    led_off();
+   uint32_t row4 = 0x1FFFFFF;
+   uint32_t row3 = 0x1FFFFFF;
+   uint32_t row2 = 0x1FFFFFF;
+   uint32_t row1 = 0x1FFFFFF;
+   uint32_t row0 = 0x1FFFFFF;
 	while(1){
         //test_xbee_pins();
         //Transmit();
@@ -1514,11 +1526,20 @@ int main(){
         //probe_test();
         //shift_LED();
         //hall_test();
-        test_protocol;
+        //test_protocol;
        // buffer[0] = 0x01;
         //uint8_t test = buffer[0];
         //leds(4,buffer[0],buffer[1],buffer[2]);
         //test_frame();
+        //level(0);
+        
+        leds(0,row0,0,0);
+        leds(1,0,row0,0);
+        leds(2,0,0,row0);
+        leds(3,0,0,row0);
+        leds(4,row0,0,0);
+        test_frame();
+    }
+}
 
-    }     //empty main while loop
-} //main
+
