@@ -24,16 +24,16 @@
     $Id$
 */
 
+#ifndef _SPI_H_
+#define _SPI_H_
 
 #include <avr/io.h>
 
 
 extern void spi_init();
-extern uint8_t SPI_Transmit(uint8_t cData);
-extern void SPI_Transmit_All(uint8_t *data,uint8_t len);
-extern char SPI_Receive(void);
-extern void SPI_Receive_All(uint8_t *data, uint8_t len);
-extern void SPI_Transceive(uint8_t *dataout,uint8_t *datain, uint8_t len);
+extern void spi_transfer_sync (uint8_t * dataout, uint8_t * datain, uint8_t len);
+extern void spi_transmit_sync (uint8_t * dataout, uint8_t len);
+extern uint8_t spi_fast_shift (uint8_t data);
 
 
-
+#endif /* _SPI_H_ */
