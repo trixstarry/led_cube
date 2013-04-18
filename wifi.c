@@ -193,65 +193,25 @@ int main (void)
     _delay_ms(50);
 	
     transmit_string ("s\r\n");
-	while (1)
-	{
-        //transmit_string ("l");
-        //transmit_string ("Device Started!\r\n");
-        //test_Transmit(buffer,BUFFER_SIZE);
-        
-        //Transmit(buffer,BUFFER_SIZE); //_delay_ms(5);
-        //rx_powerup();
-        //_delay_ms(1);
-        ////transmit_string("preSending\n");
-        //Receive(buffer,BUFFER_SIZE);
-        //test_Transmit(buffer,BUFFER_SIZE);
-       //Transmit(buffer,BUFFER_SIZE);
-        ////transmit_string("Did i send?\r\n");
-        //_delay_ms(100);
-        test();
-        
-        /*
-    if(transmit_flag ==1){
-        uint8_t status = UCSRB; //save usart status
-        UCSRB &= ~(1<<RXCIE);   //turn off receive interrupt enable
-        //transmit_string("t");
-        uint16_t counter = 0;
-        while (mirf_send (buffer, BUFFER_SIZE) && counter < 1000)
+    while (1)
+    {
+        //test();
+        if (1 == Receive(buffer, BUFFER_SIZE))
         {
-            _delay_us(10);
+            USART_Transmit('c');
+            USART_Transmit('\n');
+            char i = 0;
+            for(i = 0; i < BUFFER_SIZE; i++)
+            {
+                USART_Transmit(buffer[i]);
+            }
+            USART_Transmit('\n');
         }
-        if (counter >= 1000)
+        if(1 == buffer_in_use)
         {
-            //transmit_string("e");
+            // do something with the data in buffer...
+            Transmit(buffer, BUFFER_SIZE);
+            buffer_in_use = 0;
         }
-
-        //_delay_ms(50);
-        ////transmit_string("Rx_Powerup\r\n");
-        //rx_powerup();
-        //_delay_ms(50);
-        //transmit_string("r");
-        if(1 == timeout_flag){
-            if(Receive(buffer,BUFFER_SIZE)==1){
-                transmit_string("k\n");
-            }
-            else{
-                transmit_string("b\n");
-            }
-            //transmit_flag = 0;
-        }
-        transmit_string("n\n");
-        transmit_flag = 0;
-        for(buffer_index = 0; buffer_index < BUFFER_SIZE;buffer_index++){
-            buffer[buffer_index] = 0;
-        }
-        buffer_index = 0;
-        USART_Flush();
-        UCSRB = status;//|(1<<RXEN); //if interrupt was enable previously reenable it.
-        */
     }
-
- 
-//        test_protocol(buffer,BUFFER_SIZE);
-//	}
-	
 }
