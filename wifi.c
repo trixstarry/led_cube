@@ -210,7 +210,7 @@ ISR(USART_RX_vect){
         }
         else
         {
-            buffer[buffer_index] = data;
+            buffer[buffer_index-1] = data;
         }
     }
 
