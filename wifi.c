@@ -257,7 +257,7 @@ int main (void)
     _delay_ms(100);
     mirf_config_register(STATUS,(1<<TX_DS)|(1<<MAX_RT)); // Reset status register
     _delay_ms(50);
-    uint64_t addr;
+    //uint64_t addr;
 	
     transmit_string ("s\r\n");
     while (1)
@@ -284,13 +284,15 @@ int main (void)
                 case 1:
                     set_channel(buffer[0]);
                 case 2:
-                    addr = (buffer[2]<<0)|(buffer[3]<<8)|(buffer[4]<<24)|
+                    {
+                    uint64_t addr = (buffer[2]<<0)|(buffer[3]<<8)|(buffer[4]<<24)|
                            (buffer[5]<<32)|(buffer[6]<<40);
                     if(1 == buffer[0]){
                         set_TX_addr(addr);
                     }
                     else{
                         set_RX_addr(buffer[1],addr);
+                    }
                     }
             }
             //Transmit(buffer, BUFFER_SIZE);

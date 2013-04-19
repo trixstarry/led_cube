@@ -674,7 +674,7 @@ int main (void)
  2c2:	00 c0       	rjmp	.+0      	; 0x2c4 <main+0x5a>
  2c4:	00 00       	nop
     _delay_ms(50);
-    uint64_t addr;
+    //uint64_t addr;
 	
     transmit_string ("s\r\n");
  2c6:	80 e6       	ldi	r24, 0x60	; 96
@@ -755,8 +755,8 @@ int main (void)
  31a:	90 e0       	ldi	r25, 0x00	; 0
  31c:	60 e2       	ldi	r22, 0x20	; 32
  31e:	9d de       	rcall	.-710    	; 0x5a <Transmit>
-                    else{
                         set_RX_addr(buffer[1],addr);
+                    }
                     }
             }
             //Transmit(buffer, BUFFER_SIZE);
@@ -771,24 +771,24 @@ int main (void)
             switch(instr){
  326:	82 30       	cpi	r24, 0x02	; 2
  328:	d9 f7       	brne	.-10     	; 0x320 <main+0xb6>
-                    Transmit(buffer, BUFFER_SIZE);
                     break;
                 case 1:
                     set_channel(buffer[0]);
                 case 2:
-                    addr = (buffer[2]<<0)|(buffer[3]<<8)|(buffer[4]<<24)|
+                    {
+                    uint64_t addr = (buffer[2]<<0)|(buffer[3]<<8)|(buffer[4]<<24)|
  32a:	40 91 66 00 	lds	r20, 0x0066
  32e:	60 91 67 00 	lds	r22, 0x0067
  332:	e0 91 68 00 	lds	r30, 0x0068
                            (buffer[5]<<32)|(buffer[6]<<40);
  336:	20 91 69 00 	lds	r18, 0x0069
  33a:	80 91 6a 00 	lds	r24, 0x006A
-                    Transmit(buffer, BUFFER_SIZE);
                     break;
                 case 1:
                     set_channel(buffer[0]);
                 case 2:
-                    addr = (buffer[2]<<0)|(buffer[3]<<8)|(buffer[4]<<24)|
+                    {
+                    uint64_t addr = (buffer[2]<<0)|(buffer[3]<<8)|(buffer[4]<<24)|
  33e:	77 27       	eor	r23, r23
  340:	67 fd       	sbrc	r22, 7
  342:	70 95       	com	r23
@@ -812,12 +812,12 @@ int main (void)
  364:	30 95       	com	r19
  366:	33 27       	eor	r19, r19
  368:	22 27       	eor	r18, r18
-                    Transmit(buffer, BUFFER_SIZE);
                     break;
                 case 1:
                     set_channel(buffer[0]);
                 case 2:
-                    addr = (buffer[2]<<0)|(buffer[3]<<8)|(buffer[4]<<24)|
+                    {
+                    uint64_t addr = (buffer[2]<<0)|(buffer[3]<<8)|(buffer[4]<<24)|
  36a:	62 2b       	or	r22, r18
  36c:	73 2b       	or	r23, r19
                            (buffer[5]<<32)|(buffer[6]<<40);
