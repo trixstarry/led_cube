@@ -95,14 +95,6 @@ void mirf_config()
     mirf_CE_hi;     // Listening for pakets
 }
 
-void mirf_set_RADDR_P1(uint8_t * adr) 
-// Sets the receiving address
-{
-    mirf_CE_lo;
-    mirf_write_register(RX_ADDR_P1,adr,5);
-    mirf_CE_hi;
-}
-
 void mirf_set_RADDR(uint8_t * adr) 
 // Sets the receiving address
 {
@@ -111,6 +103,42 @@ void mirf_set_RADDR(uint8_t * adr)
     mirf_CE_hi;
 }
 
+void mirf_set_RADDR_P1(uint8_t * adr) 
+// Sets the receiving address
+{
+    mirf_CE_lo;
+    mirf_write_register(RX_ADDR_P1,adr,5);
+    mirf_CE_hi;
+}
+
+void mirf_set_RADDR_P2(uint8_t * adr) 
+// Sets the receiving address
+{
+    mirf_CE_lo;
+    mirf_write_register(RX_ADDR_P2,adr,5);
+    mirf_CE_hi;
+}
+void mirf_set_RADDR_P3(uint8_t * adr) 
+// Sets the receiving address
+{
+    mirf_CE_lo;
+    mirf_write_register(RX_ADDR_P3,adr,5);
+    mirf_CE_hi;
+}
+void mirf_set_RADDR_P4(uint8_t * adr) 
+// Sets the receiving address
+{
+    mirf_CE_lo;
+    mirf_write_register(RX_ADDR_P4,adr,5);
+    mirf_CE_hi;
+}
+void mirf_set_RADDR_P5(uint8_t * adr) 
+// Sets the receiving address
+{
+    mirf_CE_lo;
+    mirf_write_register(RX_ADDR_P5,adr,5);
+    mirf_CE_hi;
+}
 void mirf_set_TADDR(uint8_t * adr)
 // Sets the transmitting address
 {

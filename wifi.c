@@ -1,16 +1,39 @@
-//************************************************************************\\
+
 // wifi.c
 //
-// 	Author:	Thao-Trang "Valerie Hoang
+//  Project: LED Cube
+//  Hardware: LED Cube USB Dongle
+// 	Author:	Doug Dziggel
 // 	Date:	1.16.13
 //
 // Description:
-// This program sends and receives data between two nrf24l01 chips.
+// This program runs on the LED Cube usb dongle. It takes the incoming data
+// from the computer sends it wirelessly to the LED Cubes. It also passes
+// information from the cubes to the computer.
 //
-// Notable information:
-// Both the Reads on rising edge and changes on falling edge.
+// It runs on an Atmega2313 that has the following:
+// Flash: 2K
+// EEPROM: 128 Bytes
+// SRAM: 128 Bytes
+//
+// Atmega2313 Pinout:
+//****************************************************************
+// Atmega2313       NRF24L01        FTDI        PROGRAMMER HEADER
+// ***************************************************************
+// VCC = 3.3V       VCC = 3.3V      VCC = 3.3V  VCC = 3.3V
+// GND =            GND             GND         VCC
+// PA2 =  ------------------------------------  RESET
+// PB2 =  -------  CSN
+// PB3 =  -------  CE
+// PB4 =  -------  IRQ
+// PB5 =  -------  MI  -----------------------  MOSI
+// PB6 =  -------  MO  -----------------------  MISO
+// PB7 =  -------  SCK -----------------------  SCK
+// PD1 =  ------------------------  RX
+// PD2 =  ------------------------  TX
+//
+// NOTE: If you edit this code or the hardware keep the above in mind.
 //************************************************************************//
-//oh yea
 
 #define F_CPU 8000000UL	// 1Mhz clock
 #define BAUD 250000
@@ -36,6 +59,7 @@
 #include "usart.h"
 
 
+volatile uint8_t instr = 0;
 volatile char buffer [32] = {'7','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
                     'q','r','s','t','u','v','w','x','y','z','1','2','3','4','5','6'};
 volatile char buffer_in_use = 0;
@@ -135,6 +159,41 @@ void test () {
     }
 }
 
+void set_channel(uint8_t channel)
+{
+    mirf_config_register(RF_CH,channel); // Set the channel
+}
+
+void set_TX_addr(uint8_t *addr){
+    mirf_set_TADDR(addr);
+}
+
+void set_RX_addr(uint8_t pipe,uint8_t *addr)
+{
+    switch(pipe){
+        case 0:
+            mirf_set_RADDR(addr);
+            break;
+        case 1:
+            mirf_set_RADDR_P1(addr);
+            break;
+        case 2:
+            mirf_set_RADDR_P2(addr); 
+            break;
+        case 3:
+            mirf_set_RADDR_P3(addr);
+            break;
+        case 4:
+            mirf_set_RADDR_P4(addr); 
+            break;
+        case 5:
+            mirf_set_RADDR_P5(addr); 
+            break;
+        default:
+            break;
+    }
+}
+
 
 ISR(USART_RX_vect){
 
@@ -145,7 +204,14 @@ ISR(USART_RX_vect){
     }
     if (0 == transmit_flag)
     {
-        buffer[buffer_index] = data;
+        if(0 == buffer_index)
+        {
+            instr = data;
+        }
+        else
+        {
+            buffer[buffer_index] = data;
+        }
     }
 
     if(buffer_index == 31){
