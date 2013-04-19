@@ -214,7 +214,7 @@ ISR(USART_RX_vect){
         }
     }
 
-    if(buffer_index == 31){
+    if(buffer_index == 32){
         if (1 == transmit_flag)
         {
             USART_Transmit('b');
@@ -257,6 +257,7 @@ int main (void)
     _delay_ms(100);
     mirf_config_register(STATUS,(1<<TX_DS)|(1<<MAX_RT)); // Reset status register
     _delay_ms(50);
+    uint64_t addr;
 	
     transmit_string ("s\r\n");
     while (1)
@@ -276,7 +277,23 @@ int main (void)
         if(1 == buffer_in_use)
         {
             // do something with the data in buffer...
-            Transmit(buffer, BUFFER_SIZE);
+            switch(instr){
+                case 0:
+                    Transmit(buffer, BUFFER_SIZE);
+                    break;
+                case 1:
+                    set_channel(buffer[0]);
+                case 2:
+                    addr = (buffer[2]<<0)|(buffer[3]<<8)|(buffer[4]<<24)|
+                           (buffer[5]<<32)|(buffer[6]<<40);
+                    if(1 == buffer[0]){
+                        set_TX_addr(addr);
+                    }
+                    else{
+                        set_RX_addr(buffer[1],addr);
+                    }
+            }
+            //Transmit(buffer, BUFFER_SIZE);
             buffer_in_use = 0;
         }
     }
