@@ -33,8 +33,8 @@ class Communication():
 #        #self.s1.write('&')
 
     def Transmit (self, data):
-        if (len (data) != 32):
-            print ("Cannot send data: length is not 32:" + data)
+        if (len (data) != 33):
+            print ("Cannot send data: length is not 33:" + data)
             return -1
 
         while (True):

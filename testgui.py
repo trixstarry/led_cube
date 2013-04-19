@@ -50,7 +50,7 @@ class PyApp(gtk.Window):
     i2 = 0
     i3 = 0
     i4 = 0
-    instr = 0
+    instr = '\x00'
 
     def __init__(self):
         super(PyApp,self).__init__()
