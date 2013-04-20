@@ -228,7 +228,7 @@ ISR(USART_RX_vect){
             USART_Transmit('\n');
         }
     }
-    buffer_index = ((buffer_index+1)%32);
+    buffer_index = ((buffer_index+1)%33);
 }
 
 int main (void)
