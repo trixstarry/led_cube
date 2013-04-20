@@ -28,6 +28,13 @@ class Communication():
                         print "ERROR: Could not find LEDCUBE USB Dongle."
 
 
+    #NOTE: must input channel as a hex char like so: '\x01' from 1 to 84 '\0x54'
+    def set_channel(self,channel):
+        data = ''.join(("\x01",channel))
+        for i in range(0,32):
+            data = ''.join((data,'\x00'))
+        self.Transmit(data)
+
 #    def Transmit(self,data):
 #        self.s1.write(data)
 #        #self.s1.write('&')

@@ -368,6 +368,7 @@ class PyApp(gtk.Window):
         selected = self.PATTERN[formatCombo]
         response = '\x00'
         while self.RUNNING1 == True:
+            self.comm.set_channel('\x05')
             #cube = 'Cube 2: '
             #id = '\x02'
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
@@ -517,6 +518,7 @@ class PyApp(gtk.Window):
         selected = self.PATTERN[formatCombo]
         response = '\x00'
         while self.RUNNING2 == True:
+            self.comm.set_channel('\x02')
             #cube = 'Cube 2: '
             #id = '\x02'
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
