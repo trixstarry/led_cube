@@ -1,16 +1,16 @@
 //************************************************************************\\
 // wifi.c
 //
-// 	Author:	Thao-Trang "Valerie Hoang
+//  Senior Design 2013
+// 	Project: Multiple LED Cube Controller
+// 	Group: 2
+// 	Author:	Doug Dziggel
 // 	Date:	1.16.13
 //
 // Description:
-// This program sends and receives data between two nrf24l01 chips.
+// This is the code that controls the LED Cubes and runs on a ATtiny167
 //
-// Notable information:
-// Both the Reads on rising edge and changes on falling edge.
 //************************************************************************//
-//oh yea
 
 #define F_CPU 8000000UL	// 1Mhz clock
 #define BAUD 250000
