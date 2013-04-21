@@ -31,7 +31,7 @@ class Communication():
     #NOTE: must input channel as a hex char like so: '\x01' from 1 to 84 '\0x54'
     def set_channel(self,channel):
         data = ''.join(("\x01",channel))
-        for i in range(0,32):
+        for i in range(31):
             data = ''.join((data,'\x00'))
         self.Transmit(data)
 

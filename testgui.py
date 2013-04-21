@@ -456,6 +456,7 @@ class PyApp(gtk.Window):
             yield 1000
 
     def Stop1(self,widget):
+        self.comm.set_channel('\x05')
         self.RUNNING1 = False
         id = '\x01'
         pattern = '\x05'
@@ -596,6 +597,7 @@ class PyApp(gtk.Window):
             yield 1000
 
     def Stop2(self,widget):
+        self.comm.set_channel('\x02')
         self.RUNNING2 = False
         self.i2 = 0
         id = '\x02'
