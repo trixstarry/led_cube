@@ -63,6 +63,7 @@ class Communication():
             print "Reading leftovers: " + self.s1.readline()
             print "Done!"
         else:
+            data = ''.join([int(x.encode('hex'),16) for x in self.s1.read(32)])
             print ("Data was not expected: [" + data + "]")
             return -1
         return data[2]
