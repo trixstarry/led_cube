@@ -437,25 +437,7 @@ class PyApp(gtk.Window):
             #id = '\x02'
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
             pattern = '\x05'
-            if selected == self.PATTERN[0]:
-                pattern = '\x01'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
-            elif selected == self.PATTERN[1]:
-                pattern = '\x03'
-                response = '\x01'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
-            elif selected == self.PATTERN[2]:
-                pattern = '\x03'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
-            elif selected == self.PATTERN[3]:
-                pattern = '\x04'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
-            elif selected == self.PATTERN[4]:
-                pattern = '\x04'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
-            else:
-                pattern = '\x05'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
+            self.pattern_select(id,pattern,index,response,data,cube,selected)
             index = (index+1)%5;
             #time.sleep(.1)
             yield 1000
@@ -492,25 +474,7 @@ class PyApp(gtk.Window):
             id = '\x03'
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
             pattern = '\x05'
-            if selected == self.PATTERN[0]:
-                pattern = '\x01'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
-            elif selected == self.PATTERN[1]:
-                pattern = '\x03'
-                response = '\x01'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
-            elif selected == self.PATTERN[2]:
-                pattern = '\x03'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
-            elif selected == self.PATTERN[3]:
-                pattern = '\x04'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
-            elif selected == self.PATTERN[4]:
-                pattern = '\x04'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
-            else:
-                pattern = '\x05'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
+            self.pattern_select(id,pattern,index,response,data,cube,selected)
             index = (index+1)%5;
             #time.sleep(.1)
             yield 1000
@@ -542,25 +506,7 @@ class PyApp(gtk.Window):
             id = '\x04'
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
             pattern = '\x05'
-            if selected == self.PATTERN[0]:
-                pattern = '\x01'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
-            elif selected == self.PATTERN[1]:
-                pattern = '\x03'
-                response = '\x01'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
-            elif selected == self.PATTERN[2]:
-                pattern = '\x03'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
-            elif selected == self.PATTERN[3]:
-                pattern = '\x04'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
-            elif selected == self.PATTERN[4]:
-                pattern = '\x04'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
-            else:
-                pattern = '\x05'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
+            self.pattern_select(id,pattern,index,response,data,cube,selected)
             index = (index+1)%5;
             #time.sleep(.1)
             yield 1000
