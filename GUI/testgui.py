@@ -307,6 +307,28 @@ class PyApp(gtk.Window):
         self.textbuffer.set_text(self.output)
         self.scroll_VAdjustment.set_value(self.scroll_VAdjustment.get_upper())
 
+    def pattern_select(self,id,pattern,index,response,data,cube,selected):
+        pattern = '\x05'
+        if selected == self.PATTERN[0]:
+            pattern = '\x01'
+            self.Transmit(id,pattern,index,response,data,cube,selected)
+        elif selected == self.PATTERN[1]:
+            pattern = '\x03'
+            response = '\x01'
+            self.Transmit(id,pattern,index,response,data,cube,selected)
+        elif selected == self.PATTERN[2]:
+            pattern = '\x03'
+            self.Transmit(id,pattern,index,response,data,cube,selected)
+        elif selected == self.PATTERN[3]:
+            pattern = '\x04'
+            self.Transmit(id,pattern,index,response,data,cube,selected)
+        elif selected == self.PATTERN[4]:
+            pattern = '\x04'
+            self.Transmit(id,pattern,index,response,data,cube,selected)
+        else:
+            pattern = '\x05'
+            self.Transmit(id,pattern,index,response,data,cube,selected)
+
     def Transmit(self,id,pattern,index,response,data,cube,selected):
         if response == '\x00':
             data_out = ''.join((self.instr,id,pattern,self.frame[index],response,data))
@@ -372,25 +394,7 @@ class PyApp(gtk.Window):
             #id = '\x02'
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
             pattern = '\x05'
-            if selected == self.PATTERN[0]:
-                pattern = '\x01'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
-            elif selected == self.PATTERN[1]:
-                pattern = '\x03'
-                response = '\x01'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
-            elif selected == self.PATTERN[2]:
-                pattern = '\x03'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
-            elif selected == self.PATTERN[3]:
-                pattern = '\x04'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
-            elif selected == self.PATTERN[4]:
-                pattern = '\x04'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
-            else:
-                pattern = '\x05'
-                self.Transmit(id,pattern,index,response,data,cube,selected)
+            self.pattern_select(id,pattern,index,response,data,cube,selected)
             index = (index+1)%5;
             #time.sleep(.1)
             yield 1000
