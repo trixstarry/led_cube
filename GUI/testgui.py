@@ -308,9 +308,32 @@ class PyApp(gtk.Window):
         self.scroll_VAdjustment.set_value(self.scroll_VAdjustment.get_upper())
 
     def Transmit(self,id,pattern,index,response,data,cube,selected):
-        data_out = ''.join((self.instr,id,pattern,self.frame[index],response,data))
-        self.comm.Transmit(data_out) 
-        self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
+        if response == '\x00':
+            data_out = ''.join((self.instr,id,pattern,self.frame[index],response,data))
+            self.comm.Transmit(data_out) 
+            self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
+        if response == '\x01':
+            data_out = ''.join((self.instr,id,pattern,self.frame[self.side],response,data))
+            self.comm.Transmit(data_out) 
+            sensors = self.Receive()
+            #sensors = 2
+            if sensors == 2:
+                self.side = 0
+                self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 1"))))
+            elif sensors == 1:
+                self.side = 2
+                self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 2"))))
+            elif sensors == 4:
+                self.side = 2
+                self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 3"))))
+            elif sensors == 8:
+                self.side = 3
+                self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 4"))))
+            else:
+                pattern = '\x01'
+                self.side = 1
+                self.output = "\r\n".join((self.output,''.join((cube,"Nothing Detected"))))
+            data_out = ''.join((self.instr,id,pattern,self.frame[self.side],response,data))
         self.text_out()
 
     def set_num1(self,widget):
@@ -379,83 +402,26 @@ class PyApp(gtk.Window):
             #cube = 'Cube 2: '
             #id = '\x02'
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
-            frame = ['\x00','\x01','\x02','\x03','\x04']
             pattern = '\x05'
             if selected == self.PATTERN[0]:
                 pattern = '\x01'
                 self.Transmit(id,pattern,index,response,data,cube,selected)
-                #data_out = ''.join((self.instr,id,pattern,frame[index],response,data))
-                #self.comm.Transmit(data_out) 
-                #self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
-                #self.text_out()
             elif selected == self.PATTERN[1]:
                 pattern = '\x03'
-                #self.comm.Transmit(data) 
                 response = '\x01'
-                data_out = ''.join((self.instr,id,pattern,frame[self.side],response,data))
-                self.comm.Transmit(data_out) 
-                sensors = self.Receive()
-                #sensors = '\x02'
-                if sensors == 2:
-                    self.side = 0
-                    self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 1"))))
-                elif sensors == 1:
-                    self.side = 2
-                    self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 2"))))
-                elif sensors == 4:
-                    self.side = 2
-                    self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 3"))))
-                elif sensors == 8:
-                    self.side = 3
-                    self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 4"))))
-                else:
-                    pattern = '\x01'
-                    self.side = 1
-                    self.output = "\r\n".join((self.output,''.join((cube,"Nothing Detected"))))
-                data_out = ''.join((self.instr,id,pattern,frame[self.side],response,data))
-#                self.comm.Transmit(data_out) 
-#                self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
-                self.text_out()
-                #self.side = 0
-
+                self.Transmit(id,pattern,index,response,data,cube,selected)
             elif selected == self.PATTERN[2]:
                 pattern = '\x03'
-                data_out = ''.join((self.instr,id,pattern,frame[index],response,data))
-                self.comm.Transmit(data_out) 
-                self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
-                self.text_out()
+                self.Transmit(id,pattern,index,response,data,cube,selected)
             elif selected == self.PATTERN[3]:
                 pattern = '\x04'
-                data_out = ''.join((self.instr,id,pattern,frame[index],response,data))
-                self.comm.Transmit(data_out) 
-                self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
-                self.text_out()
+                self.Transmit(id,pattern,index,response,data,cube,selected)
             elif selected == self.PATTERN[4]:
                 pattern = '\x04'
-                data_out = ''.join((self.instr,id,pattern,frame[index],response,data))
-                self.comm.Transmit(data_out) 
-                self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
-                self.text_out()
+                self.Transmit(id,pattern,index,response,data,cube,selected)
             else:
                 pattern = '\x05'
-                data_out = ''.join((self.instr,id,pattern,frame[index],response,data))
-                self.comm.Transmit(data_out) 
-                self.output = "\r\n".join((self.output,"Error 71"))
-                self.text_out()
-
-            
-            '''
-            if self.num == 1:
-                self.RUNNING1 = running
-            elif self.num == 2:
-                self.RUNNING2 = running
-            elif self.num == 3:
-                self.RUNNING3 = running
-            elif self.num == 4:
-                self.RUNNING4 = running
-                '''
-            
-           # self.Receive()
+                self.Transmit(id,pattern,index,response,data,cube,selected)
             index = (index+1)%5;
             #time.sleep(.1)
             yield 1000
