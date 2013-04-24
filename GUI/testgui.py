@@ -51,6 +51,7 @@ class PyApp(gtk.Window):
     i3 = 0
     i4 = 0
     instr = '\x00'
+    frame = ['\x00','\x01','\x02','\x03','\x04']
 
     def __init__(self):
         super(PyApp,self).__init__()
@@ -306,6 +307,12 @@ class PyApp(gtk.Window):
         self.textbuffer.set_text(self.output)
         self.scroll_VAdjustment.set_value(self.scroll_VAdjustment.get_upper())
 
+    def Transmit(self,id,pattern,index,response,data,cube,selected):
+        data_out = ''.join((self.instr,id,pattern,self.frame[index],response,data))
+        self.comm.Transmit(data_out) 
+        self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
+        self.text_out()
+
     def set_num1(self,widget):
         self.num = 1
 
@@ -376,13 +383,11 @@ class PyApp(gtk.Window):
             pattern = '\x05'
             if selected == self.PATTERN[0]:
                 pattern = '\x01'
-
-                data_out = ''.join((self.instr,id,pattern,frame[index],response,data))
-
-                self.comm.Transmit(data_out) 
-
-                self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
-                self.text_out()
+                self.Transmit(id,pattern,index,response,data,cube,selected)
+                #data_out = ''.join((self.instr,id,pattern,frame[index],response,data))
+                #self.comm.Transmit(data_out) 
+                #self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
+                #self.text_out()
             elif selected == self.PATTERN[1]:
                 pattern = '\x03'
                 #self.comm.Transmit(data) 
