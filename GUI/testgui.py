@@ -556,7 +556,7 @@ class PyApp(gtk.Window):
     def helpMe(self,widget):
         about = gtk.AboutDialog()
         about.set_program_name("Wireless LED Cube")
-        about.set_version("0.01")
+        about.set_version("0.90")
         about.set_authors(["Alex Dziggel - CpE","Patrick Meison - CPE","Thao Hoang - EE"])
         about.set_copyright("Created October 21, 2012")
         about.set_comments("""Instructions:\n
