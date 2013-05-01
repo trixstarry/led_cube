@@ -390,7 +390,7 @@ class PyApp(gtk.Window):
                 sensors = self.Receive()
                 #sensors = '\x02'
                 if sensors == 2:
-                    self.side = 0
+                    self.side = 1
                     self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 1"))))
                 elif sensors == 1:
                     self.side = 2
@@ -399,7 +399,7 @@ class PyApp(gtk.Window):
                     self.side = 2
                     self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 3"))))
                 elif sensors == 8:
-                    self.side = 3
+                    self.side = 1
                     self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 4"))))
                 else:
                     pattern = '\x01'
