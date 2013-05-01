@@ -363,9 +363,9 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr25/libgcc.a
  .stab          0x0000237c      0x318 usart.o
                                 0x4ec (size before relaxing)
 
-.stabstr        0x00000000      0xd2e
+.stabstr        0x00000000      0xcff
  *(.stabstr)
- .stabstr       0x00000000      0xd2e /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr25/crttn2313.o
+ .stabstr       0x00000000      0xcff /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr25/crttn2313.o
 
 .stab.excl
  *(.stab.excl)

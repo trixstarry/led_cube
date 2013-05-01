@@ -432,7 +432,7 @@ class PyApp(gtk.Window):
         selected = self.PATTERN[formatCombo]
         response = '\x00'
         while self.RUNNING2 == True:
-            self.comm.set_channel('\x02')
+            self.comm.set_channel('\x3C')
             #cube = 'Cube 2: '
             #id = '\x02'
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
@@ -443,7 +443,7 @@ class PyApp(gtk.Window):
             yield 1000
 
     def Stop2(self,widget):
-        self.comm.set_channel('\x02')
+        self.comm.set_channel('\x3C')
         self.RUNNING2 = False
         self.i2 = 0
         id = '\x02'
