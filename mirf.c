@@ -89,8 +89,8 @@ void mirf_config()
     // Set length of incoming payload 
     mirf_config_register(RX_PW_P0, mirf_PAYLOAD);
 
-    mirf_set_RADDR(0xB3B4B5B621);
-    mirf_set_TADDR(0xB3B4B5B621);
+    //mirf_set_RADDR(0xB3B4B5B621);
+    //mirf_set_TADDR(0xB3B4B5B621);
 
 
 
