@@ -171,10 +171,23 @@ uint16_t B[25][5] PROGMEM = {   {0    ,C2P10,0    ,0    ,0    }, //1
                         {0    ,0    ,0    ,0    ,C5P7 } //25
 };
 
-uint32_t power_duration[3] PROGMEM = {0x1FFFFFF,0x1FFFFFF,0x1FFFFFF};
 uint32_t off[5][3] PROGMEM = {
                 {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0}
                 };
+
+uint32_t patterns[10][5][3] PROGMEM = {
+    {{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0}},                                          //1. OFF
+    {{0x1FFFFFF,0x1FFFFFF,0x1FFFFFF},{0x1FFFFFF,0x1FFFFFF,0x1FFFFFF},{0x1FFFFFF,0x1FFFFFF,0x1FFFFFF},{0x1FFFFFF,0x1FFFFFF,0x1FFFFFF},{0x1FFFFFF,0x1FFFFFF,0x1FFFFFF}},                                                                //2. ON
+    {{0x1FFFFFF,0,0},{0x1FFFFFF,0,0},{0x1FFFFFF,0,0},{0x1FFFFFF,0,0},{0x1FFFFFF,0,0}},  //3. ALL RED
+    {{0,0x1FFFFFF,0},{0,0x1FFFFFF,0},{0,0x1FFFFFF,0},{0,0x1FFFFFF,0},{0,0x1FFFFFF,0}},  //4. ALL BLUE
+    {{0,0,0x1FFFFFF},{0,0,0x1FFFFFF},{0,0,0x1FFFFFF},{0,0,0x1FFFFFF},{0,0,0x1FFFFFF}},  //5. ALL GREEN
+    {{0x4,0,0},{0x4,0,0},{0x4,0,0},{0x4,0,0},{0x4,0,0}},                                //6. Red Column 
+    {{0x400,0,0},{0x400,0,0},{0x400,0,},{0x400,0,0},{0x400,0,0}},                       //7. RED Column
+    {{0x4000,0},{0x4000,0,0},{0x4000,0,0},{0x4000,0,0},{0x4000,0,0}},                   //8. RED Column
+    {{0x400000,0},{0x400000,0,0},{0x400000,0,0},{0x400000,0,0},{0x400000,0,0}},         //9. RED Column
+    {{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0}},                                          //1. OFF
+};
+
 uint32_t on[5][3] PROGMEM = 
     {
     {0x1FFFFFF,0x1FFFFFF,0x1FFFFFF},{0x1FFFFFF,0x1FFFFFF,0x1FFFFFF},{0x1FFFFFF,0x1FFFFFF,0x1FFFFFF},{0x1FFFFFF,0x1FFFFFF,0x1FFFFFF},{0x1FFFFFF,0x1FFFFFF,0x1FFFFFF}
