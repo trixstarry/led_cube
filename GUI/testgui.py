@@ -41,7 +41,7 @@ class PyApp(gtk.Window):
     RUNNING2 = False
     RUNNING3 = False
     RUNNING4 = False
-    PATTERN = ["Pattern 1","Pattern 2","Pattern 3","Pattern 4","Pattern 5"]
+    PATTERN = ["Pattern 1","Pattern 2","Pattern 3","Pattern 4","Pattern 5","Master Pattern"]
     ACTIVE = [False,False,False,False]
     num = 0
     #PATTERN = ["Power Duration","Cube Connection","Dual Algorithms","Input Timing","Moving Pattern"]
@@ -96,6 +96,7 @@ class PyApp(gtk.Window):
         liststore1.append([self.PATTERN[2]])
         liststore1.append([self.PATTERN[3]])
         liststore1.append([self.PATTERN[4]])
+        liststore1.append([self.PATTERN[5]])
         self.formatCombo1 = gtk.ComboBox(liststore1)
         cell = gtk.CellRendererText()
         self.formatCombo1.pack_start(cell)
@@ -136,6 +137,7 @@ class PyApp(gtk.Window):
         liststore2.append([self.PATTERN[2]])
         liststore2.append([self.PATTERN[3]])
         liststore2.append([self.PATTERN[4]])
+        liststore2.append([self.PATTERN[5]])
         self.formatCombo2 = gtk.ComboBox(liststore2)
         cell = gtk.CellRendererText()
         self.formatCombo2.pack_start(cell)
@@ -324,6 +326,9 @@ class PyApp(gtk.Window):
             self.Transmit(id,pattern,index,response,data,cube,selected)
         elif selected == self.PATTERN[4]:
             pattern = '\x04'
+            self.Transmit(id,pattern,index,response,data,cube,selected)
+        elif selected == self.PATTERN[5]:
+            pattern = '\x06'
             self.Transmit(id,pattern,index,response,data,cube,selected)
         else:
             pattern = '\x05'
