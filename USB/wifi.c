@@ -164,6 +164,8 @@ void set_channel(uint8_t channel)
     mirf_config_register(RF_CH,channel); // Set the channel
 }
 
+/*
+
 void set_TX_addr(uint8_t *addr){
     mirf_set_TADDR(addr);
 }
@@ -193,6 +195,7 @@ void set_RX_addr(uint8_t pipe,uint8_t *addr)
             break;
     }
 }
+*/
 
 
 ISR(USART_RX_vect){
@@ -283,6 +286,7 @@ int main (void)
                     break;
                 case 1:
                     set_channel(buffer[0]);
+                    /*
                 case 2:
                     {
                     uint64_t addr = (buffer[2]<<0)|(buffer[3]<<8)|(buffer[4]<<24)|
@@ -294,6 +298,7 @@ int main (void)
                         set_RX_addr(buffer[1],addr);
                     }
                     }
+                    */
             }
             //Transmit(buffer, BUFFER_SIZE);
             buffer_in_use = 0;
