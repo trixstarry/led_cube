@@ -28,7 +28,7 @@
 
 #define TOGGLE_LATCH PORTA |= (1<<SS);\
 	                 PORTA &= ~(1<<SS);
-#define SENSORS (PINB & ((1<<PB0)|(1<<PB1)|(1<<PB2)|(1<<PB3))) 
+#define SENSORS (~PINB & ((1<<PB0)|(1<<PB1)|(1<<PB2)|(1<<PB3))) 
 
 #define CUBE1   0x01
 #define CUBE2   0x02
