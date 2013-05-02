@@ -51,7 +51,7 @@ class PyApp(gtk.Window):
     i3 = 0
     i4 = 0
     instr = '\x00'
-    frame = ['\x00','\x01','\x02','\x03','\x04']
+    frame = ['\x00','\x01','\x02','\x03','\x04','\x05','\x06','\x07','\x08','\x09','\x0a']
 
     def __init__(self):
         super(PyApp,self).__init__()
@@ -400,9 +400,26 @@ class PyApp(gtk.Window):
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
             pattern = '\x05'
             self.pattern_select(id,pattern,index,response,data,cube,selected)
-            index = (index+1)%5;
+            index = self.incrementer(index,selected);#(index+1)%5;
             #time.sleep(.1)
             yield 1000
+
+    def incrementer(self,index,selected):
+        if selected == self.PATTERN[0]:
+            return (index+1)%5;
+        elif selected == self.PATTERN[1]:
+            return (index+1)%5;
+        elif selected == self.PATTERN[2]:
+            return (index+1)%5;
+        elif selected == self.PATTERN[3]:
+            return (index+1)%5;
+        elif selected == self.PATTERN[4]:
+            return (index+1)%5;
+        elif selected == self.PATTERN[5]:
+            return (index+1)%10;
+        else:
+            return (index+1)%5;
+
 
     def Stop1(self,widget):
         self.comm.set_channel('\x46')
