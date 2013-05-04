@@ -53,7 +53,7 @@ class PyApp(gtk.Window):
     instr = '\x00'
     frame = ['\x00','\x01','\x02','\x03','\x04','\x05','\x06','\x07','\x08','\x09','\x0a','\x0b','\x0c','\x0d','\x0e','\x0f','\x10','\x11','\x12','\x13','\x14','\x15','\x16','\x17','\x18']
 
-    pattern1 = ['\x06','\x0a','\x0b','\x0c','\x07','\x0c','\x0b','\x0a']
+    pattern1 = ['\x06','\x0a','\x0b','\x0c','\x07','\x0c','\x0b','\x0a', '\x06']
 
     def __init__(self):
         super(PyApp,self).__init__()
@@ -402,6 +402,7 @@ class PyApp(gtk.Window):
         side1 = 3
         side2 = 3
         toggle = 0
+        cnt = 0
             
         if self.RUNNING1 == True:
             self.Stop1(widget)
@@ -414,15 +415,29 @@ class PyApp(gtk.Window):
         response = '\x01'
         while self.RUNNING1 == True:
             if(((side1 == 1) or (side1 == 2)) and (side2 == 1)):
+                
                 if (index == 5) and (toggle == 0):
                     #toggle cube 2
                     if toggle:
                         toggle = 0
                     else:
                         toggle = 1
-                    index = 4
+                    index = 5
                     index2= 0
-            print ("Toggle: " + str(toggle))
+                    cnt = 1
+                
+                if (index2 == 0) and (toggle == 1) and (cnt == 0):
+                    #toggle cube 2
+                    if toggle:
+                        toggle = 0
+                    else:
+                        toggle = 1
+                    index2= 1
+                    index = 5 
+
+                cnt = 0
+
+                print ("Toggle: " + str(toggle))
             
             self.comm.set_channel('\x46')
             cube = 'Cube 1: '
@@ -464,7 +479,7 @@ class PyApp(gtk.Window):
             time.sleep(.1)
              
             self.comm.set_channel('\x3c')
-            cube = 'Cube 2: '
+            cube = 'cube 2: '
             id = '\x02'
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
             pattern = '\x05'
@@ -500,6 +515,13 @@ class PyApp(gtk.Window):
             self.text_out()
             index2 = (index2+1)%8
 
+           # if(((side1 == 1) or (side1 == 2)) and (side2 == 1)):
+           #     if (index2 == 0) and (toggle == 1):
+           #         #untoggle cube 2
+           #         if toggle:
+           #             toggle = 0
+           #         index2 = 0
+           #         index = 4
 
             #time.sleep(.1)
             yield 500
@@ -514,11 +536,10 @@ class PyApp(gtk.Window):
         filler = '\x00'
         data_out = ''.join((self.instr,id,pattern,filler,response,data))
         time.sleep(.15)
-        self.comm.Transmit(data_out) 
-
+        data = '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
         self.comm.set_channel('\x3c')
         self.RUNNING1 = False
-        id = '\x02'
+        data = '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
         pattern = '\x05'
         data = '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
         response = '\x00'
@@ -721,7 +742,7 @@ class PyApp(gtk.Window):
         about = gtk.AboutDialog()
         about.set_program_name("Wireless LED Cube")
         about.set_version("0.90")
-        about.set_authors(["Alex Dziggel - CpE","Patrick Meison - CPE","Thao Hoang - EE"])
+        about.set_authors(["Alex Dziggel - CpE","Patrick Meison - CPE","Thao-Trang Hoang - EE"])
         about.set_copyright("Created October 21, 2012")
         about.set_comments("""Instructions:\n
         This program was created to interface with the wireless LED Cubes and to provide them instructions and patterns by which to display.
