@@ -51,7 +51,7 @@ class PyApp(gtk.Window):
     i3 = 0
     i4 = 0
     instr = '\x00'
-    frame = ['\x00','\x01','\x02','\x03','\x04','\x05','\x06','\x07','\x08','\x09','\x0a']
+    frame = ['\x00','\x01','\x02','\x03','\x04','\x05','\x06','\x07','\x08','\x09','\x0a','\x0b','\x0c','\x0d','\x0e','\x0f','\x10','\x11','\x12','\x13']
 
     def __init__(self):
         super(PyApp,self).__init__()
@@ -363,17 +363,21 @@ class PyApp(gtk.Window):
             data_out = ''.join((self.instr,id,pattern,self.frame[self.side],response,data))
         self.text_out()
 
-    def set_num1(self,widget):
-        self.num = 1
-
-    def set_num2(self,widget):
-        self.num = 2
-
-    def set_num3(self,widget):
-        self.num = 3
-
-    def set_num4(self,widget):
-        self.num = 4
+    def incrementer(self,index,selected):
+        if selected == self.PATTERN[0]:
+            return (index+1)%5;
+        elif selected == self.PATTERN[1]:
+            return (index+1)%5;
+        elif selected == self.PATTERN[2]:
+            return (index+1)%5;
+        elif selected == self.PATTERN[3]:
+            return (index+1)%5;
+        elif selected == self.PATTERN[4]:
+            return (index+1)%5;
+        elif selected == self.PATTERN[5]:
+            return (index+1)%19;
+        else:
+            return (index+1)%5;
 
     @yieldsleep
     def Send1(self,widget):
@@ -403,23 +407,6 @@ class PyApp(gtk.Window):
             index = self.incrementer(index,selected);#(index+1)%5;
             #time.sleep(.1)
             yield 1000
-
-    def incrementer(self,index,selected):
-        if selected == self.PATTERN[0]:
-            return (index+1)%5;
-        elif selected == self.PATTERN[1]:
-            return (index+1)%5;
-        elif selected == self.PATTERN[2]:
-            return (index+1)%5;
-        elif selected == self.PATTERN[3]:
-            return (index+1)%5;
-        elif selected == self.PATTERN[4]:
-            return (index+1)%5;
-        elif selected == self.PATTERN[5]:
-            return (index+1)%10;
-        else:
-            return (index+1)%5;
-
 
     def Stop1(self,widget):
         self.comm.set_channel('\x46')
