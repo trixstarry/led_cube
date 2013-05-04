@@ -403,6 +403,8 @@ class PyApp(gtk.Window):
         side2 = 3
         toggle = 0
         cnt = 0
+        bck = 0
+        jmp = 0
             
         if self.RUNNING1 == True:
             self.Stop1(widget)
@@ -418,26 +420,34 @@ class PyApp(gtk.Window):
                 
                 if (index == 5) and (toggle == 0):
                     #toggle cube 2
-                    if toggle:
-                        toggle = 0
-                    else:
+                    #if toggle:
+                    #    toggle = 0
+                    #else:
+                    if bck == 0:
                         toggle = 1
-                    index = 5
-                    index2= 0
-                    cnt = 1
+                        #index = 4
+                        index2= 0
+                        cnt = 1
+                    else:
+                        bck = 0
                 
-                if (index2 == 0) and (toggle == 1) and (cnt == 0):
+                if (index2 == 1) and (toggle == 1) and (cnt == 0):
                     #toggle cube 2
-                    if toggle:
+                    #if toggle:
+                    if jmp:
                         toggle = 0
+                        #else:
+                        #    toggle = 1
+                        #index2= 1
+                        index = 4 
+                        bck = 1
+                        jmp = 0
                     else:
-                        toggle = 1
-                    index2= 1
-                    index = 5 
+                        jmp = 1
 
                 cnt = 0
 
-                print ("Toggle: " + str(toggle))
+                #print ("Toggle: " + str(toggle))
             
             self.comm.set_channel('\x46')
             cube = 'Cube 1: '
@@ -476,7 +486,7 @@ class PyApp(gtk.Window):
             self.text_out()
             index = (index+1)%8
 
-            time.sleep(.1)
+            time.sleep(.15)
              
             self.comm.set_channel('\x3c')
             cube = 'cube 2: '
@@ -524,7 +534,7 @@ class PyApp(gtk.Window):
            #         index = 4
 
             #time.sleep(.1)
-            yield 500
+            yield 1000
 
     def Stop_Moving(self,widget):
         self.comm.set_channel('\x46')
