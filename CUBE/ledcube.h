@@ -175,7 +175,7 @@ uint32_t off[5][3] PROGMEM = {
                 {0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0}
                 };
 
-uint32_t patterns[10][5][3] PROGMEM = {
+uint32_t patterns[24][5][3] PROGMEM = {
     {{0,0,0},{0,0,0},{0,0,0},{0,0,0},{0,0,0}},                                          //1. OFF
     {{0x1FFFFFF,0x1FFFFFF,0x1FFFFFF},{0x1FFFFFF,0x1FFFFFF,0x1FFFFFF},{0x1FFFFFF,0x1FFFFFF,0x1FFFFFF},{0x1FFFFFF,0x1FFFFFF,0x1FFFFFF},{0x1FFFFFF,0x1FFFFFF,0x1FFFFFF}},                                                                //2. ON
     {{0x1FFFFFF,0,0},{0x1FFFFFF,0,0},{0x1FFFFFF,0,0},{0x1FFFFFF,0,0},{0x1FFFFFF,0,0}},  //3. ALL RED
