@@ -399,6 +399,9 @@ class PyApp(gtk.Window):
         index2 = 0
         self.i1 = ((self.i1 +1)%5)
         formatCombo = self.formatCombo1.get_active()
+        side1 = 3
+        side2 = 3
+        toggle = 0
             
         if self.RUNNING1 == True:
             self.Stop1(widget)
@@ -410,63 +413,94 @@ class PyApp(gtk.Window):
         selected = self.PATTERN[formatCombo]
         response = '\x01'
         while self.RUNNING1 == True:
+            if(((side1 == 1) or (side1 == 2)) and (side2 == 1)):
+                if (index == 5) and (toggle == 0):
+                    #toggle cube 2
+                    if toggle:
+                        toggle = 0
+                    else:
+                        toggle = 1
+                    index = 4
+                    index2= 0
+            print ("Toggle: " + str(toggle))
+            
             self.comm.set_channel('\x46')
             cube = 'Cube 1: '
             id = '\x01'
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
             pattern = '\x05'
-            data_out = ''.join((self.instr,id,pattern,self.pattern1[index],response,data))
+            if toggle == 0:
+                data_out = ''.join((self.instr,id,pattern,self.pattern1[index],response,data))
+            else:
+                data_out = ''.join((self.instr,id,pattern,'\x00',response,data))
             self.comm.Transmit(data_out) 
             sensors = self.Receive()
             #sensors = 2
             if sensors == 2:
                 self.side = 0
+                side1 = 0
                 self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 1"))))
             elif sensors == 1:
                 self.side = 2
+                side1 = 1
                 self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 2"))))
             elif sensors == 4:
                 self.side = 2
+                side1 = 2
                 self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 3"))))
             elif sensors == 8:
                 self.side = 3
+                side1 = 3
                 self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 4"))))
             else:
                 pattern = '\x01'
+                side1 = 0
                 self.side = 1
                 self.output = "\r\n".join((self.output,''.join((cube,"Nothing Detected"))))
             data_out = ''.join((self.instr,id,pattern,self.pattern1[self.side],response,data))
             self.text_out()
             index = (index+1)%8
+
+            time.sleep(.1)
              
             self.comm.set_channel('\x3c')
             cube = 'Cube 2: '
             id = '\x02'
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
             pattern = '\x05'
-            data_out = ''.join((self.instr,id,pattern,self.pattern1[index2],response,data))
+            if (toggle == 0):
+                data_out = ''.join((self.instr,id,pattern,'\x00',response,data))
+            else:
+                data_out = ''.join((self.instr,id,pattern,self.pattern1[index2],response,data))
             self.comm.Transmit(data_out) 
             sensors = self.Receive()
             #sensors = 2
             if sensors == 2:
                 self.side = 0
+                side2 = 0
                 self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 1"))))
             elif sensors == 1:
                 self.side = 2
+                side2 = 1
                 self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 2"))))
             elif sensors == 4:
                 self.side = 2
+                side2 = 2
                 self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 3"))))
             elif sensors == 8:
                 self.side = 3
+                side2 = 3
                 self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 4"))))
             else:
                 pattern = '\x01'
                 self.side = 1
+                side2 = 0
                 self.output = "\r\n".join((self.output,''.join((cube,"Nothing Detected"))))
             data_out = ''.join((self.instr,id,pattern,self.pattern1[self.side],response,data))
             self.text_out()
             index2 = (index2+1)%8
+
+
             #time.sleep(.1)
             yield 500
 
