@@ -492,6 +492,7 @@ class PyApp(gtk.Window):
         self.RUNNING = True
         selected = self.PATTERN[self.formatCombo3.get_active()]
         while self.RUNNING3 == True:
+            self.comm.set_channel('\x32')
             cube = 'Cube 3: '
             id = '\x03'
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
@@ -502,6 +503,7 @@ class PyApp(gtk.Window):
             yield 1000
 
     def Stop3(self,widget):
+        self.comm.set_channel('\x32')
         self.RUNNING3 = False
         id = '\x03'
         pattern = '\x05'
@@ -524,6 +526,7 @@ class PyApp(gtk.Window):
         self.RUNNING = True
         selected = self.PATTERN[self.formatCombo4.get_active()]
         while self.RUNNING4 == True:
+            self.comm.set_channel('\x28')
             cube = 'Cube 4: '
             id = '\x04'
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
@@ -534,6 +537,7 @@ class PyApp(gtk.Window):
             yield 1000
 
     def Stop4(self,widget):
+        self.comm.set_channel('\x28')
         self.RUNNING4 = False
         id = '\x04'
         pattern = '\x05'
