@@ -51,7 +51,9 @@ class PyApp(gtk.Window):
     i3 = 0
     i4 = 0
     instr = '\x00'
-    frame = ['\x00','\x01','\x02','\x03','\x04','\x05','\x06','\x07','\x08','\x09','\x0a']
+    frame = ['\x00','\x01','\x02','\x03','\x04','\x05','\x06','\x07','\x08','\x09','\x0a','\x0b','\x0c','\x0d','\x0e','\x0f','\x10','\x11','\x12','\x13','\x14','\x15','\x16','\x17','\x18']
+
+    pattern1 = ['\x06','\x0a','\x0b','\x0c','\x07','\x0c','\x0b','\x0a']
 
     def __init__(self):
         super(PyApp,self).__init__()
@@ -113,12 +115,12 @@ class PyApp(gtk.Window):
         #hBox.pack_start(self.patternDropDown,False,False,0)
 
         sendBtn = gtk.Button("Start")
-        sendBtn.connect("clicked",self.set_num1)
+        #sendBtn.connect("clicked",self.set_num1)
         sendBtn.connect("clicked",self.Send1)
         hBox.pack_start(sendBtn,False,False,0)
 
         stopBtn = gtk.Button("Stop")
-        stopBtn.connect("clicked",self.set_num1)
+        #stopBtn.connect("clicked",self.set_num1)
         stopBtn.connect("clicked",self.Stop1)
         hBox.pack_start(stopBtn,False,False,0)
         vBox.pack_start(hBox,False,False,0)
@@ -154,12 +156,12 @@ class PyApp(gtk.Window):
         #hBox.pack_start(self.patternDropDown,False,False,0)
 
         sendBtn = gtk.Button("Start")
-        sendBtn.connect("clicked",self.set_num2)
+        #sendBtn.connect("clicked",self.set_num2)
         sendBtn.connect("clicked",self.Send2)
         hBox.pack_start(sendBtn,False,False,0)
 
         stopBtn = gtk.Button("Stop")
-        stopBtn.connect("clicked",self.set_num2)
+        #stopBtn.connect("clicked",self.set_num2)
         stopBtn.connect("clicked",self.Stop2)
         hBox.pack_start(stopBtn,False,False,0)
         vBox.pack_start(hBox,False,False,0)
@@ -249,6 +251,15 @@ class PyApp(gtk.Window):
        #self.cube4Check.set_active(self.ACTIVE[3])
        #hBox.pack_start(self.cube4Check,False,False,0)
        #vBox.pack_start(hBox,False,False,0)
+        hBox = gtk.HBox(False,0)
+        sendBtn = gtk.Button("Moving Alg")
+        sendBtn.connect("clicked",self.Send_Moving)
+        hBox.pack_start(sendBtn,False,False,0)
+
+        stopBtn = gtk.Button("Stop")
+        stopBtn.connect("clicked",self.Stop_Moving)
+        hBox.pack_start(stopBtn,False,False,0)
+        vBox.pack_start(hBox,False,False,0)
 
         table.attach(vBox,0,5,1,2,gtk.FILL,gtk.FILL,1,1)
 
@@ -363,17 +374,161 @@ class PyApp(gtk.Window):
             data_out = ''.join((self.instr,id,pattern,self.frame[self.side],response,data))
         self.text_out()
 
-    def set_num1(self,widget):
-        self.num = 1
+    def incrementer(self,index,selected):
+        if selected == self.PATTERN[0]:
+            return (index+1)%5;
+        elif selected == self.PATTERN[1]:
+            return (index+1)%5;
+        elif selected == self.PATTERN[2]:
+            return (index+1)%5;
+        elif selected == self.PATTERN[3]:
+            return (index+1)%5;
+        elif selected == self.PATTERN[4]:
+            return (index+1)%5;
+        elif selected == self.PATTERN[5]:
+            return (index+1)%19;
+        else:
+            return (index+1)%5;
 
-    def set_num2(self,widget):
-        self.num = 2
+    @yieldsleep
+    def Send_Moving(self,widget):
+        id = '\x01'
+        #running = self.RUNNING1
+        cube = 'Cube 1: '
+        index = 0
+        index2 = 0
+        self.i1 = ((self.i1 +1)%5)
+        formatCombo = self.formatCombo1.get_active()
+        side1 = 3
+        side2 = 3
+        toggle = 0
+            
+        if self.RUNNING1 == True:
+            self.Stop1(widget)
+            index = 0
+            self.RUNNING1 == False
+            yield 1000
+            #return
+        self.RUNNING1 = True
+        selected = self.PATTERN[formatCombo]
+        response = '\x01'
+        while self.RUNNING1 == True:
+            if(((side1 == 1) or (side1 == 2)) and (side2 == 1)):
+                if (index == 5) and (toggle == 0):
+                    #toggle cube 2
+                    if toggle:
+                        toggle = 0
+                    else:
+                        toggle = 1
+                    index = 4
+                    index2= 0
+            print ("Toggle: " + str(toggle))
+            
+            self.comm.set_channel('\x46')
+            cube = 'Cube 1: '
+            id = '\x01'
+            data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+            pattern = '\x05'
+            if toggle == 0:
+                data_out = ''.join((self.instr,id,pattern,self.pattern1[index],response,data))
+            else:
+                data_out = ''.join((self.instr,id,pattern,'\x00',response,data))
+            self.comm.Transmit(data_out) 
+            sensors = self.Receive()
+            #sensors = 2
+            if sensors == 2:
+                self.side = 0
+                side1 = 0
+                self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 1"))))
+            elif sensors == 1:
+                self.side = 2
+                side1 = 1
+                self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 2"))))
+            elif sensors == 4:
+                self.side = 2
+                side1 = 2
+                self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 3"))))
+            elif sensors == 8:
+                self.side = 3
+                side1 = 3
+                self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 4"))))
+            else:
+                pattern = '\x01'
+                side1 = 0
+                self.side = 1
+                self.output = "\r\n".join((self.output,''.join((cube,"Nothing Detected"))))
+            data_out = ''.join((self.instr,id,pattern,self.pattern1[self.side],response,data))
+            self.text_out()
+            index = (index+1)%8
 
-    def set_num3(self,widget):
-        self.num = 3
+            time.sleep(.1)
+             
+            self.comm.set_channel('\x3c')
+            cube = 'Cube 2: '
+            id = '\x02'
+            data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+            pattern = '\x05'
+            if (toggle == 0):
+                data_out = ''.join((self.instr,id,pattern,'\x00',response,data))
+            else:
+                data_out = ''.join((self.instr,id,pattern,self.pattern1[index2],response,data))
+            self.comm.Transmit(data_out) 
+            sensors = self.Receive()
+            #sensors = 2
+            if sensors == 2:
+                self.side = 0
+                side2 = 0
+                self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 1"))))
+            elif sensors == 1:
+                self.side = 2
+                side2 = 1
+                self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 2"))))
+            elif sensors == 4:
+                self.side = 2
+                side2 = 2
+                self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 3"))))
+            elif sensors == 8:
+                self.side = 3
+                side2 = 3
+                self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 4"))))
+            else:
+                pattern = '\x01'
+                self.side = 1
+                side2 = 0
+                self.output = "\r\n".join((self.output,''.join((cube,"Nothing Detected"))))
+            data_out = ''.join((self.instr,id,pattern,self.pattern1[self.side],response,data))
+            self.text_out()
+            index2 = (index2+1)%8
 
-    def set_num4(self,widget):
-        self.num = 4
+
+            #time.sleep(.1)
+            yield 500
+
+    def Stop_Moving(self,widget):
+        self.comm.set_channel('\x46')
+        self.RUNNING1 = False
+        id = '\x01'
+        pattern = '\x05'
+        data = '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
+        response = '\x00'
+        filler = '\x00'
+        data_out = ''.join((self.instr,id,pattern,filler,response,data))
+        time.sleep(.15)
+        self.comm.Transmit(data_out) 
+
+        self.comm.set_channel('\x3c')
+        self.RUNNING1 = False
+        id = '\x02'
+        pattern = '\x05'
+        data = '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
+        response = '\x00'
+        filler = '\x00'
+        data_out = ''.join((self.instr,id,pattern,filler,response,data))
+        time.sleep(.15)
+        self.comm.Transmit(data_out) 
+
+        self.output = "\r\n".join((self.output,"Moving Algorithm: Stopped."))
+        self.text_out()
 
     @yieldsleep
     def Send1(self,widget):
@@ -400,26 +555,9 @@ class PyApp(gtk.Window):
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
             pattern = '\x05'
             self.pattern_select(id,pattern,index,response,data,cube,selected)
-            index = self.incrementer(index,selected);#(index+1)%5;
+            index = (index+1)%19;
             #time.sleep(.1)
             yield 1000
-
-    def incrementer(self,index,selected):
-        if selected == self.PATTERN[0]:
-            return (index+1)%5;
-        elif selected == self.PATTERN[1]:
-            return (index+1)%5;
-        elif selected == self.PATTERN[2]:
-            return (index+1)%5;
-        elif selected == self.PATTERN[3]:
-            return (index+1)%5;
-        elif selected == self.PATTERN[4]:
-            return (index+1)%5;
-        elif selected == self.PATTERN[5]:
-            return (index+1)%10;
-        else:
-            return (index+1)%5;
-
 
     def Stop1(self,widget):
         self.comm.set_channel('\x46')
@@ -492,6 +630,7 @@ class PyApp(gtk.Window):
         self.RUNNING = True
         selected = self.PATTERN[self.formatCombo3.get_active()]
         while self.RUNNING3 == True:
+            self.comm.set_channel('\x32')
             cube = 'Cube 3: '
             id = '\x03'
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
@@ -502,6 +641,7 @@ class PyApp(gtk.Window):
             yield 1000
 
     def Stop3(self,widget):
+        self.comm.set_channel('\x32')
         self.RUNNING3 = False
         id = '\x03'
         pattern = '\x05'
@@ -524,6 +664,7 @@ class PyApp(gtk.Window):
         self.RUNNING = True
         selected = self.PATTERN[self.formatCombo4.get_active()]
         while self.RUNNING4 == True:
+            self.comm.set_channel('\x28')
             cube = 'Cube 4: '
             id = '\x04'
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
@@ -534,6 +675,7 @@ class PyApp(gtk.Window):
             yield 1000
 
     def Stop4(self,widget):
+        self.comm.set_channel('\x28')
         self.RUNNING4 = False
         id = '\x04'
         pattern = '\x05'

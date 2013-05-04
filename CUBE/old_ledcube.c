@@ -34,7 +34,7 @@
 #define CUBE2   0x02
 #define CUBE3   0x04
 #define CUBE4   0x08
-#define ID_SELF CUBE2
+#define ID_SELF CUBE1
 #define PACKET1 0x04
 #define PACKET2 0x08
 
@@ -65,7 +65,6 @@
 #define PATTERN3 3
 #define PATTERN4 4
 #define PATTERN5 5
-#define PATTERNS 6
 
 #include <avr/io.h>
 #include <avr/interrupt.h>
@@ -246,14 +245,6 @@ void pattern(uint8_t selection,uint8_t num){
     uint8_t blue = 1;
     uint8_t green = 2;
 
-    
-    leds(0,pgm_read_dword(&(patterns[num][0][red])),pgm_read_dword(&(patterns[num][0][blue])),pgm_read_dword(&(patterns[num][0][green])));
-    leds(1,pgm_read_dword(&(patterns[num][1][red])),pgm_read_dword(&(patterns[num][1][blue])),pgm_read_dword(&(patterns[num][1][green])));
-    leds(2,pgm_read_dword(&(patterns[num][2][red])),pgm_read_dword(&(patterns[num][2][blue])),pgm_read_dword(&(patterns[num][2][green])));
-    leds(3,pgm_read_dword(&(patterns[num][3][red])),pgm_read_dword(&(patterns[num][3][blue])),pgm_read_dword(&(patterns[num][3][green])));
-    leds(4,pgm_read_dword(&(patterns[num][4][red])),pgm_read_dword(&(patterns[num][4][blue])),pgm_read_dword(&(patterns[num][4][green])));
-
-    /*
     switch(selection){
         case 1:
             leds(0,pgm_read_dword(&(pattern1[num][0][red])),pgm_read_dword(&(pattern1[num][0][blue])),pgm_read_dword(&(pattern1[num][0][green])));
@@ -290,13 +281,6 @@ void pattern(uint8_t selection,uint8_t num){
             leds(3,pgm_read_dword(&(off[3][red])),pgm_read_dword(&(off[3][blue])),pgm_read_dword(&(off[3][green])));
             leds(4,pgm_read_dword(&(off[4][red])),pgm_read_dword(&(off[4][blue])),pgm_read_dword(&(off[4][green])));
             break;
-        case 6:
-            leds(0,pgm_read_dword(&(patterns[num][0][red])),pgm_read_dword(&(patterns[num][0][blue])),pgm_read_dword(&(patterns[num][0][green])));
-            leds(1,pgm_read_dword(&(patterns[num][1][red])),pgm_read_dword(&(patterns[num][1][blue])),pgm_read_dword(&(patterns[num][1][green])));
-            leds(2,pgm_read_dword(&(patterns[num][2][red])),pgm_read_dword(&(patterns[num][2][blue])),pgm_read_dword(&(patterns[num][2][green])));
-            leds(3,pgm_read_dword(&(patterns[num][3][red])),pgm_read_dword(&(patterns[num][3][blue])),pgm_read_dword(&(patterns[num][3][green])));
-            leds(4,pgm_read_dword(&(patterns[num][4][red])),pgm_read_dword(&(patterns[num][4][blue])),pgm_read_dword(&(patterns[num][4][green])));
-            break;
         default:
             leds(0,1,0,0);
             leds(1,1,0,0);
@@ -305,7 +289,6 @@ void pattern(uint8_t selection,uint8_t num){
             leds(4,1,0,0);
             //
         }
-        */
     uint8_t i = 0;
     uint8_t j = 0;
     uint8_t temp = 0;
@@ -451,7 +434,7 @@ void Transmit(uint8_t *buffer, uint8_t buffersize){
 
 
 int8_t Receive(uint8_t *buffer,uint8_t *receive_buffer,uint8_t buffersize){
-        //uint8_t i = 0;
+        uint8_t i = 0;
 		while (!mirf_data_ready()){
             //test_cube(buffer);
             pattern(item,frame_num);
@@ -497,22 +480,17 @@ int main (void)
     DDRB |= (1<<PB4)|(1<<PB5)|(1<<PB6);
     PORTB |= (1<<PB0)|(1<<PB1)|(1<<PB2)|(1<<PB3);
     init();
-    //uint8_t temp_buffer [32] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
-    //    'q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F'};
+    uint8_t temp_buffer [32] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
+        'q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F'};
     uint8_t receive_buffer [32] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
         'q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F'};
     uint8_t buffer [64] = {'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
         'q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F','a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p',
         'q','r','s','t','u','v','w','x','y','z','A','B','C','D','E','F'};
-    //uint16_t i = 0;
+    uint16_t i = 0;
 	sei();
     init2(receive_buffer);
-    //uint16_t counter = 0;
-    leds(0,1,0,0);
-    leds(1,1,0,0);
-    leds(2,1,0,0);
-    leds(3,1,0,0);
-    leds(4,1,0,0);
+    uint16_t counter = 0;
 	
 	while (1)
 	{
@@ -528,21 +506,6 @@ int main (void)
         */
 
         if(Receive(buffer,receive_buffer,BUFFER_SIZE) == 1){
-            if(ID_SELF == receive_buffer[0]){
-                frame_num = receive_buffer[2];
-                item = 1;
-
-                receive_buffer[0] = ID_SELF;
-                receive_buffer[1] = ACK;
-                receive_buffer[2] = SENSORS;
-                //Transmit(receive_buffer,BUFFER_SIZE);
-                if (receive_buffer[3] == RESPONSE){
-                    Transmit(receive_buffer,BUFFER_SIZE);
-                }
-                //Transmit(receive_buffer,BUFFER_SIZE);
-            }
-            
-            /*
             if((ID_SELF == receive_buffer[0])&&(PATTERN1 == receive_buffer[1])){
                 frame_num = receive_buffer[2];
                 item = 1;
@@ -604,19 +567,6 @@ int main (void)
                 }
                 //Transmit(receive_buffer,BUFFER_SIZE);
             }
-            if((receive_buffer[0] == ID_SELF)&&(receive_buffer[1] == PATTERNS)){
-                frame_num = receive_buffer[2];
-                item = 6;
-
-                receive_buffer[0] = ID_SELF;
-                receive_buffer[1] = ACK;
-                receive_buffer[2] = SENSORS;
-                if (receive_buffer[3] == RESPONSE){
-                    Transmit(receive_buffer,BUFFER_SIZE);
-                }
-                //Transmit(receive_buffer,BUFFER_SIZE);
-            }
-            */
         }
     }
 
