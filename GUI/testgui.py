@@ -54,7 +54,8 @@ class PyApp(gtk.Window):
     frame = ['\x00','\x01','\x02','\x03','\x04','\x05','\x06','\x07','\x08','\x09','\x0a','\x0b','\x0c','\x0d','\x0e','\x0f','\x10','\x11','\x12','\x13','\x14','\x15','\x16','\x17','\x18']
 
     pattern1 = ['\x06','\x0a','\x0b','\x0c','\x07','\x0c','\x0b','\x0a', '\x06']
-    pattern2 = ['\x06','\x0b','\x07','\x08','\x05']
+    pattern2 = [6,11,7,8,5]
+    touching = [5,6,7,8,11]
 
     def __init__(self):
         super(PyApp,self).__init__()
@@ -331,7 +332,7 @@ class PyApp(gtk.Window):
         elif selected == self.PATTERN[1]:
             pattern = '\x03'
             response = '\x01'
-            self.Transmit(id,pattern,index,response,data,cube,selected)
+            self.Transmit(id,pattern,self.pattern2[index],response,data,cube,selected)
         elif selected == self.PATTERN[2]:
             pattern = '\x03'
             self.Transmit(id,pattern,index,response,data,cube,selected)
@@ -354,7 +355,7 @@ class PyApp(gtk.Window):
             self.comm.Transmit(data_out) 
             self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
         if response == '\x01':
-            data_out = ''.join((self.instr,id,pattern,self.frame[self.side],response,data))
+            data_out = ''.join((self.instr,id,pattern,self.frame[self.touching[self.side]],response,data))
             self.comm.Transmit(data_out) 
             sensors = self.Receive()
             #sensors = 2
@@ -362,7 +363,7 @@ class PyApp(gtk.Window):
                 self.side = 0
                 self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 1"))))
             elif sensors == 1:
-                self.side = 2
+                self.side = 1
                 self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 2"))))
             elif sensors == 4:
                 self.side = 2
@@ -372,7 +373,7 @@ class PyApp(gtk.Window):
                 self.output = "\r\n".join((self.output,''.join((cube,"cube detected on side 4"))))
             else:
                 pattern = '\x01'
-                self.side = 1
+                self.side = 4
                 self.output = "\r\n".join((self.output,''.join((cube,"Nothing Detected"))))
             data_out = ''.join((self.instr,id,pattern,self.frame[self.side],response,data))
         self.text_out()
@@ -568,7 +569,7 @@ class PyApp(gtk.Window):
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
             pattern = '\x05'
             self.pattern_select(id,pattern,index,response,data,cube,selected)
-            index = (index+1)%19;
+            index = self.incrementer(index,selected)
             #time.sleep(.1)
             yield 1000
 
@@ -611,7 +612,8 @@ class PyApp(gtk.Window):
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
             pattern = '\x05'
             self.pattern_select(id,pattern,index,response,data,cube,selected)
-            index = (index+1)%19;
+            #index = (index+1)%19;
+            index = self.incrementer(index,selected)
             #time.sleep(.1)
             yield 1000
 
