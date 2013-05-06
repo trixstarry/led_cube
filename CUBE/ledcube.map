@@ -124,7 +124,7 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000     0x1dbe
+.text           0x00000000     0x1dfa
  *(.vectors)
  .vectors       0x00000000       0x50 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
                 0x00000000                __vectors
@@ -132,50 +132,50 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
  *(.vectors)
  *(.progmem.gcc*)
  *(.progmem*)
- .progmem.data  0x00000050      0xc8a ledcube.o
+ .progmem.data  0x00000050      0xcc6 ledcube.o
                 0x00000050                R
                 0x0000014a                G
                 0x00000244                B
                 0x0000033e                off
                 0x0000037a                patterns
-                0x0000091a                on
-                0x00000956                pattern1
-                0x00000a82                pattern2
-                0x00000bae                pattern3
-                0x00000cda                . = ALIGN (0x2)
-                0x00000cda                __trampolines_start = .
+                0x00000956                on
+                0x00000992                pattern1
+                0x00000abe                pattern2
+                0x00000bea                pattern3
+                0x00000d16                . = ALIGN (0x2)
+                0x00000d16                __trampolines_start = .
  *(.trampolines)
- .trampolines   0x00000cda        0x0 linker stubs
+ .trampolines   0x00000d16        0x0 linker stubs
  *(.trampolines*)
-                0x00000cda                __trampolines_end = .
+                0x00000d16                __trampolines_end = .
  *(.jumptables)
  *(.jumptables*)
  *(.lowtext)
  *(.lowtext*)
-                0x00000cda                __ctors_start = .
+                0x00000d16                __ctors_start = .
  *(.ctors)
-                0x00000cda                __ctors_end = .
-                0x00000cda                __dtors_start = .
+                0x00000d16                __ctors_end = .
+                0x00000d16                __dtors_start = .
  *(.dtors)
-                0x00000cda                __dtors_end = .
+                0x00000d16                __dtors_end = .
  SORT(*)(.ctors)
  SORT(*)(.dtors)
  *(.init0)
- .init0         0x00000cda        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
-                0x00000cda                __init
+ .init0         0x00000d16        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
+                0x00000d16                __init
  *(.init0)
  *(.init1)
  *(.init1)
  *(.init2)
- .init2         0x00000cda        0xc /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
+ .init2         0x00000d16        0xc /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
  *(.init2)
  *(.init3)
  *(.init3)
  *(.init4)
- .init4         0x00000ce6       0x16 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
-                0x00000ce6                __do_copy_data
- .init4         0x00000cfc       0x10 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
-                0x00000cfc                __do_clear_bss
+ .init4         0x00000d22       0x16 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
+                0x00000d22                __do_copy_data
+ .init4         0x00000d38       0x10 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
+                0x00000d38                __do_clear_bss
  *(.init4)
  *(.init5)
  *(.init5)
@@ -186,80 +186,80 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
  *(.init8)
  *(.init8)
  *(.init9)
- .init9         0x00000d0c        0x8 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
+ .init9         0x00000d48        0x8 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
  *(.init9)
  *(.text)
- .text          0x00000d14        0x4 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
-                0x00000d14                __vector_1
-                0x00000d14                __vector_12
-                0x00000d14                __bad_interrupt
-                0x00000d14                __vector_6
-                0x00000d14                __vector_11
-                0x00000d14                __vector_13
-                0x00000d14                __vector_17
-                0x00000d14                __vector_19
-                0x00000d14                __vector_7
-                0x00000d14                __vector_5
-                0x00000d14                __vector_4
-                0x00000d14                __vector_9
-                0x00000d14                __vector_2
-                0x00000d14                __vector_15
-                0x00000d14                __vector_8
-                0x00000d14                __vector_14
-                0x00000d14                __vector_10
-                0x00000d14                __vector_16
-                0x00000d14                __vector_18
- .text          0x00000d18      0xdac ledcube.o
-                0x00000d18                level
-                0x00000d70                transmit2
-                0x00000df6                red_led
-                0x00000e82                blue_led
-                0x00000f0e                green_led
-                0x00000f9a                leds
-                0x00000fe6                test_frame
-                0x00000ff2                pattern
-                0x0000126a                translate
-                0x0000157c                test_cube
-                0x0000191a                Transmit
-                0x0000193c                Receive
-                0x00001966                test_Transmit
-                0x00001988                init
-                0x000019a0                init2
-                0x000019a6                sensors
-                0x000019ae                main
- .text          0x00001ac4       0x88 spi.o
-                0x00001ac4                spi_init
-                0x00001ad8                SPI_Transmit
-                0x00001ae4                SPI_Transmit_All
-                0x00001b02                SPI_Receive
-                0x00001b10                SPI_Receive_All
-                0x00001b28                SPI_Transceive
- .text          0x00001b4c      0x26e mirf.o
-                0x00001b4c                mirf_init
-                0x00001b70                mirf_data_ready
-                0x00001b88                mirf_config_register
-                0x00001bb0                mirf_get_data
-                0x00001bd8                tx_complete
-                0x00001c06                __vector_3
-                0x00001c72                mirf_config
-                0x00001c92                mirf_read_register
-                0x00001cc4                mirf_write_register
-                0x00001cf8                mirf_set_TADDR
-                0x00001d04                mirf_set_RADDR
-                0x00001d14                mirf_send
- .text          0x00001dba        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
- .text          0x00001dba        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
- .text          0x00001dba        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
-                0x00001dba                . = ALIGN (0x2)
+ .text          0x00000d50        0x4 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
+                0x00000d50                __vector_1
+                0x00000d50                __vector_12
+                0x00000d50                __bad_interrupt
+                0x00000d50                __vector_6
+                0x00000d50                __vector_11
+                0x00000d50                __vector_13
+                0x00000d50                __vector_17
+                0x00000d50                __vector_19
+                0x00000d50                __vector_7
+                0x00000d50                __vector_5
+                0x00000d50                __vector_4
+                0x00000d50                __vector_9
+                0x00000d50                __vector_2
+                0x00000d50                __vector_15
+                0x00000d50                __vector_8
+                0x00000d50                __vector_14
+                0x00000d50                __vector_10
+                0x00000d50                __vector_16
+                0x00000d50                __vector_18
+ .text          0x00000d54      0xdac ledcube.o
+                0x00000d54                level
+                0x00000dac                transmit2
+                0x00000e32                red_led
+                0x00000ebe                blue_led
+                0x00000f4a                green_led
+                0x00000fd6                leds
+                0x00001022                test_frame
+                0x0000102e                pattern
+                0x000012a6                translate
+                0x000015b8                test_cube
+                0x00001956                Transmit
+                0x00001978                Receive
+                0x000019a2                test_Transmit
+                0x000019c4                init
+                0x000019dc                init2
+                0x000019e2                sensors
+                0x000019ea                main
+ .text          0x00001b00       0x88 spi.o
+                0x00001b00                spi_init
+                0x00001b14                SPI_Transmit
+                0x00001b20                SPI_Transmit_All
+                0x00001b3e                SPI_Receive
+                0x00001b4c                SPI_Receive_All
+                0x00001b64                SPI_Transceive
+ .text          0x00001b88      0x26e mirf.o
+                0x00001b88                mirf_init
+                0x00001bac                mirf_data_ready
+                0x00001bc4                mirf_config_register
+                0x00001bec                mirf_get_data
+                0x00001c14                tx_complete
+                0x00001c42                __vector_3
+                0x00001cae                mirf_config
+                0x00001cce                mirf_read_register
+                0x00001d00                mirf_write_register
+                0x00001d34                mirf_set_TADDR
+                0x00001d40                mirf_set_RADDR
+                0x00001d50                mirf_send
+ .text          0x00001df6        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
+ .text          0x00001df6        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
+ .text          0x00001df6        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
+                0x00001df6                . = ALIGN (0x2)
  *(.text.*)
- .text.libgcc   0x00001dba        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
- .text.libgcc   0x00001dba        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
- .text.libgcc   0x00001dba        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
-                0x00001dba                . = ALIGN (0x2)
+ .text.libgcc   0x00001df6        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
+ .text.libgcc   0x00001df6        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_copy_data.o)
+ .text.libgcc   0x00001df6        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_clear_bss.o)
+                0x00001df6                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x00001dba        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
-                0x00001dba                exit
-                0x00001dba                _exit
+ .fini9         0x00001df6        0x0 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
+                0x00001df6                exit
+                0x00001df6                _exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -278,11 +278,11 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x00001dba        0x4 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
+ .fini0         0x00001df6        0x4 /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a(_exit.o)
  *(.fini0)
-                0x00001dbe                _etext = .
+                0x00001dfa                _etext = .
 
-.data           0x00800100       0x60 load address 0x00001dbe
+.data           0x00800100       0x60 load address 0x00001dfa
                 0x00800100                PROVIDE (__data_start, .)
  *(.data)
  .data          0x00800100        0x0 /usr/lib/gcc/avr/4.5.3/../../../avr/lib/avr35/crttn167.o
@@ -318,8 +318,8 @@ LOAD /usr/lib/gcc/avr/4.5.3/avr35/libgcc.a
  COMMON         0x00800194        0x1 mirf.o
                 0x00800194                PTX
                 0x00800195                PROVIDE (__bss_end, .)
-                0x00001dbe                __data_load_start = LOADADDR (.data)
-                0x00001e1e                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00001dfa                __data_load_start = LOADADDR (.data)
+                0x00001e5a                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x00800195        0x0
                 0x00800195                PROVIDE (__noinit_start, .)

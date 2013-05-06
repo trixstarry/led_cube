@@ -54,6 +54,7 @@ class PyApp(gtk.Window):
     frame = ['\x00','\x01','\x02','\x03','\x04','\x05','\x06','\x07','\x08','\x09','\x0a','\x0b','\x0c','\x0d','\x0e','\x0f','\x10','\x11','\x12','\x13','\x14','\x15','\x16','\x17','\x18']
 
     pattern1 = ['\x06','\x0a','\x0b','\x0c','\x07','\x0c','\x0b','\x0a', '\x06']
+    pattern2 = ['\x06','\x0b','\x07','\x08','\x05']
 
     def __init__(self):
         super(PyApp,self).__init__()
@@ -176,6 +177,7 @@ class PyApp(gtk.Window):
         liststore3.append([self.PATTERN[2]])
         liststore3.append([self.PATTERN[3]])
         liststore3.append([self.PATTERN[4]])
+        liststore3.append([self.PATTERN[5]])
         self.formatCombo3 = gtk.ComboBox(liststore3)
         cell = gtk.CellRendererText()
         self.formatCombo3.pack_start(cell)
@@ -210,6 +212,7 @@ class PyApp(gtk.Window):
         liststore4.append([self.PATTERN[2]])
         liststore4.append([self.PATTERN[3]])
         liststore4.append([self.PATTERN[4]])
+        liststore4.append([self.PATTERN[5]])
         self.formatCombo4 = gtk.ComboBox(liststore4)
         cell = gtk.CellRendererText()
         self.formatCombo4.pack_start(cell)
@@ -537,29 +540,8 @@ class PyApp(gtk.Window):
             yield 1000
 
     def Stop_Moving(self,widget):
-        self.comm.set_channel('\x46')
-        self.RUNNING1 = False
-        id = '\x01'
-        pattern = '\x05'
-        data = '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
-        response = '\x00'
-        filler = '\x00'
-        data_out = ''.join((self.instr,id,pattern,filler,response,data))
-        time.sleep(.15)
-        data = '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
-        self.comm.set_channel('\x3c')
-        self.RUNNING1 = False
-        data = '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
-        pattern = '\x05'
-        data = '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
-        response = '\x00'
-        filler = '\x00'
-        data_out = ''.join((self.instr,id,pattern,filler,response,data))
-        time.sleep(.15)
-        self.comm.Transmit(data_out) 
-
-        self.output = "\r\n".join((self.output,"Moving Algorithm: Stopped."))
-        self.text_out()
+        self.Stop1(self)
+        self.Stop2(self)
 
     @yieldsleep
     def Send1(self,widget):
@@ -629,7 +611,7 @@ class PyApp(gtk.Window):
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
             pattern = '\x05'
             self.pattern_select(id,pattern,index,response,data,cube,selected)
-            index = (index+1)%5;
+            index = (index+1)%19;
             #time.sleep(.1)
             yield 1000
 
@@ -652,35 +634,47 @@ class PyApp(gtk.Window):
 
     @yieldsleep
     def Send3(self,widget):
+        id = '\x03'
+        #running = self.RUNNING2
+        cube = 'Cube 3: '
+        index = self.i3
+        self.i3 = ((self.i3 +1)%5)
+        formatCombo = self.formatCombo3.get_active()
+            
         if self.RUNNING3 == True:
             self.Stop3(widget)
-            self.i3 = 0
+            index = 0
             self.RUNNING3 == False
             yield 1000
             #return
-        self.RUNNING = True
-        selected = self.PATTERN[self.formatCombo3.get_active()]
+        self.RUNNING3 = True
+        selected = self.PATTERN[formatCombo]
+        response = '\x00'
         while self.RUNNING3 == True:
             self.comm.set_channel('\x32')
-            cube = 'Cube 3: '
-            id = '\x03'
-            data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
+            #cube = 'Cube 2: '
+            #id = '\x02'
+            data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
             pattern = '\x05'
             self.pattern_select(id,pattern,index,response,data,cube,selected)
-            index = (index+1)%5;
+            index = (index+1)%19;
             #time.sleep(.1)
             yield 1000
 
     def Stop3(self,widget):
         self.comm.set_channel('\x32')
         self.RUNNING3 = False
+        self.i3 = 0
         id = '\x03'
         pattern = '\x05'
-        data = '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
-        data_out = ''.join((self.instr,id,pattern,data))
-        self.comm.Transmit(data_out) 
+        data = '\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00\x00' 
+        response = '\x00'
+        filler = '\x00'
+        data_out = ''.join((self.instr,id,pattern,filler,response,data))
+        #self.comm.Transmit(data_out) 
         time.sleep(.15)
         self.comm.Transmit(data_out) 
+        #self.comm.Receive()
         self.output = "\r\n".join((self.output,"Cube 3: Stopped."))
         self.text_out()
 
