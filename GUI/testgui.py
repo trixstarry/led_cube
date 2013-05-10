@@ -538,7 +538,7 @@ class PyApp(gtk.Window):
            #         index = 4
 
             #time.sleep(.1)
-            yield 1000
+            yield 50
 
     def Stop_Moving(self,widget):
         self.Stop1(self)
@@ -571,7 +571,7 @@ class PyApp(gtk.Window):
             self.pattern_select(id,pattern,index,response,data,cube,selected)
             index = self.incrementer(index,selected)
             #time.sleep(.1)
-            yield 1000
+            yield 100
 
     def Stop1(self,widget):
         self.comm.set_channel('\x46')

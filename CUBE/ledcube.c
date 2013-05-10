@@ -1,16 +1,20 @@
 //************************************************************************\\
-// wifi.c
+// ledcube.c
 //
-// 	Author:	Thao-Trang "Valerie Hoang
-// 	Date:	1.16.13
+//  Oregon State University Senior Design Project
+//  Project: Multiple LED Cube Controller
+//  Group: 2
+// 	Author:	Doug Dziggel
+// 	Date:	5.6.13
 //
 // Description:
-// This program sends and receives data between two nrf24l01 chips.
+// This is the program for the LED Cubes. Each Cube is programmed with
+// a separate cube ID and a separate channel.
 //
-// Notable information:
-// Both the Reads on rising edge and changes on falling edge.
+// Currently the patterns are hardcoded and the NRF24L01 is very fragile
+// for the LED Cube. Interesting to note that it never breaks on the USB
+// end.
 //************************************************************************//
-//
 
 #define F_CPU 8000000UL	// 16Mhz clock
 #define BAUD 250000
@@ -34,7 +38,7 @@
 #define CUBE2   0x02
 #define CUBE3   0x04
 #define CUBE4   0x08
-#define ID_SELF CUBE3
+#define ID_SELF CUBE1
 #define PACKET1 0x04
 #define PACKET2 0x08
 
@@ -442,9 +446,17 @@ void Transmit(uint8_t *buffer, uint8_t buffersize){
         while (mirf_send (buffer, BUFFER_SIZE) && counter < 1000)
         {
             _delay_us(10);
+            counter++;
         }
+
         if (counter >= 1000)
         {
+            uint8_t config  = 0;
+            mirf_read_register (CONFIG, &config, 1);
+            mirf_config_register(CONFIG, (config & ~(1<<PWR_UP)));
+            _delay_us(4500);
+            mirf_config_register(CONFIG, (config | (1<<PWR_UP)));
+            _delay_us(4500);
             //transmit_string("e");
         }
 }
