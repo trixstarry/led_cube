@@ -112,6 +112,7 @@ void level(uint8_t layer){
             }
 }
 
+/*
 void transmit2(uint8_t layer){
 	uint8_t temp = 0;
     uint8_t i = 0;
@@ -136,6 +137,7 @@ void transmit2(uint8_t layer){
     _delay_ms(100);
     //_delay_us(300);
 }
+*/
 
 void red_led(uint8_t layer,uint32_t red){
     uint8_t index = 0;
@@ -195,6 +197,8 @@ void leds(uint8_t layer,uint32_t red, uint32_t blue, uint32_t green){
     green_led(layer,green);
 }
 
+
+/*
 void test_frame(){
     uint8_t i = 0;
     uint8_t j = 0;
@@ -244,6 +248,7 @@ void test_frame(){
             _delay_ms(100);
     }
 }
+*/
 
 void pattern(uint8_t selection,uint8_t num){
     uint8_t red = 0;
@@ -251,65 +256,14 @@ void pattern(uint8_t selection,uint8_t num){
     uint8_t green = 2;
 
     
+    //Appears frame is not cleared when loaded to drivers. Create a flag and only load a new frame from memory when
+    //a new frame appears.
     leds(0,pgm_read_dword(&(patterns[num][0][red])),pgm_read_dword(&(patterns[num][0][blue])),pgm_read_dword(&(patterns[num][0][green])));
     leds(1,pgm_read_dword(&(patterns[num][1][red])),pgm_read_dword(&(patterns[num][1][blue])),pgm_read_dword(&(patterns[num][1][green])));
     leds(2,pgm_read_dword(&(patterns[num][2][red])),pgm_read_dword(&(patterns[num][2][blue])),pgm_read_dword(&(patterns[num][2][green])));
     leds(3,pgm_read_dword(&(patterns[num][3][red])),pgm_read_dword(&(patterns[num][3][blue])),pgm_read_dword(&(patterns[num][3][green])));
     leds(4,pgm_read_dword(&(patterns[num][4][red])),pgm_read_dword(&(patterns[num][4][blue])),pgm_read_dword(&(patterns[num][4][green])));
 
-    /*
-    switch(selection){
-        case 1:
-            leds(0,pgm_read_dword(&(pattern1[num][0][red])),pgm_read_dword(&(pattern1[num][0][blue])),pgm_read_dword(&(pattern1[num][0][green])));
-            leds(1,pgm_read_dword(&(pattern1[num][1][red])),pgm_read_dword(&(pattern1[num][1][blue])),pgm_read_dword(&(pattern1[num][1][green])));
-            leds(2,pgm_read_dword(&(pattern1[num][2][red])),pgm_read_dword(&(pattern1[num][2][blue])),pgm_read_dword(&(pattern1[num][2][green])));
-            leds(3,pgm_read_dword(&(pattern1[num][3][red])),pgm_read_dword(&(pattern1[num][3][blue])),pgm_read_dword(&(pattern1[num][3][green])));
-            leds(4,pgm_read_dword(&(pattern1[num][4][red])),pgm_read_dword(&(pattern1[num][4][blue])),pgm_read_dword(&(pattern1[num][4][green])));
-            break;
-        case 2:
-            leds(0,pgm_read_dword(&(pattern2[num][0][red])),pgm_read_dword(&(pattern2[num][0][blue])),pgm_read_dword(&(pattern2[num][0][green])));
-            leds(1,pgm_read_dword(&(pattern2[num][1][red])),pgm_read_dword(&(pattern2[num][1][blue])),pgm_read_dword(&(pattern2[num][1][green])));
-            leds(2,pgm_read_dword(&(pattern2[num][2][red])),pgm_read_dword(&(pattern2[num][2][blue])),pgm_read_dword(&(pattern2[num][2][green])));
-            leds(3,pgm_read_dword(&(pattern2[num][3][red])),pgm_read_dword(&(pattern2[num][3][blue])),pgm_read_dword(&(pattern2[num][3][green])));
-            leds(4,pgm_read_dword(&(pattern2[num][4][red])),pgm_read_dword(&(pattern2[num][4][blue])),pgm_read_dword(&(pattern2[num][4][green])));
-            break;
-        case 3:
-            leds(0,pgm_read_dword(&(pattern3[num][0][red])),pgm_read_dword(&(pattern3[num][0][blue])),pgm_read_dword(&(pattern3[num][0][green])));
-            leds(1,pgm_read_dword(&(pattern3[num][1][red])),pgm_read_dword(&(pattern3[num][1][blue])),pgm_read_dword(&(pattern3[num][1][green])));
-            leds(2,pgm_read_dword(&(pattern3[num][2][red])),pgm_read_dword(&(pattern3[num][2][blue])),pgm_read_dword(&(pattern3[num][2][green])));
-            leds(3,pgm_read_dword(&(pattern3[num][3][red])),pgm_read_dword(&(pattern3[num][3][blue])),pgm_read_dword(&(pattern3[num][3][green])));
-            leds(4,pgm_read_dword(&(pattern3[num][4][red])),pgm_read_dword(&(pattern3[num][4][blue])),pgm_read_dword(&(pattern3[num][4][green])));
-            break;
-        case 4:
-            leds(0,pgm_read_dword(&(on[0][red])),pgm_read_dword(&(on[0][blue])),pgm_read_dword(&(on[0][green])));
-            leds(1,pgm_read_dword(&(on[1][red])),pgm_read_dword(&(on[1][blue])),pgm_read_dword(&(on[1][green])));
-            leds(2,pgm_read_dword(&(on[2][red])),pgm_read_dword(&(on[2][blue])),pgm_read_dword(&(on[2][green])));
-            leds(3,pgm_read_dword(&(on[3][red])),pgm_read_dword(&(on[3][blue])),pgm_read_dword(&(on[3][green])));
-            leds(4,pgm_read_dword(&(on[4][red])),pgm_read_dword(&(on[4][blue])),pgm_read_dword(&(on[4][green])));
-            break;
-        case 5:
-            leds(0,pgm_read_dword(&(off[0][red])),pgm_read_dword(&(off[0][blue])),pgm_read_dword(&(off[0][green])));
-            leds(1,pgm_read_dword(&(off[1][red])),pgm_read_dword(&(off[1][blue])),pgm_read_dword(&(off[1][green])));
-            leds(2,pgm_read_dword(&(off[2][red])),pgm_read_dword(&(off[2][blue])),pgm_read_dword(&(off[2][green])));
-            leds(3,pgm_read_dword(&(off[3][red])),pgm_read_dword(&(off[3][blue])),pgm_read_dword(&(off[3][green])));
-            leds(4,pgm_read_dword(&(off[4][red])),pgm_read_dword(&(off[4][blue])),pgm_read_dword(&(off[4][green])));
-            break;
-        case 6:
-            leds(0,pgm_read_dword(&(patterns[num][0][red])),pgm_read_dword(&(patterns[num][0][blue])),pgm_read_dword(&(patterns[num][0][green])));
-            leds(1,pgm_read_dword(&(patterns[num][1][red])),pgm_read_dword(&(patterns[num][1][blue])),pgm_read_dword(&(patterns[num][1][green])));
-            leds(2,pgm_read_dword(&(patterns[num][2][red])),pgm_read_dword(&(patterns[num][2][blue])),pgm_read_dword(&(patterns[num][2][green])));
-            leds(3,pgm_read_dword(&(patterns[num][3][red])),pgm_read_dword(&(patterns[num][3][blue])),pgm_read_dword(&(patterns[num][3][green])));
-            leds(4,pgm_read_dword(&(patterns[num][4][red])),pgm_read_dword(&(patterns[num][4][blue])),pgm_read_dword(&(patterns[num][4][green])));
-            break;
-        default:
-            leds(0,1,0,0);
-            leds(1,1,0,0);
-            leds(2,1,0,0);
-            leds(3,1,0,0);
-            leds(4,1,0,0);
-            //
-        }
-        */
     uint8_t i = 0;
     uint8_t j = 0;
     uint8_t temp = 0;
@@ -339,7 +293,7 @@ void pattern(uint8_t selection,uint8_t num){
             //_delay_us(100);
         }
         else{
-            _delay_ms(500);
+            _delay_ms(500); //why delay?
         }
     }
 }
@@ -376,6 +330,7 @@ void translate(uint8_t *buffer){
     leds(4,red,blue,green);
 }
 
+/*
 void test_cube(uint8_t *buffer){
     uint32_t red = 0;
     uint32_t blue = 0;
@@ -440,6 +395,7 @@ void test_cube(uint8_t *buffer){
         }
     }
 }
+*/
 
 void Transmit(uint8_t *buffer, uint8_t buffersize){
         uint16_t counter = 0;
@@ -479,6 +435,8 @@ int8_t Receive(uint8_t *buffer,uint8_t *receive_buffer,uint8_t buffersize){
         return 1;
 }
 
+
+/*
 void test_Transmit(uint8_t *buffer, uint8_t len){
     buffer[len-1]++;
     if (buffer[len-1] < ' ' || buffer[len-1] > 'z')
@@ -487,6 +445,7 @@ void test_Transmit(uint8_t *buffer, uint8_t len){
     }
     Transmit(buffer,len);
 }
+*/
 
 void init(){
 	// Initialize AVR for use with mirf
@@ -554,81 +513,6 @@ int main (void)
                 //Transmit(receive_buffer,BUFFER_SIZE);
             }
             
-            /*
-            if((ID_SELF == receive_buffer[0])&&(PATTERN1 == receive_buffer[1])){
-                frame_num = receive_buffer[2];
-                item = 1;
-
-                receive_buffer[0] = ID_SELF;
-                receive_buffer[1] = ACK;
-                receive_buffer[2] = SENSORS;
-                //Transmit(receive_buffer,BUFFER_SIZE);
-                if (receive_buffer[3] == RESPONSE){
-                    Transmit(receive_buffer,BUFFER_SIZE);
-                }
-                //Transmit(receive_buffer,BUFFER_SIZE);
-            }
-            if((receive_buffer[0] == ID_SELF)&&(receive_buffer[1] == PATTERN2)){
-                frame_num = receive_buffer[2];
-                item = 2;
-
-                receive_buffer[0] = ID_SELF;
-                receive_buffer[1] = ACK;
-                receive_buffer[2] = SENSORS;
-                //Transmit(receive_buffer,BUFFER_SIZE);
-                if (receive_buffer[3] == RESPONSE){
-                    Transmit(receive_buffer,BUFFER_SIZE);
-                }
-            }
-            if((receive_buffer[0] == ID_SELF)&&(receive_buffer[1] == PATTERN3)){
-                frame_num = receive_buffer[2];
-                item = 3;
-
-                receive_buffer[0] = ID_SELF;
-                receive_buffer[1] = ACK;
-                receive_buffer[2] = SENSORS;
-                if (receive_buffer[3] == RESPONSE){
-                    Transmit(receive_buffer,BUFFER_SIZE);
-                }
-                //Transmit(receive_buffer,BUFFER_SIZE);
-            }
-            if((receive_buffer[0] == ID_SELF)&&(receive_buffer[1] == PATTERN4)){
-                frame_num = receive_buffer[2];
-                item = 4;
-
-                receive_buffer[0] = ID_SELF;
-                receive_buffer[1] = ACK;
-                receive_buffer[2] = SENSORS;
-                if (receive_buffer[3] == RESPONSE){
-                    Transmit(receive_buffer,BUFFER_SIZE);
-                }
-                //Transmit(receive_buffer,BUFFER_SIZE);
-            }
-            if((receive_buffer[0] == ID_SELF)&&(receive_buffer[1] == PATTERN5)){
-                frame_num = receive_buffer[2];
-                item = 5;
-
-                receive_buffer[0] = ID_SELF;
-                receive_buffer[1] = ACK;
-                receive_buffer[2] = SENSORS;
-                if (receive_buffer[3] == RESPONSE){
-                    Transmit(receive_buffer,BUFFER_SIZE);
-                }
-                //Transmit(receive_buffer,BUFFER_SIZE);
-            }
-            if((receive_buffer[0] == ID_SELF)&&(receive_buffer[1] == PATTERNS)){
-                frame_num = receive_buffer[2];
-                item = 6;
-
-                receive_buffer[0] = ID_SELF;
-                receive_buffer[1] = ACK;
-                receive_buffer[2] = SENSORS;
-                if (receive_buffer[3] == RESPONSE){
-                    Transmit(receive_buffer,BUFFER_SIZE);
-                }
-                //Transmit(receive_buffer,BUFFER_SIZE);
-            }
-            */
         }
     }
 
