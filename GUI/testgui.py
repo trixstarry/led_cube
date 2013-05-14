@@ -562,7 +562,11 @@ class PyApp(gtk.Window):
         self.RUNNING1 = True
         selected = self.PATTERN[formatCombo]
         response = '\x00'
+        speed = 1000
         while self.RUNNING1 == True:
+            speed = (speed - 20)
+            if speed < 0:
+                speed = 1000
             self.comm.set_channel('\x46')
             #cube = 'Cube 2: '
             #id = '\x02'
@@ -571,7 +575,7 @@ class PyApp(gtk.Window):
             self.pattern_select(id,pattern,index,response,data,cube,selected)
             index = self.incrementer(index,selected)
             #time.sleep(.1)
-            yield 100
+            yield speed
 
     def Stop1(self,widget):
         self.comm.set_channel('\x46')
