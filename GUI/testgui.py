@@ -564,9 +564,9 @@ class PyApp(gtk.Window):
         response = '\x00'
         speed = 1000
         while self.RUNNING1 == True:
-            speed = (speed - 20)
-            if speed < 0:
-                speed = 1000
+            #speed = (speed - 20)
+            #if speed < 0:
+            #    speed = 1000
             self.comm.set_channel('\x46')
             #cube = 'Cube 2: '
             #id = '\x02'

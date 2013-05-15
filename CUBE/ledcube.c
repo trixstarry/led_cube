@@ -256,6 +256,7 @@ void pattern(uint8_t selection,uint8_t num){
     uint8_t green = 2;
 
     
+    //Load Pattern into frame
     //Appears frame is not cleared when loaded to drivers. Create a flag and only load a new frame from memory when
     //a new frame appears.
     leds(0,pgm_read_dword(&(patterns[num][0][red])),pgm_read_dword(&(patterns[num][0][blue])),pgm_read_dword(&(patterns[num][0][green])));
@@ -263,6 +264,8 @@ void pattern(uint8_t selection,uint8_t num){
     leds(2,pgm_read_dword(&(patterns[num][2][red])),pgm_read_dword(&(patterns[num][2][blue])),pgm_read_dword(&(patterns[num][2][green])));
     leds(3,pgm_read_dword(&(patterns[num][3][red])),pgm_read_dword(&(patterns[num][3][blue])),pgm_read_dword(&(patterns[num][3][green])));
     leds(4,pgm_read_dword(&(patterns[num][4][red])),pgm_read_dword(&(patterns[num][4][blue])),pgm_read_dword(&(patterns[num][4][green])));
+
+    //Insert a test
 
     uint8_t i = 0;
     uint8_t j = 0;
@@ -281,7 +284,8 @@ void pattern(uint8_t selection,uint8_t num){
             SPDR = temp;
             //temp = 0x0F & display_count;
             while(bit_is_clear(SPSR,SPIF)){};
-            frame[i][j] = 0;
+            frame[i][j] = 0; //Clears Frame after data is sent
+                             // should change to also react to flag
         }
 
         //Toggle latch
