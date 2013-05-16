@@ -51,10 +51,12 @@ class PyApp(gtk.Window):
     i3 = 0
     i4 = 0
     instr = '\x00'
-    frame = ['\x00','\x01','\x02','\x03','\x04','\x05','\x06','\x07','\x08','\x09','\x0a','\x0b','\x0c','\x0d','\x0e','\x0f','\x10','\x11','\x12','\x13','\x14','\x15','\x16','\x17','\x18']
+    #frame = ['\x00','\x01','\x02','\x03','\x04','\x05','\x06','\x07','\x08','\x09','\x0a','\x0b','\x0c','\x0d','\x0e','\x0f','\x10','\x11','\x12','\x13','\x14','\x15','\x16','\x17','\x18']
 
     pattern1 = ['\x06','\x0a','\x0b','\x0c','\x07','\x0c','\x0b','\x0a', '\x06']
     pattern2 = [6,11,7,8,5]
+    pattern_OSU = [25,26,27,28,29,30,31,32,33,34,35,36,37,38,39]
+    
     touching = [5,6,7,8,11]
 
     def __init__(self):
@@ -335,7 +337,7 @@ class PyApp(gtk.Window):
             self.Transmit(id,pattern,self.pattern2[index],response,data,cube,selected)
         elif selected == self.PATTERN[2]:
             pattern = '\x03'
-            self.Transmit(id,pattern,index,response,data,cube,selected)
+            self.Transmit(id,pattern,self.pattern_OSU[index],response,data,cube,selected)
         elif selected == self.PATTERN[3]:
             pattern = '\x04'
             self.Transmit(id,pattern,index,response,data,cube,selected)
@@ -351,11 +353,11 @@ class PyApp(gtk.Window):
 
     def Transmit(self,id,pattern,index,response,data,cube,selected):
         if response == '\x00':
-            data_out = ''.join((self.instr,id,pattern,self.frame[index],response,data))
+            data_out = ''.join((self.instr,id,pattern,chr(index),response,data))
             self.comm.Transmit(data_out) 
             self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
         if response == '\x01':
-            data_out = ''.join((self.instr,id,pattern,self.frame[self.touching[self.side]],response,data))
+            data_out = ''.join((self.instr,id,pattern,chr(self.touching[self.side]),response,data))
             self.comm.Transmit(data_out) 
             sensors = self.Receive()
             #sensors = 2
@@ -375,7 +377,7 @@ class PyApp(gtk.Window):
                 pattern = '\x01'
                 self.side = 4
                 self.output = "\r\n".join((self.output,''.join((cube,"Nothing Detected"))))
-            data_out = ''.join((self.instr,id,pattern,self.frame[self.side],response,data))
+            data_out = ''.join((self.instr,id,pattern,chr(self.side),response,data))
         self.text_out()
 
     def incrementer(self,index,selected):
@@ -384,13 +386,13 @@ class PyApp(gtk.Window):
         elif selected == self.PATTERN[1]:
             return (index+1)%5;
         elif selected == self.PATTERN[2]:
-            return (index+1)%5;
+            return (index+1)%15;
         elif selected == self.PATTERN[3]:
             return (index+1)%5;
         elif selected == self.PATTERN[4]:
             return (index+1)%5;
         elif selected == self.PATTERN[5]:
-            return (index+1)%19;
+            return (index+1)%20;
         else:
             return (index+1)%5;
 
@@ -571,7 +573,7 @@ class PyApp(gtk.Window):
             self.pattern_select(id,pattern,index,response,data,cube,selected)
             index = self.incrementer(index,selected)
             #time.sleep(.1)
-            yield 100
+            yield 1000
 
     def Stop1(self,widget):
         self.comm.set_channel('\x46')
