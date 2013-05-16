@@ -392,7 +392,7 @@ class PyApp(gtk.Window):
         elif selected == self.PATTERN[4]:
             return (index+1)%5;
         elif selected == self.PATTERN[5]:
-            return (index+1)%20;
+            return (index+1)%19;
         else:
             return (index+1)%5;
 
@@ -573,7 +573,7 @@ class PyApp(gtk.Window):
             self.pattern_select(id,pattern,index,response,data,cube,selected)
             index = self.incrementer(index,selected)
             #time.sleep(.1)
-            yield 1000
+            yield 100
 
     def Stop1(self,widget):
         self.comm.set_channel('\x46')
