@@ -583,18 +583,18 @@ class PyApp(gtk.Window):
             #\x01\xf8\xc6\x3f\x00\x07\x29\xc0\x00\x00\x10\x00\x00\x07\x39\xc0\x01\xf8\xd6\x3f' 
             pattern = '\x05'
             self.pattern_select(id,pattern,index,response,data,cube,selected)
-            data = ''.join(['\x04\x05\x06\x07\x08\x09\x10\x11', self.patterns[formatCombo]['frames'][index][1]])
+            data = ''.join(['\x04\x05\x06\x07\x08\x09\x10\x11', self.patterns[formatCombo]['frames'][index][2]])
             #print data
             #data = '\x04\x05\x06\x07\x08\x09\x10\x11\x00\x00\x00\x00\x01\xf8\xc6\x3f\x00\x07\x29\xc0\x01\xf8\xd6\x3f\x01\xf8\xd6\x3f' 
             self.pattern_select(id,pattern,index,response,data,cube,selected)
             #data = '\x04\x05\x06\x07\x08\x09\x10\x11\x00\x00\x00\x00\x00\x00\x00\x00\x01\xf8\xc6\x3f\x01\xff\xff\xff\x00\x00\x00\x00' 
-            data = ''.join(['\x04\x05\x06\x07\x08\x09\x10\x11', self.patterns[formatCombo]['frames'][index][2]])
+            data = ''.join(['\x04\x05\x06\x07\x08\x09\x10\x11', self.patterns[formatCombo]['frames'][index][1]])
             #print data
             self.pattern_select(id,pattern,index,response,data,cube,selected)
             #index = self.incrementer(index,selected)
             index = (index+1)%len(self.patterns[formatCombo]['frames'])
             #time.sleep(.1)
-            print self.patterns[formatCombo]['frames'][index][3]
+            #print self.patterns[formatCombo]['frames'][index][3]
             yield self.patterns[formatCombo]['frames'][index][3]
 
     def Stop1(self,widget):
