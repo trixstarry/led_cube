@@ -1,3 +1,4 @@
+#!/usr/bin/python
 # The Pickler!
 # Author: Thao-Trang "Valerie" Hoang
 
@@ -31,14 +32,15 @@ p1 = {"patterns":"Pattern1","frames":[f1,f2,f3]}
 for i,x in enumerate(p1['frames']):
     for j,y in enumerate(x):
         if(isString(y)):
-            z = y
             p1['frames'][i][j] = int(y.encode('hex'),16)
             print p1['frames'][i][j]
-            if (hexify(p1['frames'][i][j]) == z):
+            z = hexify(p1['frames'][i][j])
+            z = ((20-len(z))*'\x00') + z
+        
+            if (z == y):
                 print "Success"
             else:
                 print "Failed!"
 print p1
 pattern.append(p1)
-pattern.append("this is a stringy string")
 pickle.dump(pattern,open("patterns.pkl","wb"))

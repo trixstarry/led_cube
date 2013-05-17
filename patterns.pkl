@@ -22,6 +22,4 @@ aasS'patterns'
 p7
 S'Pattern1'
 p8
-saS'this is a stringy string'
-p9
-a.
+sa.
