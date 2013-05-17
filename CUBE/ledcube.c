@@ -38,7 +38,7 @@
 #define CUBE2   0x02
 #define CUBE3   0x04
 #define CUBE4   0x08
-#define ID_SELF CUBE1
+#define ID_SELF CUBE2
 #define PACKET1 0x04
 #define PACKET2 0x08
 
