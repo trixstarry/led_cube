@@ -30,7 +30,7 @@
 #include <avr/io.h>
 
 // Mirf settings
-#define mirf_CH         60
+#define mirf_CH         70
 #define mirf_PAYLOAD    32
 #define mirf_CONFIG     ( (1<<MASK_RX_DR) | (1<<EN_CRC) | (0<<CRCO) )
 
