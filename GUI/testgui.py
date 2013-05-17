@@ -56,6 +56,7 @@ class PyApp(gtk.Window):
     pattern1 = ['\x06','\x0a','\x0b','\x0c','\x07','\x0c','\x0b','\x0a', '\x06']
     pattern2 = [6,11,7,8,5]
     touching = [5,6,7,8,11]
+    patterns = []
 
     def __init__(self):
         super(PyApp,self).__init__()
@@ -95,12 +96,9 @@ class PyApp(gtk.Window):
         hBox.pack_start(patternLabel,False,False,0)
         #self.patternDropDown = gtk.Entry(20)
         liststore1 = gtk.ListStore(gobject.TYPE_STRING)            
-        liststore1.append([self.PATTERN[0]])
-        liststore1.append([self.PATTERN[1]])
-        liststore1.append([self.PATTERN[2]])
-        liststore1.append([self.PATTERN[3]])
-        liststore1.append([self.PATTERN[4]])
-        liststore1.append([self.PATTERN[5]])
+        for pattern in self.PATTERN:
+            liststore1.append([pattern])
+
         self.formatCombo1 = gtk.ComboBox(liststore1)
         cell = gtk.CellRendererText()
         self.formatCombo1.pack_start(cell)
@@ -136,12 +134,8 @@ class PyApp(gtk.Window):
         hBox.pack_start(patternLabel,False,False,0)
         #self.patternDropDown = gtk.Entry(20)
         liststore2 = gtk.ListStore(gobject.TYPE_STRING)            
-        liststore2.append([self.PATTERN[0]])
-        liststore2.append([self.PATTERN[1]])
-        liststore2.append([self.PATTERN[2]])
-        liststore2.append([self.PATTERN[3]])
-        liststore2.append([self.PATTERN[4]])
-        liststore2.append([self.PATTERN[5]])
+        for pattern in self.patterns:
+            liststore2.append([pattern[0]])
         self.formatCombo2 = gtk.ComboBox(liststore2)
         cell = gtk.CellRendererText()
         self.formatCombo2.pack_start(cell)
@@ -173,12 +167,8 @@ class PyApp(gtk.Window):
         hBox.pack_start(patternLabel,False,False,0)
         #self.patternDropDown = gtk.Entry(20)
         liststore3 = gtk.ListStore(gobject.TYPE_STRING)            
-        liststore3.append([self.PATTERN[0]])
-        liststore3.append([self.PATTERN[1]])
-        liststore3.append([self.PATTERN[2]])
-        liststore3.append([self.PATTERN[3]])
-        liststore3.append([self.PATTERN[4]])
-        liststore3.append([self.PATTERN[5]])
+        for pattern in self.patterns:
+            liststore3.append([pattern[0]])
         self.formatCombo3 = gtk.ComboBox(liststore3)
         cell = gtk.CellRendererText()
         self.formatCombo3.pack_start(cell)
@@ -208,12 +198,8 @@ class PyApp(gtk.Window):
         hBox.pack_start(patternLabel,False,False,0)
         #self.patternDropDown = gtk.Entry(20)
         liststore4 = gtk.ListStore(gobject.TYPE_STRING)            
-        liststore4.append([self.PATTERN[0]])
-        liststore4.append([self.PATTERN[1]])
-        liststore4.append([self.PATTERN[2]])
-        liststore4.append([self.PATTERN[3]])
-        liststore4.append([self.PATTERN[4]])
-        liststore4.append([self.PATTERN[5]])
+        for pattern in self.patterns:
+            liststore3.append([pattern[0]])
         self.formatCombo4 = gtk.ComboBox(liststore4)
         cell = gtk.CellRendererText()
         self.formatCombo4.pack_start(cell)
@@ -319,6 +305,11 @@ class PyApp(gtk.Window):
     def initialize(self):
         data = 1
         self.comm = communication.Communication()
+        try:
+            with open("patterns.pkl","rb") as fd:
+                patterns = pickle.load(fd)
+        except IOError:
+            print "No Patterns found"
 
     def text_out(self):
         self.textbuffer.set_text(self.output)
@@ -353,7 +344,7 @@ class PyApp(gtk.Window):
         if response == '\x00':
             data_out = ''.join((self.instr,id,pattern,self.frame[index],response,data))
             self.comm.Transmit(data_out) 
-            self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
+            #self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
         if response == '\x01':
             data_out = ''.join((self.instr,id,pattern,self.frame[self.touching[self.side]],response,data))
             self.comm.Transmit(data_out) 
@@ -374,8 +365,8 @@ class PyApp(gtk.Window):
             else:
                 pattern = '\x01'
                 self.side = 4
-                self.output = "\r\n".join((self.output,''.join((cube,"Nothing Detected"))))
-            data_out = ''.join((self.instr,id,pattern,self.frame[self.side],response,data))
+                #self.output = "\r\n".join((self.output,''.join((cube,"Nothing Detected"))))
+            #data_out = ''.join((self.instr,id,pattern,self.frame[self.side],response,data))
         self.text_out()
 
     def incrementer(self,index,selected):
@@ -557,12 +548,13 @@ class PyApp(gtk.Window):
             self.Stop1(widget)
             index = 0
             self.RUNNING1 == False
-            yield 1000
+            yield 100
             #return
         self.RUNNING1 = True
         selected = self.PATTERN[formatCombo]
         response = '\x00'
         speed = 1000
+        self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
         while self.RUNNING1 == True:
             #speed = (speed - 20)
             #if speed < 0:
