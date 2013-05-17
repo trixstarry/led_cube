@@ -14,6 +14,7 @@ import gtk, gobject, glib
 import communication
 import time
 import threading
+import pickle
 
 #This function allows the GUI to continue to run during long calculations                                                                    
 def yieldsleep(func):
@@ -35,7 +36,7 @@ def yieldsleep(func):
 
 
 class PyApp(gtk.Window):
-    FORMAT_DEFAULT = 1
+    FORMAT_DEFAULT = 0
     output = "\r\n"
     RUNNING1 = False
     RUNNING2 = False
@@ -96,8 +97,8 @@ class PyApp(gtk.Window):
         hBox.pack_start(patternLabel,False,False,0)
         #self.patternDropDown = gtk.Entry(20)
         liststore1 = gtk.ListStore(gobject.TYPE_STRING)            
-        for pattern in self.PATTERN:
-            liststore1.append([pattern])
+        for pattern in self.patterns:
+            liststore1.append([pattern['patterns']])
 
         self.formatCombo1 = gtk.ComboBox(liststore1)
         cell = gtk.CellRendererText()
@@ -134,8 +135,9 @@ class PyApp(gtk.Window):
         hBox.pack_start(patternLabel,False,False,0)
         #self.patternDropDown = gtk.Entry(20)
         liststore2 = gtk.ListStore(gobject.TYPE_STRING)            
+        #print self.patterns
         for pattern in self.patterns:
-            liststore2.append([pattern[0]])
+            liststore2.append([pattern['patterns']])
         self.formatCombo2 = gtk.ComboBox(liststore2)
         cell = gtk.CellRendererText()
         self.formatCombo2.pack_start(cell)
@@ -168,7 +170,7 @@ class PyApp(gtk.Window):
         #self.patternDropDown = gtk.Entry(20)
         liststore3 = gtk.ListStore(gobject.TYPE_STRING)            
         for pattern in self.patterns:
-            liststore3.append([pattern[0]])
+            liststore3.append([pattern['patterns']])
         self.formatCombo3 = gtk.ComboBox(liststore3)
         cell = gtk.CellRendererText()
         self.formatCombo3.pack_start(cell)
@@ -199,7 +201,7 @@ class PyApp(gtk.Window):
         #self.patternDropDown = gtk.Entry(20)
         liststore4 = gtk.ListStore(gobject.TYPE_STRING)            
         for pattern in self.patterns:
-            liststore3.append([pattern[0]])
+            liststore4.append([pattern['patterns']])
         self.formatCombo4 = gtk.ComboBox(liststore4)
         cell = gtk.CellRendererText()
         self.formatCombo4.pack_start(cell)
@@ -307,9 +309,24 @@ class PyApp(gtk.Window):
         self.comm = communication.Communication()
         try:
             with open("patterns.pkl","rb") as fd:
-                patterns = pickle.load(fd)
+                self.patterns = pickle.load(fd)
+            for k,w in enumerate(self.patterns):
+                #print w
+                for i,x in enumerate(w['frames']):
+                    for j,y in enumerate(x):
+                        if (j < 3):
+                            #print abc[k]['frames'][i][j]
+                            z = self.hexify(self.patterns[k]['frames'][i][j])
+                            z = ((20-len(z))*'\x00') + z
+                            self.patterns[k]['frames'][i][j] = z
         except IOError:
             print "No Patterns found"
+
+    def hexify(self,num):
+        num = "%x" % num
+        if len(num) % 2:
+            num = '0'+num
+        return num.decode('hex')
 
     def text_out(self):
         self.textbuffer.set_text(self.output)
@@ -551,27 +568,34 @@ class PyApp(gtk.Window):
             yield 100
             #return
         self.RUNNING1 = True
-        selected = self.PATTERN[formatCombo]
+        selected = self.patterns[formatCombo]['patterns']
         response = '\x00'
         speed = 1000
         self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
+        print self.patterns
+
         while self.RUNNING1 == True:
-            #speed = (speed - 20)
-            #if speed < 0:
-            #    speed = 1000
-            self.comm.set_channel('\x46')
+            #self.comm.set_channel('\x46')
             #cube = 'Cube 2: '
             #id = '\x02'
-            data = '\x04\x05\x07\x08\x09\x10\x11\x00\x01\xf8\xc6\x3f\x00\x07\x29\xc0\x00\x00\x10\x00\x00\x07\x39\xc0\x01\xf8\xd6\x3f' 
+            data = ''.join(['\x04\x05\x06\x07\x08\x09\x10\x11', self.patterns[formatCombo]['frames'][index][0]])
+            #print data
+            #\x01\xf8\xc6\x3f\x00\x07\x29\xc0\x00\x00\x10\x00\x00\x07\x39\xc0\x01\xf8\xd6\x3f' 
             pattern = '\x05'
             self.pattern_select(id,pattern,index,response,data,cube,selected)
-            data = '\x04\x05\x07\x08\x09\x10\x11\x00\x00\x00\x00\x00\x01\xf8\xc6\x3f\x00\x07\x29\xc0\x01\xf8\xd6\x3f\x01\xf8\xd6\x3f' 
+            data = ''.join(['\x04\x05\x06\x07\x08\x09\x10\x11', self.patterns[formatCombo]['frames'][index][1]])
+            #print data
+            #data = '\x04\x05\x06\x07\x08\x09\x10\x11\x00\x00\x00\x00\x01\xf8\xc6\x3f\x00\x07\x29\xc0\x01\xf8\xd6\x3f\x01\xf8\xd6\x3f' 
             self.pattern_select(id,pattern,index,response,data,cube,selected)
-            data = '\x04\x05\x07\x08\x09\x10\x11\x00\x00\x00\x00\x00\x00\x00\x00\x00\x01\xf8\xc6\x3f\x01\xff\xff\xff\x00\x00\x00\x00' 
+            #data = '\x04\x05\x06\x07\x08\x09\x10\x11\x00\x00\x00\x00\x00\x00\x00\x00\x01\xf8\xc6\x3f\x01\xff\xff\xff\x00\x00\x00\x00' 
+            data = ''.join(['\x04\x05\x06\x07\x08\x09\x10\x11', self.patterns[formatCombo]['frames'][index][2]])
+            #print data
             self.pattern_select(id,pattern,index,response,data,cube,selected)
-            index = self.incrementer(index,selected)
+            #index = self.incrementer(index,selected)
+            index = (index+1)%len(self.patterns[formatCombo]['frames'])
             #time.sleep(.1)
-            yield speed
+            print self.patterns[formatCombo]['frames'][index][3]
+            yield self.patterns[formatCombo]['frames'][index][3]
 
     def Stop1(self,widget):
         self.comm.set_channel('\x46')
