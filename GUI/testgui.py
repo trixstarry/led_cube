@@ -566,7 +566,7 @@ class PyApp(gtk.Window):
         selected = self.PATTERN[formatCombo]
         response = '\x00'
         while self.RUNNING1 == True:
-            self.comm.set_channel('\x46')
+            self.comm.set_channel('\x78')
             #cube = 'Cube 2: '
             #id = '\x02'
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
@@ -577,7 +577,7 @@ class PyApp(gtk.Window):
             yield 100
 
     def Stop1(self,widget):
-        self.comm.set_channel('\x46')
+        self.comm.set_channel('\x78')
         self.RUNNING1 = False
         id = '\x01'
         pattern = '\x05'
@@ -609,7 +609,7 @@ class PyApp(gtk.Window):
         selected = self.PATTERN[formatCombo]
         response = '\x00'
         while self.RUNNING2 == True:
-            self.comm.set_channel('\x3C')
+            self.comm.set_channel('\x6E')
             #cube = 'Cube 2: '
             #id = '\x02'
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
@@ -621,7 +621,7 @@ class PyApp(gtk.Window):
             yield 1000
 
     def Stop2(self,widget):
-        self.comm.set_channel('\x3C')
+        self.comm.set_channel('\x6E')
         self.RUNNING2 = False
         self.i2 = 0
         id = '\x02'
@@ -656,18 +656,19 @@ class PyApp(gtk.Window):
         selected = self.PATTERN[formatCombo]
         response = '\x00'
         while self.RUNNING3 == True:
-            self.comm.set_channel('\x32')
+            self.comm.set_channel('\x64')
             #cube = 'Cube 2: '
             #id = '\x02'
             data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
             pattern = '\x05'
             self.pattern_select(id,pattern,index,response,data,cube,selected)
-            index = (index+1)%19;
+            #index = (index+1)%19;
+            index = self.incrementer(index,selected)
             #time.sleep(.1)
             yield 1000
 
     def Stop3(self,widget):
-        self.comm.set_channel('\x32')
+        self.comm.set_channel('\x64')
         self.RUNNING3 = False
         self.i3 = 0
         id = '\x03'
