@@ -76,26 +76,8 @@ class PyApp(gtk.Window):
         vBox = gtk.VBox(False,0)
         hBox = gtk.HBox(False,0)
 
-        #scroll_wins = gtk.ScrolledWindow()
-        #scroll_wins.set_border_width(0)
-        #scroll_wins.set_policy(gtk.POLICY_AUTOMATIC,gtk.POLICY_ALWAYS)
-
-        #self.model = gtk.ListStore(gobject.TYPE_STRING)
-        #self.tree_view = gtk.TreeView(self.model)
-        #scroll_wins.add_with_viewport(self.tree_view)
-        #self.tree_view.show()
-
-        #cell = gtk.CellRendererText()
-        #column = gtk.TreeViewColumn("Active Cubes",cell,text=0)
-        #self.tree_view.append_column(column)
-
-        #table.attach(scroll_wins,0,5,0,1,gtk.FILL|gtk.EXPAND,gtk.FILL|gtk.EXPAND,1,1)
-
-        hBox = gtk.HBox(False,0)
-
         patternLabel = gtk.Label("Cube 1:")
         hBox.pack_start(patternLabel,False,False,0)
-        #self.patternDropDown = gtk.Entry(20)
         liststore1 = gtk.ListStore(gobject.TYPE_STRING)            
         for pattern in self.patterns:
             liststore1.append([pattern['patterns']])
@@ -110,32 +92,21 @@ class PyApp(gtk.Window):
         self.formatCombo1.set_active(self.FORMAT_DEFAULT)
         hBox.pack_start(gtk.Label('       '),False,False,0)
         hBox.pack_start(self.formatCombo1,False,False,3)
-        #vBox_op.pack_start(hBox,False,False,1)
-
-        #self.patternDropDown.set_size_request(150,30)
-        #hBox.pack_start(self.patternDropDown,False,False,0)
 
         sendBtn = gtk.Button("Start")
-        #sendBtn.connect("clicked",self.set_num1)
         sendBtn.connect("clicked",self.Send1)
         hBox.pack_start(sendBtn,False,False,0)
 
         stopBtn = gtk.Button("Stop")
-        #stopBtn.connect("clicked",self.set_num1)
         stopBtn.connect("clicked",self.Stop1)
         hBox.pack_start(stopBtn,False,False,0)
         vBox.pack_start(hBox,False,False,0)
 
         hBox = gtk.HBox(False,0)
 
-
-        hBox = gtk.HBox(False,0)
-
         patternLabel = gtk.Label("Cube 2:")
         hBox.pack_start(patternLabel,False,False,0)
-        #self.patternDropDown = gtk.Entry(20)
         liststore2 = gtk.ListStore(gobject.TYPE_STRING)            
-        #print self.patterns
         for pattern in self.patterns:
             liststore2.append([pattern['patterns']])
         self.formatCombo2 = gtk.ComboBox(liststore2)
@@ -148,18 +119,12 @@ class PyApp(gtk.Window):
         self.formatCombo2.set_active(self.FORMAT_DEFAULT)
         hBox.pack_start(gtk.Label('       '),False,False,0)
         hBox.pack_start(self.formatCombo2,False,False,3)
-        #vBox_op.pack_start(hBox,False,False,1)
-
-        #self.patternDropDown.set_size_request(150,30)
-        #hBox.pack_start(self.patternDropDown,False,False,0)
 
         sendBtn = gtk.Button("Start")
-        #sendBtn.connect("clicked",self.set_num2)
         sendBtn.connect("clicked",self.Send2)
         hBox.pack_start(sendBtn,False,False,0)
 
         stopBtn = gtk.Button("Stop")
-        #stopBtn.connect("clicked",self.set_num2)
         stopBtn.connect("clicked",self.Stop2)
         hBox.pack_start(stopBtn,False,False,0)
         vBox.pack_start(hBox,False,False,0)
@@ -167,7 +132,6 @@ class PyApp(gtk.Window):
 
         patternLabel = gtk.Label("Cube 3:")
         hBox.pack_start(patternLabel,False,False,0)
-        #self.patternDropDown = gtk.Entry(20)
         liststore3 = gtk.ListStore(gobject.TYPE_STRING)            
         for pattern in self.patterns:
             liststore3.append([pattern['patterns']])
@@ -181,10 +145,6 @@ class PyApp(gtk.Window):
         self.formatCombo3.set_active(self.FORMAT_DEFAULT)
         hBox.pack_start(gtk.Label('       '),False,False,0)
         hBox.pack_start(self.formatCombo3,False,False,3)
-        #vBox_op.pack_start(hBox,False,False,1)
-
-        #self.patternDropDown.set_size_request(150,30)
-        #hBox.pack_start(self.patternDropDown,False,False,0)
 
         sendBtn = gtk.Button("Start")
         sendBtn.connect("clicked",self.Send3)
@@ -198,7 +158,6 @@ class PyApp(gtk.Window):
 
         patternLabel = gtk.Label("Cube 4:")
         hBox.pack_start(patternLabel,False,False,0)
-        #self.patternDropDown = gtk.Entry(20)
         liststore4 = gtk.ListStore(gobject.TYPE_STRING)            
         for pattern in self.patterns:
             liststore4.append([pattern['patterns']])
@@ -212,10 +171,6 @@ class PyApp(gtk.Window):
         self.formatCombo4.set_active(self.FORMAT_DEFAULT)
         hBox.pack_start(gtk.Label('       '),False,False,0)
         hBox.pack_start(self.formatCombo4,False,False,3)
-        #vBox_op.pack_start(hBox,False,False,1)
-
-        #self.patternDropDown.set_size_request(150,30)
-        #hBox.pack_start(self.patternDropDown,False,False,0)
 
         sendBtn = gtk.Button("Start")
         sendBtn.connect("clicked",self.Send4)
@@ -226,23 +181,6 @@ class PyApp(gtk.Window):
         hBox.pack_start(stopBtn,False,False,0)
         vBox.pack_start(hBox,False,False,0)
 
-       #hBox = gtk.HBox(False,0)
-       #self.cube1Check = gtk.CheckButton("Cube 1")
-       #self.cube1Check.set_active(self.ACTIVE[0])
-       #hBox.pack_start(self.cube1Check,False,False,0)
-
-       #self.cube2Check = gtk.CheckButton("Cube 2")
-       #self.cube2Check.set_active(self.ACTIVE[1])
-       #hBox.pack_start(self.cube2Check,False,False,0)
-
-       #self.cube3Check = gtk.CheckButton("Cube 3")
-       #self.cube3Check.set_active(self.ACTIVE[2])
-       #hBox.pack_start(self.cube3Check,False,False,0)
-
-       #self.cube4Check = gtk.CheckButton("Cube 4")
-       #self.cube4Check.set_active(self.ACTIVE[3])
-       #hBox.pack_start(self.cube4Check,False,False,0)
-       #vBox.pack_start(hBox,False,False,0)
         hBox = gtk.HBox(False,0)
         sendBtn = gtk.Button("Moving Alg")
         sendBtn.connect("clicked",self.Send_Moving)
@@ -271,24 +209,10 @@ class PyApp(gtk.Window):
         table.attach(self.output_win,0,5,2,3,gtk.FILL|gtk.EXPAND,gtk.FILL|gtk.EXPAND,1,1)
         
         hBox = gtk.HBox(False,0)
-        
-        '''
-        btn1 = gtk.Button("Scan")
-        btn1.connect("clicked",self.scan)
-        hBox.pack_start(btn1,False,False,0)
-        '''
-        
-        #btn2 = gtk.Button("Upload")
-        #hBox.pack_start(btn2,False,False,0)
-
-        #btn3 = gtk.Button("Test3")
-        #hBox.pack_start(btn3,False,False,0)
-
 
         helpBtn = gtk.Button("Help")
         helpBtn.set_size_request(70,30)
         helpBtn.connect("clicked",self.helpMe)
-        #hBox.pack_end(helpBtn,False,False,0)
 
         quit = gtk.Button("Quit")
         quit.set_size_request(50,30)
@@ -297,9 +221,6 @@ class PyApp(gtk.Window):
         hBox.pack_end(helpBtn,False,False,0)
 
         table.attach(hBox,0,5,3,4,gtk.FILL,gtk.FILL,1,1)
-        #self.display()
-
-        
         
         self.add(table)
         self.show_all()
@@ -311,11 +232,9 @@ class PyApp(gtk.Window):
             with open("patterns.pkl","rb") as fd:
                 self.patterns = pickle.load(fd)
             for k,w in enumerate(self.patterns):
-                #print w
                 for i,x in enumerate(w['frames']):
                     for j,y in enumerate(x):
                         if (j < 3):
-                            #print abc[k]['frames'][i][j]
                             z = self.hexify(self.patterns[k]['frames'][i][j])
                             z = ((20-len(z))*'\x00') + z
                             self.patterns[k]['frames'][i][j] = z
@@ -405,7 +324,6 @@ class PyApp(gtk.Window):
     @yieldsleep
     def Send_Moving(self,widget):
         id = '\x01'
-        #running = self.RUNNING1
         cube = 'Cube 1: '
         index = 0
         index2 = 0
@@ -423,7 +341,6 @@ class PyApp(gtk.Window):
             index = 0
             self.RUNNING1 == False
             yield 1000
-            #return
         self.RUNNING1 = True
         selected = self.PATTERN[formatCombo]
         response = '\x01'
@@ -555,10 +472,7 @@ class PyApp(gtk.Window):
     @yieldsleep
     def Send1(self,widget):
         id = '\x01'
-        #running = self.RUNNING1
         cube = 'Cube 1: '
-        index = self.i1
-        self.i1 = ((self.i1 +1)%5)
         formatCombo = self.formatCombo1.get_active()
             
         if self.RUNNING1 == True:
@@ -572,29 +486,17 @@ class PyApp(gtk.Window):
         response = '\x00'
         speed = 1000
         self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
-        print self.patterns
+        pattern = '\x05'
 
         while self.RUNNING1 == True:
-            #self.comm.set_channel('\x46')
-            #cube = 'Cube 2: '
-            #id = '\x02'
+            self.comm.set_channel('\x46')
             data = ''.join(['\x04\x05\x06\x07\x08\x09\x10\x11', self.patterns[formatCombo]['frames'][index][0]])
-            #print data
-            #\x01\xf8\xc6\x3f\x00\x07\x29\xc0\x00\x00\x10\x00\x00\x07\x39\xc0\x01\xf8\xd6\x3f' 
-            pattern = '\x05'
             self.pattern_select(id,pattern,index,response,data,cube,selected)
             data = ''.join(['\x04\x05\x06\x07\x08\x09\x10\x11', self.patterns[formatCombo]['frames'][index][2]])
-            #print data
-            #data = '\x04\x05\x06\x07\x08\x09\x10\x11\x00\x00\x00\x00\x01\xf8\xc6\x3f\x00\x07\x29\xc0\x01\xf8\xd6\x3f\x01\xf8\xd6\x3f' 
             self.pattern_select(id,pattern,index,response,data,cube,selected)
-            #data = '\x04\x05\x06\x07\x08\x09\x10\x11\x00\x00\x00\x00\x00\x00\x00\x00\x01\xf8\xc6\x3f\x01\xff\xff\xff\x00\x00\x00\x00' 
             data = ''.join(['\x04\x05\x06\x07\x08\x09\x10\x11', self.patterns[formatCombo]['frames'][index][1]])
-            #print data
             self.pattern_select(id,pattern,index,response,data,cube,selected)
-            #index = self.incrementer(index,selected)
             index = (index+1)%len(self.patterns[formatCombo]['frames'])
-            #time.sleep(.1)
-            #print self.patterns[formatCombo]['frames'][index][3]
             yield self.patterns[formatCombo]['frames'][index][3]
 
     def Stop1(self,widget):
@@ -616,32 +518,31 @@ class PyApp(gtk.Window):
     @yieldsleep
     def Send2(self,widget):
         id = '\x02'
-        #running = self.RUNNING2
         cube = 'Cube 2: '
-        index = self.i2
-        self.i2 = ((self.i2 +1)%5)
-        formatCombo = self.formatCombo2.get_active()
+        formatCombo = self.formatCombo1.get_active()
             
-        if self.RUNNING2 == True:
-            self.Stop2(widget)
+        if self.RUNNING1 == True:
+            self.Stop1(widget)
             index = 0
-            self.RUNNING2 == False
-            yield 1000
-            #return
-        self.RUNNING2 = True
-        selected = self.PATTERN[formatCombo]
+            self.RUNNING1 == False
+            yield 100
+        self.RUNNING1 = True
+        selected = self.patterns[formatCombo]['patterns']
         response = '\x00'
-        while self.RUNNING2 == True:
+        speed = 1000
+        self.output = "\r\n".join((self.output,''.join((cube,selected," Enabled"))))
+        pattern = '\x05'
+
+        while self.RUNNING1 == True:
             self.comm.set_channel('\x3C')
-            #cube = 'Cube 2: '
-            #id = '\x02'
-            data = '\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff\xff' 
-            pattern = '\x05'
+            data = ''.join(['\x04\x05\x06\x07\x08\x09\x10\x11', self.patterns[formatCombo]['frames'][index][0]])
             self.pattern_select(id,pattern,index,response,data,cube,selected)
-            #index = (index+1)%19;
-            index = self.incrementer(index,selected)
-            #time.sleep(.1)
-            yield 1000
+            data = ''.join(['\x04\x05\x06\x07\x08\x09\x10\x11', self.patterns[formatCombo]['frames'][index][2]])
+            self.pattern_select(id,pattern,index,response,data,cube,selected)
+            data = ''.join(['\x04\x05\x06\x07\x08\x09\x10\x11', self.patterns[formatCombo]['frames'][index][1]])
+            self.pattern_select(id,pattern,index,response,data,cube,selected)
+            index = (index+1)%len(self.patterns[formatCombo]['frames'])
+            yield self.patterns[formatCombo]['frames'][index][3]
 
     def Stop2(self,widget):
         self.comm.set_channel('\x3C')
